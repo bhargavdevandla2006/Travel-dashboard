@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar";
 import StatsCard from "../components/StatsCard";
 import TripCard from "../components/TripCard";
 import MapView from "../components/MapView";
+import GoogleMapView from "../components/GoogleMapView";
 const stats = [
   { title: "Total Trips", value: "12", color: "bg-blue-600", icon: <FaSuitcase /> },
   { title: "Upcoming Flights", value: "5", color: "bg-green-500", icon: <FaPlane /> },

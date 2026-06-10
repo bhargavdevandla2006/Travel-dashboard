@@ -1,18 +1,39 @@
-﻿export default function TripCard({ image, title, location, price }) {
+﻿import { useNavigate } from "react-router-dom";
+
+export default function TripCard({ image, title, location, price }) {
+  const navigate = useNavigate();
+
   return (
-    <div className="bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition transform hover:scale-105 hover:-translate-y-2">
-      <img src={image} alt={title} className="h-44 w-full object-cover hover:scale-110 transition duration-300" />
+    <div className="bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition">
+
+      <img src={image} className="h-44 w-full object-cover" />
 
       <div className="p-6">
-        <h1 className="text-lg font-bold text-gray-900">{title}</h1>
 
-        <p className="text-sm text-gray-600 mt-2 flex items-center gap-1"> {location}</p>
+        <h1 className="text-lg font-bold">{title}</h1>
 
-        <h2 className="text-xl text-blue-600 font-bold mt-4">{price}</h2>
+        <p className="text-sm text-gray-600">{location}</p>
 
-        <button className="w-full bg-blue-600 text-white py-3 rounded-xl mt-5 text-sm font-bold hover:bg-blue-700 hover:shadow-lg transition transform hover:scale-105">
+        <h2 className="text-xl text-blue-600 font-bold mt-2">
+          {price}
+        </h2>
+
+        <button
+          onClick={() =>
+            navigate(`/trip/${title}`, {
+              state: {
+                title,
+                location,
+                price,
+                image,
+              },
+            })
+          }
+          className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-xl"
+        >
           Book Now
         </button>
+
       </div>
     </div>
   );
