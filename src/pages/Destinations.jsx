@@ -43,25 +43,25 @@ export default function Destinations() {
 
         <Sidebar />
 
-        <div className="flex-1 p-10">
+        <div className="flex-1 p-12">
 
           <Navbar />
 
-          <div className="flex justify-between items-center mt-10">
+          <div className="flex justify-between items-center mt-14">
 
             <div>
 
-              <h1 className="text-5xl font-bold text-gray-900">
-                Explore Destinations 
+              <h1 className="text-6xl font-playfair font-black text-gray-900 tracking-tight">
+                Explore Destinations
               </h1>
 
-              <p className="text-gray-500 mt-3 text-lg">
+              <p className="text-gray-600 mt-3 text-lg font-medium">
                 Discover your dream vacation spots
               </p>
 
             </div>
 
-            <button className="bg-blue-600 text-white px-8 py-4 rounded-2xl font-bold hover:bg-blue-700 transition">
+            <button className="bg-blue-600 text-white px-10 py-4 rounded-2xl font-bold hover:bg-blue-700 transition shadow-lg hover:shadow-xl">
 
               + Add Destination
 
@@ -69,7 +69,7 @@ export default function Destinations() {
 
           </div>
 
-          <div className="grid grid-cols-2 gap-8 mt-12">
+          <div className="grid grid-cols-2 gap-10 mt-16">
 
             {
               destinations.map((place, index) => (
