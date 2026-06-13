@@ -4,19 +4,23 @@ export default function TripCard({ image, title, location, price }) {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition">
+    <div className="bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-xl transition">
 
-      <img src={image} className="h-44 w-full object-cover" />
+      <img src={image} className="h-28 w-full object-cover" />
 
-      <div className="p-6">
+     <div className="p-4">
 
-        <h1 className="text-lg font-bold">{title}</h1>
+  <h2 className="text-xl font-bold text-gray-900">
+    {title}
+  </h2>
 
-        <p className="text-sm text-gray-600">{location}</p>
+  <p className="text-base font-semibold text-gray-600 mt-1">
+    {location}
+  </p>
 
-        <h2 className="text-xl text-blue-600 font-bold mt-2">
-          {price}
-        </h2>
+  <h2 className="text-lg text-blue-600 font-bold mt-2">
+    {price}
+  </h2>
 
         <button
           onClick={() =>
@@ -29,7 +33,7 @@ export default function TripCard({ image, title, location, price }) {
               },
             })
           }
-          className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-xl"
+          className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-2xl text-sm"
         >
           Book Now
         </button>
