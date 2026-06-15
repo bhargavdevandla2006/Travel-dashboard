@@ -87,7 +87,7 @@ export default function Register() {
                     }
                 />
 
-                <button className="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold hover:bg-blue-700 transition">
+                <button className="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold hover:bg-blue-700 transition cursor-pointer">
                     Register
                 </button>
 
