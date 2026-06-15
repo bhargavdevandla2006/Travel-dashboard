@@ -14,15 +14,13 @@ export default function Login() {
         e.preventDefault();
 
     try {
-        const response = await fetch("http://localhost:3000/login",
-           {
-            method:'post',
-            headers:{
-               'content-type' : 'application/json',
-            },
-            body: JSON.stringify(formData),
-           }
-        )
+      const response = await fetch("https://travel-dashboard-backend-2.onrender.com/login", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
         const receivedData = await response.json();
 
         localStorage.setItem(

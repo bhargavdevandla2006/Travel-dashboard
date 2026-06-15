@@ -130,7 +130,7 @@ export default function Index() {
               <div className="grid gap-6 lg:grid-cols-[1.5fr_0.9fr] mb-8">
                 <div className="rounded-3xl border border-gray-200 bg-white p-7 shadow-md hover:shadow-lg transition-all duration-300">
                   <p className="text-accent text-emerald-600">
-                    🌍 Destination
+                     Destination
                   </p>
                   <h2 className="mt-4 text-6xl font-playfair font-black text-slate-900 tracking-tight">
                     Maldives
@@ -143,14 +143,14 @@ export default function Index() {
                 <div className="rounded-3xl bg-gradient-to-br from-blue-600 via-cyan-500 to-sky-500 p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
                   <div>
                     <p className="text-accent text-cyan-100/80">
-                      🎯 Navigation
+                       Navigation
                     </p>
                     <p className="mt-4 text-xl font-poppins font-bold tracking-tight">
                       Use <span className="font-black">Ctrl + Scroll</span> to explore
                     </p>
                   </div>
                   <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-xs uppercase tracking-[0.25em] font-bold text-white/95 backdrop-blur-sm">
-                    💡 Pro tip
+                     Pro tip
                   </div>
                 </div>
               </div>
