@@ -15,15 +15,13 @@ export default function Register() {
         e.preventDefault();
 
         try {
-            const response = await fetch("http://localhost:3000/register",
-                {
-                    method: 'post',
-                    headers: {
-                        'content-type': 'application/json',
-                    },
-                    body: JSON.stringify(formData),
-                }
-            )
+            const response = await fetch("https://travel-dashboard-backend-2.onrender.com/register", {
+                method: 'post',
+                headers: {
+                    'content-type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            })
             const receivedData = await response.json();
 
             localStorage.setItem(

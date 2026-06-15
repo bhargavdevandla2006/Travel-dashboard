@@ -1,36 +1,36 @@
-const url = "http://localhost:3000"
+const url = "https://travel-dashboard-backend-2.onrender.com"
 
-export const LoginUser = async (userData) =>{
+export const LoginUser = async (userData) => {
 
     const response = await fetch(
         `${url}/login`,
         {
-            method :'post',
+            method: 'post',
             headers: {
-                "Content-type":"application/json",        
+                "Content-type": "application/json",
             },
-            body:JSON.stringify(userData),
+            body: JSON.stringify(userData),
         }
     )
     const receivedData = await response.json();
-     return receivedData;
+    return receivedData;
 }
-export const RegisterUser  = async (userData) =>{
+export const RegisterUser = async (userData) => {
     const response = await fetch(
-    `${url}/register`,
-    {
-        method:'post',
-        headers:{
-            'Content-type':'application/json',
-        },
-        body:JSON.stringify(userData)
-    }
-)
-const receivedData = await response.json();
-return receivedData;
+        `${url}/register`,
+        {
+            method: 'post',
+            headers: {
+                'Content-type': 'application/json',
+            },
+            body: JSON.stringify(userData)
+        }
+    )
+    const receivedData = await response.json();
+    return receivedData;
 }
 
-export const getTrips = async () =>{
+export const getTrips = async () => {
 
     const response = await fetch(
         `${url}/trips`,
