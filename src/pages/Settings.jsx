@@ -2,6 +2,7 @@ import { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import { useMap } from "../context/MapContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Settings() {
   const [darkMode, setDarkMode] = useState(false);
@@ -12,9 +13,11 @@ export default function Settings() {
   const [twoFA, setTwoFA] = useState(false);
 
  const {setLocation} = useMap();
- const handleLogout = () => {
-  localStorage.removeItem("token");
-  window.location.href = "/login";
+ const navigate = useNavigate()
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
 };
  const handleLocationSearch = async () => {
 
