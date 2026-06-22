@@ -8,7 +8,7 @@ import Profile from "./pages/Profile";
 import TripDetails from "./pages/TripDetails";
 import Destinations from "./pages/Destinations";
 import Settings from "./pages/Settings";
-
+import AddTrip from "./pages/AddTrip";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 import { MapProvider } from "./context/MapContext";
@@ -31,6 +31,10 @@ export default function App() {
           <Route
             path="/register"
             element={<Register />}
+          />
+          <Route
+          path="/add-trip"
+          element={<AddTrip />}
           />
 
           <Route

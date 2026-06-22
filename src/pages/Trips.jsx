@@ -1,67 +1,35 @@
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import TripCard from "../components/TripCard";
+import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react"
 
-const trips = [
-
-  {
-    id: 1,
-    title: "Bali Getaway",
-    location: "Bali, Indonesia",
-    price: "₹85,000",
-    image:
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
-  },
-
-  {
-    id: 2,
-    title: "Paris Vacation",
-    location: "Paris, France",
-    price: "₹1,20,000",
-    image:
-      "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80",
-  },
-
-  {
-    id: 3,
-    title: "Dubai Luxury",
-    location: "Dubai, UAE",
-    price: "₹95,000",
-    image:
-      "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=80",
-  },
-
-  {
-    id: 4,
-    title: "Swiss Adventure",
-    location: "Switzerland",
-    price: "₹1,50,000",
-    image:
-      "https://images.unsplash.com/photo-1526772662000-3f88f10405ff?auto=format&fit=crop&w=800&q=80",
-  },
-
-  {
-    id: 5,
-    title: "Tokyo Tour",
-    location: "Tokyo, Japan",
-    price: "₹1,10,000",
-    image:
-      "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=800&q=80",
-  },
-
-  {
-    id: 6,
-    title: "Maldives Escape",
-    location: "Maldives",
-    price: "₹1,25,000",
-    image:
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
-  },
-
-];
 
 export default function Trips() {
 
+  const navigate = useNavigate()
+  const [trips, setTrips] = useState([])
+
+  useEffect(() => {
+  fetch("https://travel-dashboard-backend-2.onrender.com/trips")
+    .then((res) => res.json())
+    .then((data) => {
+      if (Array.isArray(data)) {
+        setTrips(data);
+      } else {
+        setTrips([]);
+        console.log(data);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      setTrips([]);
+    });
+}, []);
+
+  const tripsBtn = () => {
+    navigate('/add-trip')
+  };
   return (
 
     <div className="bg-[#020B2D] min-h-screen p-6">
@@ -83,15 +51,16 @@ export default function Trips() {
               </h1>
 
               <p className="text-gray-600 mt-3 text-lg font-medium">
-                Discover beautiful destinations around the world 
+                Discover beautiful destinations around the world
               </p>
 
             </div>
 
-            <button className="bg-blue-600 text-white px-10 py-4 rounded-2xl font-bold hover:bg-blue-700 transition shadow-lg hover:shadow-xl">
-
+            <button
+              onClick={tripsBtn}
+              className="bg-blue-600 text-white px-10 py-4 rounded-2xl font-bold hover:bg-blue-700 transition shadow-lg hover:shadow-xl"
+            >
               + Add New Trip
-
             </button>
 
           </div>
