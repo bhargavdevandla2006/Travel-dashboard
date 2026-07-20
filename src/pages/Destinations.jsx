@@ -1,39 +1,28 @@
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
-const destinations = [
-
-  {
-    name: "Maldives",
-    country: "Indian Ocean",
-    image:
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
-  },
-
-  {
-    name: "Paris",
-    country: "France",
-    image:
-      "https://images.unsplash.com/photo-1502602898657-3e91760cbb34",
-  },
-
-  {
-    name: "Tokyo",
-    country: "Japan",
-    image:
-      "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf",
-  },
-
-  {
-    name: "Dubai",
-    country: "UAE",
-    image:
-      "https://images.unsplash.com/photo-1512453979798-5ea266f8880c",
-  },
-
-];
 
 export default function Destinations() {
+  
+  const navigate = useNavigate();
+  
+  const [destinations, setDestinations] = useState([]);
+  
+  useEffect(()=>{
+    loadDestinations();
+  }, []);
+
+  async function loadDestinations() {
+    try{
+      const response = await fetch("http://localhost:3000/destinations")
+      const data =  await response.json();
+      setDestinations(data);
+    } catch (error){
+      console.log(error)
+    }
+  }
 
   return (
 
@@ -72,10 +61,10 @@ export default function Destinations() {
           <div className="grid grid-cols-2 gap-10 mt-16">
 
             {
-              destinations.map((place, index) => (
+              destinations.map((place) => (
 
                 <div
-                  key={index}
+                  key={place.id}
                   className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition hover:scale-105"
                 >
 
@@ -96,8 +85,8 @@ export default function Destinations() {
                     </p>
 
                     <div className="flex gap-4 mt-6">
-
-                      <button className="bg-blue-600 text-white px-6 py-3 rounded-2xl hover:bg-blue-700 transition">
+                     
+                      <button className="bg-blue-600 text-white px-6 py-3 rounded-2xl hover:bg-blue-700 transition" onClick={() => navigate(`/destinations/${place.id}`)}>
 
                         View Details
 

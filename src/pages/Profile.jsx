@@ -1,13 +1,51 @@
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
+import EditProfile from "../components/EditProfile";
 import { FaUserEdit, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
+import { useState, useEffect } from "react";
+import url from "../services/api";
+
 
 export default function Profile() {
 
-const handleLogout = () =>{
-    localStorage.removeItem('token');
-    window.location.href = '/login'
-}
+  const [user, setUser] = useState(null)
+  const [showModal, setShowModal] = useState(false)
+  useEffect(() => {
+    loadProfile();
+  }, []);
+
+  async function loadProfile() {
+    try {
+
+      const response = await fetch(`${url}/profile`, {
+        credentials: "include"
+      }
+      )
+      const data = await response.json();
+      setUser(data)
+    } catch (error) {
+      console.log(error)
+    }
+
+  }
+
+  const handleLogout = async () => {
+
+    await fetch(`${url}/logout`, {
+      method: "POST",
+      credentials: "include",
+    }
+    )
+    window.location.href = "/login";
+
+  }
+  if (!user) {
+    return (
+      <div className="min-h-screen flex justify-center items-center text-2xl">
+        Loading...
+      </div>
+    );
+  }
 
   return (
 
@@ -26,37 +64,29 @@ const handleLogout = () =>{
             <div className="flex items-center gap-8">
 
               <img
-                src="https://i.pravatar.cc/150"
-                alt=""
+
+                src={user.photo}
+                alt="Profile"
                 className="w-36 h-36 rounded-full object-cover shadow-lg"
               />
 
               <div>
 
                 <h1 className="text-4xl font-bold text-gray-900">
-                  Bhargav
+                  {user.name}
                 </h1>
 
                 <p className="text-gray-500 mt-2 flex items-center gap-2">
                   <FaEnvelope />
-                  bhargav@gmail.com
+                  {user.email}
                 </p>
 
                 <p className="text-gray-500 mt-2 flex items-center gap-2">
                   <FaMapMarkerAlt />
-                  Hyderabad, India
+                  {user.city},  {user.state},  {user.country}
                 </p>
 
-                <button className="mt-5 bg-blue-600 text-white px-6 py-3 rounded-2xl flex items-center gap-2 hover:bg-blue-700 transition">
-
-                  <FaUserEdit />
-
-                  Edit Profile
-
-                </button>
-
               </div>
-
             </div>
 
             <div className="grid grid-cols-3 gap-6 mt-12">
@@ -108,7 +138,7 @@ const handleLogout = () =>{
               <div className="space-y-4">
 
                 <div className="bg-gray-100 p-5 rounded-2xl">
-                   Booked a trip to Bali
+                  Booked a trip to Bali
                 </div>
 
                 <div className="bg-gray-100 p-5 rounded-2xl">
@@ -116,25 +146,46 @@ const handleLogout = () =>{
                 </div>
 
                 <div className="bg-gray-100 p-5 rounded-2xl">
-                   Added Switzerland to wishlist
+                  Added Switzerland to wishlist
                 </div>
 
               </div>
 
             </div>
 
-            <button
-              onClick={handleLogout}
-              className="mt-10 bg-red-500 text-white px-8 py-4 rounded-2xl hover:bg-red-600 transition font-bold"
-            >
-              Logout
-            </button>
+            <div className="flex gap-5 mt-10">
+
+              <button
+                onClick={() => setShowModal(true)}
+                className="bg-blue-600 text-white px-8 py-4 rounded-2xl hover:bg-blue-700 transition font-bold flex items-center gap-2"
+              >
+                <FaUserEdit />
+                Edit Profile
+              </button>
+
+              <button
+                onClick={handleLogout}
+                className="bg-red-500 text-white px-8 py-4 rounded-2xl hover:bg-red-600 transition font-bold"
+              >
+                Logout
+              </button>
+
+            </div>
 
           </div>
 
         </div>
 
       </div>
+      {
+        showModal && (
+          <EditProfile
+            user={user}
+            onClose={() => setShowModal(false)}
+            onUpdate={loadProfile}
+          />
+        )
+      }
 
     </div>
   );

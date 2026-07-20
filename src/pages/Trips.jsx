@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import TripCard from "../components/TripCard";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react"
+import url from "../services/api";
 
 
 export default function Trips() {
@@ -11,7 +12,7 @@ export default function Trips() {
   const [trips, setTrips] = useState([])
 
   useEffect(() => {
-  fetch("https://travel-dashboard-backend-2.onrender.com/trips")
+  fetch(`${url}/trips`)
     .then((res) => res.json())
     .then((data) => {
       if (Array.isArray(data)) {

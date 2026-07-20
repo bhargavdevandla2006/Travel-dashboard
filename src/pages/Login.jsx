@@ -1,4 +1,5 @@
 import { useState } from "react";
+import url from "../services/api";
 import {useNavigate, Link} from 'react-router-dom'
 
 
@@ -10,28 +11,37 @@ export default function Login() {
         password:"",
     });
 
-    const handleLogin = async (e) =>{
-        e.preventDefault();
+  const handleLogin = async (e) => {
+  e.preventDefault();
 
-    try {
-      const response = await fetch("https://travel-dashboard-backend-2.onrender.com/login", {
-        method: 'POST',
+  try {
+    const response = await fetch(
+      `${url}/login`,
+      {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify(formData),
-      });
-        const receivedData = await response.json();
+      }
+    );
 
-        localStorage.setItem(
-            "token",
-            receivedData.token
-        )
-        navigate('/')
-    }catch(error) {
-        alert("Invalid Brooo")
+    const receivedData = await response.json();
+
+    console.log(receivedData);
+
+    if (!response.ok) {
+      alert(receivedData.message);
+      return;
     }
-    };
+
+    navigate("/");
+  } catch (error) {
+    console.log(error);
+    alert(error.message);
+  }
+};
 
         return (
 

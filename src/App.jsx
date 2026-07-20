@@ -10,9 +10,12 @@ import Destinations from "./pages/Destinations";
 import Settings from "./pages/Settings";
 import AddTrip from "./pages/AddTrip";
 import ProtectedRoute from "./components/ProtectedRoute";
-
+import Hotels from "./pages/Hotel";
+import Transport from "./pages/Transport";
 import { MapProvider } from "./context/MapContext";
-
+import HotelDetails from "./pages/HotelDetails";
+import Booking from "./pages/Booking";
+import DestinationDetails from "./pages/DestinationDetails";
 export default function App() {
 
   return (
@@ -24,6 +27,21 @@ export default function App() {
         <Routes>
 
           <Route
+            path="/destinations/:id"
+            element={<DestinationDetails />}
+          />
+
+          <Route
+            path="/hotel-details"
+            element={<HotelDetails />}
+          />
+
+          <Route
+            path="/booking"
+            element={<Booking />}
+          />
+
+          <Route
             path="/login"
             element={<Login />}
           />
@@ -33,8 +51,18 @@ export default function App() {
             element={<Register />}
           />
           <Route
-          path="/add-trip"
-          element={<AddTrip />}
+            path="/add-trip"
+            element={<AddTrip />}
+          />
+
+          <Route
+            path="/hotels/:location?"
+            element={<Hotels />}
+          />
+
+          <Route
+            path="/transport/:location?"
+            element={<Transport />}
           />
 
           <Route

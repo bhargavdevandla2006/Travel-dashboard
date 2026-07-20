@@ -1,4 +1,4 @@
-const url = "https://travel-dashboard-backend-2.onrender.com"
+const url = import.meta.env.VITE_API_URL || "/api"
 
 export const LoginUser = async (userData) => {
 
@@ -9,6 +9,8 @@ export const LoginUser = async (userData) => {
             headers: {
                 "Content-type": "application/json",
             },
+                credentials: "include",
+
             body: JSON.stringify(userData),
         }
     )
@@ -23,6 +25,8 @@ export const RegisterUser = async (userData) => {
             headers: {
                 'Content-type': 'application/json',
             },
+                credentials: "include",
+
             body: JSON.stringify(userData)
         }
     )
@@ -32,9 +36,9 @@ export const RegisterUser = async (userData) => {
 
 export const getTrips = async () => {
 
-    const response = await fetch(
-        `${url}/trips`,
-    )
+    const response = await fetch(`${url}/trips`)
     const receivedData = await response.json();
     return receivedData;
 }
+
+export default url;
