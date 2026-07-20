@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from 'react-router-dom'
+import url from "../services/api";
 
 
 export default function Register() {
@@ -15,22 +16,30 @@ export default function Register() {
         e.preventDefault();
 
         try {
-            const response = await fetch("https://travel-dashboard-backend-2.onrender.com/register", {
-                method: 'post',
-                headers: {
-                    'content-type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            })
+            const response = await fetch(`${url}/register`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    credentials: "include",
+                    body: JSON.stringify(formData),
+                }
+            );
+
             const receivedData = await response.json();
 
-            localStorage.setItem(
-                "token",
-                receivedData.token
-            )
-            navigate('/')
+            console.log(receivedData);
+
+            if (!response.ok) {
+                alert(receivedData.message);
+                return;
+            }
+
+            navigate("/");
         } catch (error) {
-            alert("Invalid Brooo")
+            console.log(error);
+            alert(error.message);
         }
     };
 
