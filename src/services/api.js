@@ -1,4 +1,6 @@
-const url = import.meta.env.VITE_API_URL || "/api"
+// Use Vite proxy in dev (localhost), production backend URL on Vercel
+const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const url = isDev ? "/api" : "https://travel-dashboard-backend-2.onrender.com"
 
 export const LoginUser = async (userData) => {
 
