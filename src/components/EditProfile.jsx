@@ -72,14 +72,22 @@ export default function EditProfile({
                     }),
                 }
             )
+            
+            if (!response.ok) {
+                const errText = await response.text();
+                console.error('Profile update failed', response.status, errText);
+                alert(`Error: ${response.status} - ${errText.substring(0, 100)}`);
+                return;
+            }
+            
             const data = await response.json();
             alert(data.message);
             onUpdate();
             onClose();
 
         } catch (err) {
-            console.log(err);
-            alert("Something went wrong")
+            console.error('savePrf error:', err);
+            alert(`Something went wrong: ${err.message}`)
         }
     }
 
