@@ -114,8 +114,8 @@ export default function Profile() {
                   Total Spending
                 </h1>
 
-                <h2 className="text-xl font-bold text-green-600 mt-3"
-                  ₹24,500
+                <h2 className="text-xl font-bold text-green-600 mt-3">
+                  ₹50000
                 </h2>
 
               </div>
