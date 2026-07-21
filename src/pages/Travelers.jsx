@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
+import apiUrl from "../services/api";
+
 
 export default function Travelers() {
 
@@ -17,9 +19,10 @@ export default function Travelers() {
 
         try {
 
-            const response = await fetch(
-                "http://localhost:3000/users")
-            
+            const response = await fetch(`${apiUrl}/users`, {
+                credentials: "include",
+            });
+
 
             const data = await response.json();
 
@@ -46,7 +49,7 @@ export default function Travelers() {
                     <Navbar />
 
                     <h1 className="text-5xl font-bold mt-10">
-                         Travel Community
+                        Travel Community
                     </h1>
 
                     <p className="text-gray-500 mt-2">
@@ -77,7 +80,7 @@ export default function Travelers() {
                                         </h1>
 
                                         <p className="text-gray-500 mt-2">
-                                             {user.city}, {user.country}
+                                            {user.city}, {user.country}
                                         </p>
 
                                         <button

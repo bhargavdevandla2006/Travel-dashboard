@@ -13,8 +13,7 @@ export default defineConfig({
         target: 'http://localhost:3000',
         changeOrigin: true,
         secure: false,
-        // Ensure Set-Cookie domains are rewritten to the dev host so cookies
-        // created by the backend are valid for the browser origin.
+        
         cookieDomainRewrite: "localhost",
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
