@@ -77,11 +77,11 @@ export default function Index() {
       <div className="bg-[#F5F5F5] rounded-[40px] overflow-hidden flex flex-col lg:flex-row min-h-[calc(100vh-3rem)] shadow-xl">
         <Sidebar />
 
-        <div className="flex-1 p-8 lg:p-10">
+        <div className="flex-1 p-5 lg:p-7">
           <Navbar search={search} setSearch={setSearch} />
 
-          <div className="space-y-10 mt-10">
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+          <div className="space-y-6 mt-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
               {stats.map((item, index) => (
                 <StatsCard
                   key={index}
@@ -107,7 +107,7 @@ export default function Index() {
                 {quickStart.map((item, index) => (
                   <div
                     key={index}
-                    className={`group relative overflow-hidden rounded-3xl p-6 text-white shadow-2xl transition-transform duration-300 hover:-translate-y-1 hover:shadow-2xl bg-gradient-to-br ${item.gradient}`}
+                    className={`group relative overflow-hidden rounded-2xl p-4 text-white shadow-2xl transition-transform duration-300 hover:-translate-y-1 hover:shadow-2xl bg-gradient-to-br ${item.gradient}`}
                   >
                     <div className="absolute inset-x-0 top-0 h-32 bg-white/10 blur-3xl" />
                     <div className="relative z-10 flex items-center justify-between mb-5">
@@ -128,7 +128,7 @@ export default function Index() {
 
             <div>
               <div className="grid gap-6 lg:grid-cols-[1.5fr_0.9fr] mb-8">
-                <div className="rounded-3xl border border-gray-200 bg-white p-7 shadow-md hover:shadow-lg transition-all duration-300">
+                <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-md hover:shadow-lg transition-all duration-300">
                   <p className="text-accent text-emerald-600">
                      Destination
                   </p>
@@ -140,7 +140,7 @@ export default function Index() {
                   </p>
                 </div>
 
-                <div className="rounded-3xl bg-gradient-to-br from-blue-600 via-cyan-500 to-sky-500 p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
+                <div className="rounded-2xl bg-gradient-to-br from-blue-600 via-cyan-500 to-sky-500 p-4 text-white shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
                   <div>
                     <p className="text-accent text-cyan-100/80">
                        Navigation
