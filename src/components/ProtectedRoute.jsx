@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import url from "../services/api";
+import { getProfile } from "../services/api";
 
 export default function ProtectedRoute({ children }) {
   const [loading, setLoading] = useState(true);
@@ -9,13 +9,8 @@ export default function ProtectedRoute({ children }) {
   useEffect(() => {
     async function checkUser() {
       try {
-        const response = await fetch(`${url}/profile`,
-          {
-            credentials: "include",
-          }
-        );
-
-        setIsAuth(response.ok);
+        const data = await getProfile();
+        setIsAuth(Boolean(data));
       } catch {
         setIsAuth(false);
       }

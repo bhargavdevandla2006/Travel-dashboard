@@ -3,7 +3,7 @@ import Navbar from "../components/Navbar";
 import EditProfile from "../components/EditProfile";
 import { FaUserEdit, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 import { useState, useEffect } from "react";
-import url from "../services/api";
+import { getProfile, logoutUser } from "../services/api";
 
 
 export default function Profile() {
@@ -16,28 +16,21 @@ export default function Profile() {
 
   async function loadProfile() {
     try {
-
-      const response = await fetch(`${url}/profile`, {
-        credentials: "include"
-      }
-      )
-      const data = await response.json();
-      setUser(data)
+      const data = await getProfile();
+      setUser(data);
     } catch (error) {
-      console.log(error)
+      console.error("loadProfile error", error);
     }
-
   }
 
   const handleLogout = async () => {
-
-    await fetch(`${url}/logout`, {
-      method: "POST",
-      credentials: "include",
+    try {
+      await logoutUser();
+    } catch (error) {
+      console.error("Logout error", error);
+    } finally {
+      window.location.href = "/login";
     }
-    )
-    window.location.href = "/login";
-
   }
   if (!user) {
     return (

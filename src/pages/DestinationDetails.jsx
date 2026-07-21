@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { getDestinationById } from "../services/api";
 
 export default function DestinationDetails() {
 const {id} = useParams();
@@ -11,16 +12,14 @@ const [weather, setWeather] = useState(null);
  }, [])
 
 const loadDestination = async () => {
-  try{
-    const response = await fetch(`http://localhost:3000/destinations/${id}`)
-    const data =  await response.json();
-    setDestination(data)
-    loadWeather(data.name);
-  }catch (err) {
-   console.log(err)
+  try {
+    const data = await getDestinationById(id);
+    setDestination(data);
+    loadWeather(data?.name || "");
+  } catch (err) {
+    console.log(err);
   }
-  
-}
+};
 const loadWeather = async (city) =>{
 try{
     const apiKey =  import.meta.env.VITE_WEATHER_API_KEY;

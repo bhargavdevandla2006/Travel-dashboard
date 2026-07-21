@@ -3,7 +3,7 @@ import Navbar from "../components/Navbar";
 import TripCard from "../components/TripCard";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react"
-import url from "../services/api";
+import { getTrips } from "../services/api";
 
 
 export default function Trips() {
@@ -12,21 +12,18 @@ export default function Trips() {
   const [trips, setTrips] = useState([])
 
   useEffect(() => {
-  fetch(`${url}/trips`)
-    .then((res) => res.json())
-    .then((data) => {
-      if (Array.isArray(data)) {
-        setTrips(data);
-      } else {
+    async function loadTrips() {
+      try {
+        const data = await getTrips();
+        setTrips(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error(err);
         setTrips([]);
-        console.log(data);
       }
-    })
-    .catch((err) => {
-      console.error(err);
-      setTrips([]);
-    });
-}, []);
+    }
+
+    loadTrips();
+  }, []);
 
   const tripsBtn = () => {
     navigate('/add-trip')
