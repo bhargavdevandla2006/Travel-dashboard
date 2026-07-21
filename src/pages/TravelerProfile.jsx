@@ -254,7 +254,7 @@ export default function TravelerProfile() {
 
               <FaPlane className="text-blue-600 text-4xl mx-auto" />
 
-              <h2 className="text-4xl font-bold mt-4">
+              <h2 className="text-2xl font-bold mt-4">
                 18
               </h2>
 
@@ -268,7 +268,7 @@ export default function TravelerProfile() {
 
               <FaHeart className="text-red-500 text-4xl mx-auto" />
 
-              <h2 className="text-4xl font-bold mt-4">
+              <h2 className="text-2xl font-bold mt-4">
                 11
               </h2>
 
@@ -282,7 +282,7 @@ export default function TravelerProfile() {
 
               <FaMoneyBillWave className="text-green-600 text-4xl mx-auto" />
 
-              <h2 className="text-4xl font-bold mt-4">
+              <h2 className="text-2xl font-bold mt-4">
 
                 ₹52K
 
@@ -298,11 +298,11 @@ export default function TravelerProfile() {
 
             <div className="bg-white rounded-3xl p-8 shadow-lg text-center">
 
-              <h2 className="text-4xl">
+              <h2 className="text-2xl">
                 🌍
               </h2>
 
-              <h2 className="text-4xl font-bold mt-4">
+              <h2 className="text-2xl font-bold mt-4">
                 7
               </h2>
 

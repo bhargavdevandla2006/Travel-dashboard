@@ -65,7 +65,7 @@ export default function Profile() {
 
               <div>
 
-                <h1 className="text-4xl font-bold text-gray-900">
+                <h1 className="text-2xl font-bold text-gray-900">
                   {user.name}
                 </h1>
 
@@ -124,7 +124,7 @@ export default function Profile() {
 
             <div className="mt-12">
 
-              <h1 className="text-3xl font-bold text-gray-900 mb-6">
+              <h1 className="text-2xl font-bold text-gray-900 mb-6">
                 Recent Activity
               </h1>
 
