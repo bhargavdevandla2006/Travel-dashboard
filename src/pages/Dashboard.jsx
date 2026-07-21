@@ -95,10 +95,10 @@ export default function Index() {
 
             <div className="mt-8">
               <div className="flex flex-col gap-4 mb-8">
-                <h1 className="text-5xl font-playfair font-black bg-gradient-to-r from-slate-900 via-purple-900 to-slate-900 bg-clip-text text-transparent tracking-tight">
+                <h1 className="text-3xl font-playfair font-bold bg-gradient-to-r from-slate-900 via-purple-900 to-slate-900 bg-clip-text text-transparent tracking-tight">
                   Travel Launchpad
                 </h1>
-                <p className="text-body text-gray-600 max-w-2xl">
+                <p className="text-sm text-gray-600 max-w-2xl">
                   Fast actions to start your first trip and explore with confidence.
                 </p>
               </div>
@@ -132,10 +132,10 @@ export default function Index() {
                   <p className="text-accent text-emerald-600">
                      Destination
                   </p>
-                  <h2 className="mt-4 text-6xl font-playfair font-black text-slate-900 tracking-tight">
+                  <h2 className="mt-4 text-3xl font-playfair font-bold text-slate-900 tracking-tight">
                     Maldives
                   </h2>
-                  <p className="mt-4 text-body text-gray-700 max-w-xl">
+                  <p className="mt-4 text-sm text-gray-700 max-w-xl">
                     Perfect tropical paradise with crystal clear waters, vibrant coral reefs, and luxury resorts.
                   </p>
                 </div>
@@ -145,8 +145,8 @@ export default function Index() {
                     <p className="text-accent text-cyan-100/80">
                        Navigation
                     </p>
-                    <p className="mt-4 text-xl font-poppins font-bold tracking-tight">
-                      Use <span className="font-black">Ctrl + Scroll</span> to explore
+                    <p className="mt-4 text-sm font-poppins font-semibold tracking-tight">
+                      Use <span className="font-bold">Ctrl + Scroll</span> to explore
                     </p>
                   </div>
                   <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-xs uppercase tracking-[0.25em] font-bold text-white/95 backdrop-blur-sm">

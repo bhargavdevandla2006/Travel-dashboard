@@ -90,7 +90,7 @@ export default function Profile() {
                   Total Trips
                 </h1>
 
-                <h2 className="text-4xl font-bold text-blue-600 mt-3">
+                <h2 className="text-xl font-bold text-blue-600 mt-3">
                   12
                 </h2>
 
@@ -102,7 +102,7 @@ export default function Profile() {
                   Countries Visited
                 </h1>
 
-                <h2 className="text-4xl font-bold text-purple-600 mt-3">
+                <h2 className="text-xl font-bold text-purple-600 mt-3">
                   8
                 </h2>
 
@@ -114,7 +114,7 @@ export default function Profile() {
                   Total Spending
                 </h1>
 
-                <h2 className="text-4xl font-bold text-green-600 mt-3">
+                <h2 className="text-xl font-bold text-green-600 mt-3"
                   ₹24,500
                 </h2>
 

@@ -60,7 +60,7 @@ export default function Settings() {
           <Navbar />
 
 
-          <h1 className="text-6xl font-playfair font-black text-gray-900 mt-12 tracking-tight">
+          <h1 className="text-3xl font-playfair font-bold text-gray-900 mt-12 tracking-tight">
             Settings
           </h1>
           <p className="text-gray-500 mt-3 text-lg font-medium">

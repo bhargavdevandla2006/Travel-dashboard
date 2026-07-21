@@ -49,10 +49,10 @@ export default function AddTrip() {
             </div>
 
             <div className="space-y-6">
-              <h1 className="max-w-3xl text-5xl font-black leading-tight text-black sm:text-6xl">
+              <h1 className="max-w-3xl text-3xl font-bold leading-tight text-black sm:text-4xl">
                 Turn any destination into a bold travel story.
               </h1>
-              <p className="max-w-2xl text-base leading-8 text-black sm:text-lg">
+              <p className="max-w-2xl text-sm leading-6 text-black sm:text-base">
                 Enter a place, hit generate, and watch your trip card come alive in soft gray tones.
               </p>
             </div>
