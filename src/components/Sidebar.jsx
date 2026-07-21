@@ -20,9 +20,9 @@ export default function Sidebar() {
 
         <div className="flex items-center gap-4 mb-20">
 
-          <FaGlobe className="text-7xl text-blue-400 drop-shadow-lg" />
+          <FaGlobe className="text-4xl text-blue-400 drop-shadow-lg" />
 
-          <h1 className="text-6xl font-poppins font-black tracking-tighter">
+          <h1 className="text-3xl font-poppins font-bold tracking-tight">
             Travel
           </h1>
 
@@ -33,7 +33,7 @@ export default function Sidebar() {
           <NavLink
             to="/"
             className={({ isActive }) =>
-              `flex items-center gap-5 px-8 py-5 rounded-[28px] transition-all duration-300 text-xl font-poppins font-semibold ${isActive
+              `flex items-center gap-4 px-5 py-3 rounded-[22px] transition-all duration-300 text-base font-poppins font-semibold ${isActive
                 ? "bg-gradient-to-r from-blue-600 to-blue-500 shadow-lg hover:shadow-xl scale-105"
                 : "text-gray-200 hover:bg-white/10 hover:text-white"
               }`
@@ -46,7 +46,7 @@ export default function Sidebar() {
           <NavLink
             to="/trips"
             className={({ isActive }) =>
-              `flex items-center gap-5 px-8 py-5 rounded-[28px] transition-all duration-300 text-xl font-poppins font-semibold ${isActive
+              `flex items-center gap-4 px-5 py-3 rounded-[22px] transition-all duration-300 text-base font-poppins font-semibold ${isActive
                 ? "bg-gradient-to-r from-blue-600 to-blue-500 shadow-lg hover:shadow-xl scale-105"
                 : "text-gray-200 hover:bg-white/10 hover:text-white"
               }`
@@ -59,7 +59,7 @@ export default function Sidebar() {
           <NavLink
             to="/destinations"
             className={({ isActive }) =>
-              `flex items-center gap-5 px-8 py-5 rounded-[28px] transition-all duration-300 text-xl font-poppins font-semibold ${isActive
+              `flex items-center gap-4 px-5 py-3 rounded-[22px] transition-all duration-300 text-base font-poppins font-semibold ${isActive
                 ? "bg-gradient-to-r from-blue-600 to-blue-500 shadow-lg hover:shadow-xl scale-105"
                 : "text-gray-200 hover:bg-white/10 hover:text-white"
               }`
@@ -72,7 +72,7 @@ export default function Sidebar() {
           <NavLink
             to="/travelers"
             className={({ isActive }) =>
-              `flex items-center gap-5 px-8 py-5 rounded-[28px] transition-all duration-300 text-xl font-poppins font-semibold ${isActive
+              `flex items-center gap-4 px-5 py-3 rounded-[22px] transition-all duration-300 text-base font-poppins font-semibold ${isActive
                 ? "bg-gradient-to-r from-blue-600 to-blue-500 shadow-lg hover:shadow-xl scale-105"
                 : "text-gray-200 hover:bg-white/10 hover:text-white"
               }`
@@ -85,7 +85,7 @@ export default function Sidebar() {
           <NavLink
             to="/profile"
             className={({ isActive }) =>
-              `flex items-center gap-5 px-8 py-5 rounded-[28px] transition-all duration-300 text-xl font-poppins font-semibold ${isActive
+              `flex items-center gap-4 px-5 py-3 rounded-[22px] transition-all duration-300 text-base font-poppins font-semibold ${isActive
                 ? "bg-gradient-to-r from-blue-600 to-blue-500 shadow-lg hover:shadow-xl scale-105"
                 : "text-gray-200 hover:bg-white/10 hover:text-white"
               }`
@@ -98,7 +98,7 @@ export default function Sidebar() {
           <NavLink
             to="/settings"
             className={({ isActive }) =>
-              `flex items-center gap-5 px-8 py-5 rounded-[28px] transition-all duration-300 text-xl font-poppins font-semibold ${isActive
+              `flex items-center gap-4 px-5 py-3 rounded-[22px] transition-all duration-300 text-base font-poppins font-semibold ${isActive
                 ? "bg-gradient-to-r from-blue-600 to-blue-500 shadow-lg hover:shadow-xl scale-105"
                 : "text-gray-200 hover:bg-white/10 hover:text-white"
               }`
@@ -119,15 +119,15 @@ export default function Sidebar() {
         <div className="absolute -bottom-12 -left-12 h-56 w-56 rounded-full bg-white/10 blur-3xl" />
 
         <div className="relative z-10">
-          <h2 className="text-4xl font-poppins font-black text-white tracking-tight leading-snug">
+          <h2 className="text-2xl font-poppins font-bold text-white tracking-tight leading-snug">
             Plan your next adventure
           </h2>
 
-          <p className="mt-5 text-base text-blue-100/90 font-inter font-semibold uppercase tracking-[0.2em]">
+          <p className="mt-4 text-sm text-blue-100/90 font-inter font-semibold uppercase tracking-[0.2em]">
             Explore the world with us
           </p>
 
-          <button className="relative mt-8 inline-flex items-center gap-2 rounded-full bg-white text-blue-600 px-12 py-5 font-poppins font-black text-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
+          <button className="relative mt-6 inline-flex items-center gap-2 rounded-full bg-white text-blue-600 px-8 py-3 font-poppins font-bold text-sm shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
             Explore Now
           </button>
         </div>

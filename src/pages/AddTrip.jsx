@@ -115,7 +115,7 @@ export default function AddTrip() {
               <p className="text-xs uppercase tracking-[0.35em] text-white">
                 Quick trip generator
               </p>
-              <h2 className="text-4xl font-bold text-white">Enjoy your Trips</h2>
+              <h2 className="text-2xl font-bold text-white">Enjoy your Trips</h2>
               <p className="max-w-[22rem] text-sm text-white">
                 Enter a place and we'll build a destination preview for you.
               </p>

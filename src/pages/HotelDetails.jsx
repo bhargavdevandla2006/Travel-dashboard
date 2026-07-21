@@ -15,7 +15,7 @@ export default function HotelDetails() {
       />
 
       <div className="max-w-6xl mx-auto p-6">
-        <h1 className="text-4xl font-bold">
+        <h1 className="text-2xl font-bold">
           {state.name}
         </h1>
 

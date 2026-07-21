@@ -95,7 +95,7 @@ export default function Index() {
 
             <div className="mt-8">
               <div className="flex flex-col gap-4 mb-8">
-                <h1 className="text-3xl font-playfair font-bold bg-gradient-to-r from-slate-900 via-purple-900 to-slate-900 bg-clip-text text-transparent tracking-tight">
+                <h1 className="text-2xl font-playfair font-bold bg-gradient-to-r from-slate-900 via-purple-900 to-slate-900 bg-clip-text text-transparent tracking-tight">
                   Travel Launchpad
                 </h1>
                 <p className="text-sm text-gray-600 max-w-2xl">
@@ -132,7 +132,7 @@ export default function Index() {
                   <p className="text-accent text-emerald-600">
                      Destination
                   </p>
-                  <h2 className="mt-4 text-3xl font-playfair font-bold text-slate-900 tracking-tight">
+                  <h2 className="mt-4 text-2xl font-playfair font-bold text-slate-900 tracking-tight">
                     Maldives
                   </h2>
                   <p className="mt-4 text-sm text-gray-700 max-w-xl">
@@ -159,7 +159,7 @@ export default function Index() {
             </div>
 
             <div>
-              <h1 className="text-5xl font-playfair font-black text-slate-900 mb-7 tracking-tight">
+              <h1 className="text-2xl font-playfair font-bold text-slate-900 mb-7 tracking-tight">
                 Your Trips
               </h1>
 
