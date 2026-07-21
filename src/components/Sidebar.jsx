@@ -14,11 +14,11 @@ export default function Sidebar() {
 
   return (
 
-    <div className="w-full lg:w-96 xl:w-[420px] min-h-screen bg-gradient-to-b from-[#021B4E] to-[#0D2555] text-white p-10 pt-16 pb-10 flex flex-col justify-between rounded-l-[40px] shadow-xl">
+    <div className="w-full lg:w-72 xl:w-[320px] min-h-screen bg-gradient-to-b from-[#021B4E] to-[#0D2555] text-white p-6 pt-8 pb-6 flex flex-col justify-between rounded-l-[28px] shadow-xl">
 
       <div>
 
-        <div className="flex items-center gap-4 mb-20">
+        <div className="flex items-center gap-4 mb-8">
 
           <FaGlobe className="text-4xl text-blue-400 drop-shadow-lg" />
 
@@ -28,7 +28,7 @@ export default function Sidebar() {
 
         </div>
 
-        <ul className="space-y-6">
+        <ul className="space-y-3">
 
           <NavLink
             to="/"
@@ -112,7 +112,7 @@ export default function Sidebar() {
 
       </div>
 
-      <div className="relative overflow-hidden rounded-[40px] bg-gradient-to-br from-blue-600 via-purple-500 to-pink-600 p-12 text-center shadow-2xl before:absolute before:inset-0 before:rounded-[40px] before:bg-white/5 before:backdrop-blur-sm">
+      <div className="relative overflow-hidden rounded-[28px] bg-gradient-to-br from-blue-600 via-purple-500 to-pink-600 p-6 text-center shadow-2xl before:absolute before:inset-0 before:rounded-[28px] before:bg-white/5 before:backdrop-blur-sm">
 
         <div className="absolute -right-12 -top-12 h-56 w-56 rounded-full bg-white/10 blur-3xl" />
 
