@@ -5,6 +5,7 @@
   FaUser,
   FaCog,
   FaGlobe,
+  FaUsers
 } from "react-icons/fa";
 
 import { NavLink } from "react-router-dom";
@@ -32,10 +33,9 @@ export default function Sidebar() {
           <NavLink
             to="/"
             className={({ isActive }) =>
-              `flex items-center gap-5 px-8 py-5 rounded-[28px] transition-all duration-300 text-xl font-poppins font-semibold ${
-                isActive
-                  ? "bg-gradient-to-r from-blue-600 to-blue-500 shadow-lg hover:shadow-xl scale-105"
-                  : "text-gray-200 hover:bg-white/10 hover:text-white"
+              `flex items-center gap-5 px-8 py-5 rounded-[28px] transition-all duration-300 text-xl font-poppins font-semibold ${isActive
+                ? "bg-gradient-to-r from-blue-600 to-blue-500 shadow-lg hover:shadow-xl scale-105"
+                : "text-gray-200 hover:bg-white/10 hover:text-white"
               }`
             }
           >
@@ -46,10 +46,9 @@ export default function Sidebar() {
           <NavLink
             to="/trips"
             className={({ isActive }) =>
-              `flex items-center gap-5 px-8 py-5 rounded-[28px] transition-all duration-300 text-xl font-poppins font-semibold ${
-                isActive
-                  ? "bg-gradient-to-r from-blue-600 to-blue-500 shadow-lg hover:shadow-xl scale-105"
-                  : "text-gray-200 hover:bg-white/10 hover:text-white"
+              `flex items-center gap-5 px-8 py-5 rounded-[28px] transition-all duration-300 text-xl font-poppins font-semibold ${isActive
+                ? "bg-gradient-to-r from-blue-600 to-blue-500 shadow-lg hover:shadow-xl scale-105"
+                : "text-gray-200 hover:bg-white/10 hover:text-white"
               }`
             }
           >
@@ -60,10 +59,9 @@ export default function Sidebar() {
           <NavLink
             to="/destinations"
             className={({ isActive }) =>
-              `flex items-center gap-5 px-8 py-5 rounded-[28px] transition-all duration-300 text-xl font-poppins font-semibold ${
-                isActive
-                  ? "bg-gradient-to-r from-blue-600 to-blue-500 shadow-lg hover:shadow-xl scale-105"
-                  : "text-gray-200 hover:bg-white/10 hover:text-white"
+              `flex items-center gap-5 px-8 py-5 rounded-[28px] transition-all duration-300 text-xl font-poppins font-semibold ${isActive
+                ? "bg-gradient-to-r from-blue-600 to-blue-500 shadow-lg hover:shadow-xl scale-105"
+                : "text-gray-200 hover:bg-white/10 hover:text-white"
               }`
             }
           >
@@ -72,12 +70,24 @@ export default function Sidebar() {
           </NavLink>
 
           <NavLink
+            to="/travelers"
+            className={({ isActive }) =>
+              `flex items-center gap-5 px-8 py-5 rounded-[28px] transition-all duration-300 text-xl font-poppins font-semibold ${isActive
+                ? "bg-gradient-to-r from-blue-600 to-blue-500 shadow-lg hover:shadow-xl scale-105"
+                : "text-gray-200 hover:bg-white/10 hover:text-white"
+              }`
+            }
+          >
+            <FaUsers className="text-2xl" />
+            Travelers
+          </NavLink>
+
+          <NavLink
             to="/profile"
             className={({ isActive }) =>
-              `flex items-center gap-5 px-8 py-5 rounded-[28px] transition-all duration-300 text-xl font-poppins font-semibold ${
-                isActive
-                  ? "bg-gradient-to-r from-blue-600 to-blue-500 shadow-lg hover:shadow-xl scale-105"
-                  : "text-gray-200 hover:bg-white/10 hover:text-white"
+              `flex items-center gap-5 px-8 py-5 rounded-[28px] transition-all duration-300 text-xl font-poppins font-semibold ${isActive
+                ? "bg-gradient-to-r from-blue-600 to-blue-500 shadow-lg hover:shadow-xl scale-105"
+                : "text-gray-200 hover:bg-white/10 hover:text-white"
               }`
             }
           >
@@ -88,10 +98,9 @@ export default function Sidebar() {
           <NavLink
             to="/settings"
             className={({ isActive }) =>
-              `flex items-center gap-5 px-8 py-5 rounded-[28px] transition-all duration-300 text-xl font-poppins font-semibold ${
-                isActive
-                  ? "bg-gradient-to-r from-blue-600 to-blue-500 shadow-lg hover:shadow-xl scale-105"
-                  : "text-gray-200 hover:bg-white/10 hover:text-white"
+              `flex items-center gap-5 px-8 py-5 rounded-[28px] transition-all duration-300 text-xl font-poppins font-semibold ${isActive
+                ? "bg-gradient-to-r from-blue-600 to-blue-500 shadow-lg hover:shadow-xl scale-105"
+                : "text-gray-200 hover:bg-white/10 hover:text-white"
               }`
             }
           >

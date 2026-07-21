@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import url from "../services/api";
+import { createTrip } from "../services/api";
 
 export default function AddTrip() {
   const navigate = useNavigate();
@@ -28,14 +28,7 @@ export default function AddTrip() {
           "https://via.placeholder.com/400x250",
       };
 
-      await fetch(`${url}/trips`, {
-        method: "post",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify(tripData),
-      });
-
+      await createTrip(tripData);
       alert("Trip added successfully");
       navigate("/trips");
     } catch (error) {

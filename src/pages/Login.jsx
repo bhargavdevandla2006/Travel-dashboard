@@ -1,5 +1,5 @@
 import { useState } from "react";
-import url from "../services/api";
+import { loginUser } from "../services/api";
 import {useNavigate, Link} from 'react-router-dom'
 
 
@@ -15,31 +15,12 @@ export default function Login() {
   e.preventDefault();
 
   try {
-    const response = await fetch(
-      `${url}/login`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(formData),
-      }
-    );
-
-    const receivedData = await response.json();
-
+    const receivedData = await loginUser(formData);
     console.log(receivedData);
-
-    if (!response.ok) {
-      alert(receivedData.message);
-      return;
-    }
-
     navigate("/");
   } catch (error) {
     console.log(error);
-    alert(error.message);
+    alert(error.message || "Login failed");
   }
 };
 

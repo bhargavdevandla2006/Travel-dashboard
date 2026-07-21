@@ -2,6 +2,7 @@ import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { getDestinations } from "../services/api";
 
 
 export default function Destinations() {
@@ -15,12 +16,12 @@ export default function Destinations() {
   }, []);
 
   async function loadDestinations() {
-    try{
-      const response = await fetch("http://localhost:3000/destinations")
-      const data =  await response.json();
-      setDestinations(data);
-    } catch (error){
-      console.log(error)
+    try {
+      const data = await getDestinations();
+      setDestinations(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.log(error);
+      setDestinations([]);
     }
   }
 

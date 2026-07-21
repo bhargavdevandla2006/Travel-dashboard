@@ -1,4 +1,5 @@
 import { useLocation } from "react-router-dom";
+import { createOrder } from "../services/api";
 
 export default function Booking() {
   const { state } = useLocation();
@@ -13,19 +14,9 @@ export default function Booking() {
 
   const handlePayment = async () => {
     try {
-      const response = await fetch("http://localhost:3000/create-order", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          amount: 4500,
-        }),
-      });
+      const data = await createOrder(4500);
 
-      const data = await response.json();
-
-      if (!data.success) {
+      if (!data?.success) {
         alert("Failed to create order");
         return;
       }

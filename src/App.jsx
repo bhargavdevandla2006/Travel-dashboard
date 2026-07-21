@@ -1,5 +1,6 @@
 ﻿import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+import Travelers from "./pages/Travelers";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -16,6 +17,8 @@ import { MapProvider } from "./context/MapContext";
 import HotelDetails from "./pages/HotelDetails";
 import Booking from "./pages/Booking";
 import DestinationDetails from "./pages/DestinationDetails";
+import TravelerProfile from "./pages/TravelerProfile";
+
 export default function App() {
 
   return (
@@ -25,6 +28,14 @@ export default function App() {
       <BrowserRouter>
 
         <Routes>
+
+          <Route
+            path="/traveler/:id"
+            element={<TravelerProfile />}
+          />
+
+          <Route path="/travelers"
+           element={<Travelers />} />
 
           <Route
             path="/destinations/:id"

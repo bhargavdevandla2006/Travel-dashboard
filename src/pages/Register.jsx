@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from 'react-router-dom'
-import url from "../services/api";
+import { registerUser } from "../services/api";
 
 
 export default function Register() {
@@ -16,30 +16,12 @@ export default function Register() {
         e.preventDefault();
 
         try {
-            const response = await fetch(`${url}/register`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    credentials: "include",
-                    body: JSON.stringify(formData),
-                }
-            );
-
-            const receivedData = await response.json();
-
+            const receivedData = await registerUser(formData);
             console.log(receivedData);
-
-            if (!response.ok) {
-                alert(receivedData.message);
-                return;
-            }
-
             navigate("/");
         } catch (error) {
             console.log(error);
-            alert(error.message);
+            alert(error.message || "Register failed");
         }
     };
 

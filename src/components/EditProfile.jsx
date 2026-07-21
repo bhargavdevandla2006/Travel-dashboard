@@ -1,5 +1,5 @@
 import { useState } from "react";
-import url from "../services/api";
+import { updateProfile } from "../services/api";
 
 export default function EditProfile({
     user,
@@ -55,39 +55,20 @@ export default function EditProfile({
 
     async function savePrf() {
         try {
-            const response = await fetch(
-                `${url}/profile`,
-                {
-                    method: "PUT",
-                    credentials: "include",
-                    headers: {
-                        "Content-type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        name,
-                        city,
-                        state,
-                        country,
-                        photo,
-                    }),
-                }
-            )
-            
-            if (!response.ok) {
-                const errText = await response.text();
-                console.error('Profile update failed', response.status, errText);
-                alert(`Error: ${response.status} - ${errText.substring(0, 100)}`);
-                return;
-            }
-            
-            const data = await response.json();
-            alert(data.message);
+            const data = await updateProfile({
+                name,
+                city,
+                state,
+                country,
+                photo,
+            });
+
+            alert(data.message || "Profile updated successfully");
             onUpdate();
             onClose();
-
         } catch (err) {
-            console.error('savePrf error:', err);
-            alert(`Something went wrong: ${err.message}`)
+            console.error("savePrf error:", err);
+            alert(err.message || "Something went wrong while updating your profile.");
         }
     }
 
