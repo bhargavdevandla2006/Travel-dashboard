@@ -48,15 +48,15 @@ export default function Travelers() {
 
                     <Navbar />
 
-                    <h1 className="text-5xl font-bold mt-10">
+                    <h1 className="text-2xl font-bold mt-10">
                         Travel Community
                     </h1>
 
-                    <p className="text-gray-500 mt-2">
+                    <p className="text-gray-500 mt-2 text-xs">
                         Discover amazing travelers around the world.
                     </p>
 
-                    <div className="grid grid-cols-3 gap-8 mt-12">
+                    <div className="grid grid-cols-3 gap-6 mt-8">
 
                         {
                             users.map((user) => (
@@ -64,27 +64,27 @@ export default function Travelers() {
                                 <div
                                     key={user.id}
                                     onClick={() => navigate(`/traveler/${user.id}`)}
-                                    className="bg-white rounded-3xl shadow-lg hover:shadow-2xl transition cursor-pointer overflow-hidden hover:scale-105"
+                                    className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition cursor-pointer overflow-hidden hover:scale-105"
                                 >
 
                                     <img
                                         src={user.photo}
                                         alt=""
-                                        className="w-full h-60 object-cover"
+                                        className="w-full h-48 object-cover"
                                     />
 
-                                    <div className="p-6">
+                                    <div className="p-4">
 
-                                        <h1 className="text-2xl font-bold">
+                                        <h2 className="text-lg font-bold">
                                             {user.name}
-                                        </h1>
+                                        </h2>
 
-                                        <p className="text-gray-500 mt-2">
+                                        <p className="text-gray-500 mt-1 text-xs">
                                             {user.city}, {user.country}
                                         </p>
 
                                         <button
-                                            className="mt-6 w-full bg-blue-600 text-white py-3 rounded-2xl hover:bg-blue-700"
+                                            className="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 text-sm"
                                         >
                                             View Profile
                                         </button>
