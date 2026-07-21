@@ -33,7 +33,7 @@ export default function Login() {
         className="bg-white p-10 rounded-3xl shadow-2xl w-[400px]"
       >
 
-        <h1 className="text-5xl font-bold text-center mb-3">
+        <h1 className="text-3xl font-bold text-center mb-3">
           Welcome Back
         </h1>
 

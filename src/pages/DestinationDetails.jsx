@@ -44,7 +44,7 @@ if(!destination) return<h1>Loading ...</h1>
 
       <div className="max-w-6xl mx-auto p-10">
 
-        <h1 className="text-5xl font-bold">
+        <h1 className="text-3xl font-bold">
           {destination.name}
         </h1>
 

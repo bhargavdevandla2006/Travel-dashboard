@@ -44,7 +44,7 @@ export default function Trips() {
 
             <div>
 
-              <h1 className="text-6xl font-playfair font-black text-gray-900 tracking-tight">
+              <h1 className="text-3xl font-playfair font-bold text-gray-900 tracking-tight">
                 Explore Trips
               </h1>
 

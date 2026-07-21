@@ -45,7 +45,7 @@ export default function TripDetails() {
           <div className="mt-8 flex justify-between">
 
             <div>
-              <h1 className="text-5xl font-bold">
+              <h1 className="text-3xl font-bold">
                 {trip.title}
               </h1>
 
