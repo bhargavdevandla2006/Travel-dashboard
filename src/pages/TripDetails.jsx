@@ -14,18 +14,83 @@ export default function TripDetails() {
     image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e"
   };
 
-  const handlePayment = () => {
-    const upiId = "yourupi@okhdfcbank";
-    const name = trip.title || "Trip Booking";
-    const amount = 850;
+const handlePayment = async () => {
 
-    const upiUrl = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(
-      name
-    )}&am=${amount}&cu=INR`;
+  try {
 
-    window.location.href = upiUrl;
-  };
+    const response = await fetch(
+      "http://localhost:3000/create-order",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          amount: 850
+        })
+      }
+    );
 
+
+    const data = await response.json();
+
+
+    if (!data.success) {
+      alert("Order creation failed");
+      return;
+    }
+
+
+    const options = {
+
+      key: "rzp_test_T8W9DnTQnXnOQf" , 
+
+      amount: data.order.amount,
+
+      currency: "INR",
+
+      name: "Travel Dashboard",
+
+      description: trip.title,
+
+      order_id: data.order.id,
+
+
+      handler: function (response) {
+
+        console.log("Payment ID:", response.razorpay_payment_id);
+        console.log("Order ID:", response.razorpay_order_id);
+
+        alert("Payment Successful 🎉");
+
+      },
+
+
+      prefill: {
+        name: "Bhargav",
+        email: "test@gmail.com"
+      },
+
+
+      theme: {
+        color: "#2563eb"
+      }
+
+    };
+
+
+    const razorpay = new window.Razorpay(options);
+
+    razorpay.open();
+
+
+  } catch (error) {
+
+    console.log("Payment Error:", error);
+
+  }
+
+};
   return (
     <div className="bg-[#020B2D] min-h-screen p-6">
       <div className="bg-[#F5F5F5] rounded-[40px] overflow-hidden flex">
@@ -45,7 +110,7 @@ export default function TripDetails() {
           <div className="mt-8 flex justify-between">
 
             <div>
-              <h1 className="text-3xl font-bold">
+              <h1 className="text-5xl font-bold">
                 {trip.title}
               </h1>
 

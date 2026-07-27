@@ -8,18 +8,19 @@ import apiUrl from "../services/api";
 export default function Travelers() {
 
     const [users, setUsers] = useState([]);
+    const [search, setSearch] = useState("");
 
     const navigate = useNavigate();
 
     useEffect(() => {
         loadUsers();
-    }, []);
+    }, [search]);
 
     async function loadUsers() {
 
         try {
 
-            const response = await fetch(`${apiUrl}/users`, {
+            const response = await fetch(`http://localhost:3000/search-users?search=${search}` , {
                 credentials: "include",
             });
 
@@ -55,6 +56,14 @@ export default function Travelers() {
                     <p className="text-gray-500 mt-2 text-xs">
                         Discover amazing travelers around the world.
                     </p>
+                    
+                    <input
+                        type="text"
+                        placeholder="Search Travelers..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="mt-8 w-full border p-4 rounded-2xl"
+                    />
 
                     <div className="grid grid-cols-3 gap-6 mt-8">
 
