@@ -69,6 +69,7 @@ export default function Trips() {
               trips.map((trip) => (
 
                 <TripCard
+                 id={trip.id}
                   key={trip.id}
                   title={trip.title}
                   location={trip.location}

@@ -20,10 +20,17 @@ export default function TravelerProfile() {
   const [following, setFollowing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isOwnProfile, setIsOwnProfile] = useState(false);
+  const [followers, setFollowers] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
+  const [trips, setTrips] = useState([]);
+
 
   useEffect(() => {
     loadUser();
     loadCurrentUser();
+    loadFollowers();
+    loadFollowing();
+    loadTrips();
   }, []);
 
   async function loadUser() {
@@ -44,6 +51,25 @@ export default function TravelerProfile() {
     } catch (err) {
 
       console.error(err);
+
+    }
+
+  }
+  async function loadTrips() {
+
+    try {
+
+      const response = await fetch(
+        `https://travel-dashboard-backend-2.onrender.com/users/${id}/trips`
+      );
+
+      const data = await response.json();
+
+      setTrips(data);
+
+    } catch (err) {
+
+      console.log(err);
 
     }
 
@@ -115,6 +141,32 @@ export default function TravelerProfile() {
 
   }
 
+  async function loadFollowers() {
+
+    try {
+      const response = await fetch(`${apiUrl}/followers-count/${id}`)
+      const data = await response.json()
+      setFollowers(data.count)
+
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  async function loadFollowing() {
+
+    try {
+      const response = await fetch(
+        `${apiUrl}/following-count/${id}`
+      );
+      const data = await response.json();
+      setFollowingCount(data.count)
+
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   async function handleFollow() {
     if (isOwnProfile) {
       alert("You cannot follow yourself.");
@@ -131,16 +183,11 @@ export default function TravelerProfile() {
         }
       );
 
-      if (!response.ok) {
-        const text = await response.text();
-        throw new Error(`Follow failed: ${response.status} ${response.statusText} - ${text}`);
-      }
-
       const data = await response.json();
 
-      alert(data.message);
-
       setFollowing(true);
+      loadFollowers();
+      loadFollowing();
 
     } catch (err) {
 
@@ -161,17 +208,11 @@ export default function TravelerProfile() {
           credentials: "include",
         }
       );
-
-      if (!response.ok) {
-        const text = await response.text();
-        throw new Error(`Unfollow failed: ${response.status} ${response.statusText} - ${text}`);
-      }
-
       const data = await response.json();
 
-      alert(data.message);
-
       setFollowing(false);
+      loadFollowers();
+      loadFollowing();
 
     } catch (err) {
 
@@ -223,10 +264,10 @@ export default function TravelerProfile() {
                   onClick={following ? handleUnfollow : handleFollow}
                   disabled={isOwnProfile}
                   className={`mt-6 px-8 py-3 rounded-2xl font-bold transition flex items-center gap-2 ${isOwnProfile
-                      ? "bg-gray-300 text-gray-700 cursor-not-allowed"
-                      : following
-                        ? "bg-red-500 text-white hover:bg-red-600"
-                        : "bg-white text-blue-700 hover:scale-105"
+                    ? "bg-gray-300 text-gray-700 cursor-not-allowed"
+                    : following
+                      ? "bg-red-500 text-white hover:bg-red-600"
+                      : "bg-white text-blue-700 hover:scale-105"
                     }`}
                 >
 
@@ -254,12 +295,12 @@ export default function TravelerProfile() {
 
               <FaPlane className="text-blue-600 text-4xl mx-auto" />
 
-              <h2 className="text-2xl font-bold mt-4">
-                18
+              <h2 className="text-4xl font-bold mt-4">
+                {followers}
               </h2>
 
               <p className="text-gray-500 mt-2">
-                Trips
+                Followers
               </p>
 
             </div>
@@ -268,12 +309,12 @@ export default function TravelerProfile() {
 
               <FaHeart className="text-red-500 text-4xl mx-auto" />
 
-              <h2 className="text-2xl font-bold mt-4">
-                11
+              <h2 className="text-4xl font-bold mt-4">
+                {followingCount}
               </h2>
 
               <p className="text-gray-500 mt-2">
-                Wishlist
+                Following
               </p>
 
             </div>
@@ -330,6 +371,58 @@ export default function TravelerProfile() {
               mountains, beaches and food around the world.
 
             </p>
+
+          </div>
+          <div className="mt-10">
+
+            <h1 className="text-3xl font-bold mb-6">
+              Trips by {user.name}
+            </h1>
+
+            <div className="grid grid-cols-3 gap-6">
+
+              {trips.length === 0 ? (
+
+                <p>No trips yet.</p>
+
+              ) : (
+
+                trips.map((trip) => (
+
+                  <div
+                    key={trip.id}
+                    className="bg-white rounded-3xl shadow-lg overflow-hidden"
+                  >
+
+                    <img
+                      src={trip.image}
+                      alt=""
+                      className="w-full h-52 object-cover"
+                    />
+
+                    <div className="p-5">
+
+                      <h2 className="text-2xl font-bold">
+                        {trip.title}
+                      </h2>
+
+                      <p className="text-gray-500 mt-2">
+                        📍 {trip.location}
+                      </p>
+
+                      <p className="text-blue-600 font-bold mt-3">
+                        ₹ {trip.price}
+                      </p>
+
+                    </div>
+
+                  </div>
+
+                ))
+
+              )}
+
+            </div>
 
           </div>
 
