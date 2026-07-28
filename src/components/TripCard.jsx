@@ -1,6 +1,6 @@
 ﻿import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-
+import Comments from "./Comments";
 
 export default function TripCard({ id, image, title, location, price, }) {
 
@@ -200,6 +200,7 @@ export default function TripCard({ id, image, title, location, price, }) {
             Book Now
           </button>
         </div>
+        <Comments tripId={id} />
       </div>
     </div>
   );
