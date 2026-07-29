@@ -2,82 +2,153 @@
   FaBell,
   FaEnvelope,
   FaMoon,
-  FaSearch
+  FaSearch,
+  FaCog,
+  FaUserCircle,
 } from "react-icons/fa";
 
-export default function Navbar() {
+import { useState } from "react";
+
+export default function Navbar({ search, setSearch }) {
+
+  const [open, setOpen] = useState(false);
 
   return (
 
-    <div className="bg-white rounded-2xl shadow-md px-8 py-5 flex items-center justify-between">
+    <div className="bg-white rounded-3xl shadow-lg border border-gray-100 px-8 py-5 flex items-center justify-between">
 
-  
+     
 
-      <div className="relative w-[420px]">
+      <div>
+
+        <h1 className="text-3xl font-bold text-slate-900">
+          Dashboard
+        </h1>
+
+        <p className="text-gray-500 mt-1 text-sm">
+          Welcome back 👋 Plan your next adventure.
+        </p>
+
+      </div>
+
+     
+
+      <div className="hidden lg:block relative w-[420px]">
 
         <FaSearch
-          className="absolute left-4 top-4 text-gray-400"
+          className="absolute left-5 top-4 text-gray-400"
         />
 
         <input
+          value={search}
+          onChange={(e)=>setSearch(e.target.value)}
           type="text"
-          placeholder="Search trips, destinations..."
-          className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Search trips, hotels, destinations..."
+          className="w-full bg-gray-100 pl-14 pr-5 py-3 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 transition"
         />
 
       </div>
 
-      
+     
 
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-5">
 
-        <button className="relative">
+       
 
-          <FaBell className="text-2xl text-gray-600 hover:text-blue-600 transition"/>
+        <button className="relative w-12 h-12 rounded-2xl bg-gray-100 hover:bg-blue-600 hover:text-white transition flex items-center justify-center">
 
-          <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px]">
+          <FaBell className="text-lg"/>
+
+          <span className="absolute -top-1 -right-1 bg-red-500 text-white w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-bold">
             3
           </span>
 
         </button>
 
-        <button className="relative">
+        
 
-          <FaEnvelope className="text-2xl text-gray-600 hover:text-blue-600 transition"/>
+        <button className="relative w-12 h-12 rounded-2xl bg-gray-100 hover:bg-green-600 hover:text-white transition flex items-center justify-center">
 
-          <span className="absolute -top-2 -right-2 bg-green-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px]">
+          <FaEnvelope className="text-lg"/>
+
+          <span className="absolute -top-1 -right-1 bg-green-500 text-white w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-bold">
             5
           </span>
 
         </button>
 
-        <button className="bg-gray-100 p-3 rounded-xl hover:bg-blue-600 hover:text-white transition">
+      
 
-          <FaMoon />
+        <button className="w-12 h-12 rounded-2xl bg-gray-100 hover:bg-slate-900 hover:text-white transition flex items-center justify-center">
+
+          <FaMoon className="text-lg"/>
 
         </button>
 
-        <div className="flex items-center gap-3">
+        
 
-          <img
+        <div className="relative">
 
-            src="https://i.pravatar.cc/150"
+          <button
+            onClick={() => setOpen(!open)}
+            className="flex items-center gap-3 bg-gray-100 hover:bg-gray-200 rounded-2xl px-3 py-2 transition"
+          >
 
-            className="w-12 h-12 rounded-full object-cover border-2 border-blue-500"
+            <img
+              src="https://i.pravatar.cc/150"
+              alt=""
+              className="w-12 h-12 rounded-full object-cover border-2 border-blue-500"
+            />
 
-          />
+            <div className="hidden xl:block text-left">
 
-          <div>
+              <h2 className="font-bold text-slate-800">
+                Bhargav
+              </h2>
 
-            <h2 className="font-bold">
-              Bhargav
-            </h2>
+              <p className="text-xs text-gray-500">
+                Premium Traveler
+              </p>
 
-            <p className="text-gray-500 text-sm">
-              Traveler
-            </p>
+            </div>
 
-          </div>
+          </button>
+
+          
+
+          {
+            open && (
+
+              <div className="absolute right-0 mt-3 w-56 bg-white rounded-2xl shadow-2xl border overflow-hidden z-50">
+
+                <button className="w-full flex items-center gap-3 px-5 py-4 hover:bg-gray-100">
+
+                  <FaUserCircle/>
+
+                  My Profile
+
+                </button>
+
+                <button className="w-full flex items-center gap-3 px-5 py-4 hover:bg-gray-100">
+
+                  <FaCog/>
+
+                  Settings
+
+                </button>
+
+                <hr/>
+
+                <button className="w-full text-red-600 font-semibold px-5 py-4 hover:bg-red-50 text-left">
+
+                  Logout
+
+                </button>
+
+              </div>
+
+            )
+          }
 
         </div>
 
@@ -85,6 +156,6 @@ export default function Navbar() {
 
     </div>
 
-  )
+  );
 
 }
