@@ -73,15 +73,47 @@ export default function Index() {
 
   })
   return (
-    <div className=" flex bg-[#020B2D] min-h-screen p-6">
+    <div className="bg-[#020B2D] min-h-screen p-6">
       <div className="bg-[#F5F5F5] rounded-[40px] overflow-hidden flex flex-col lg:flex-row min-h-[calc(100vh-3rem)] shadow-xl">
         <Sidebar />
 
-        <div className="flex-1 p-8 lg:p-7">
+        <div className="flex-1 p-5 lg:p-7">
           <Navbar search={search} setSearch={setSearch} />
 
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mt-8">
+
+            <StatsCard
+              title="Trips"
+              value="18"
+              icon={<FaPlane />}
+              color="bg-blue-600"
+            />
+
+            <StatsCard
+              title="Likes"
+              value="540"
+              icon={<FaHeart />}
+              color="bg-red-500"
+            />
+
+            <StatsCard
+              title="Followers"
+              value="1.2K"
+              icon={<FaUsers />}
+              color="bg-green-500"
+            />
+
+            <StatsCard
+              title="Revenue"
+              value="₹2.5L"
+              icon={<FaRupeeSign />}
+              color="bg-purple-600"
+            />
+
+          </div>
+
           <div className="space-y-6 mt-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
               {stats.map((item, index) => (
                 <StatsCard
                   key={index}
@@ -130,7 +162,7 @@ export default function Index() {
               <div className="grid gap-6 lg:grid-cols-[1.5fr_0.9fr] mb-8">
                 <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-md hover:shadow-lg transition-all duration-300">
                   <p className="text-accent text-emerald-600">
-                     Destination
+                    Destination
                   </p>
                   <h2 className="mt-4 text-2xl font-playfair font-bold text-slate-900 tracking-tight">
                     Maldives
@@ -143,14 +175,14 @@ export default function Index() {
                 <div className="rounded-2xl bg-gradient-to-br from-blue-600 via-cyan-500 to-sky-500 p-4 text-white shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
                   <div>
                     <p className="text-accent text-cyan-100/80">
-                       Navigation
+                      Navigation
                     </p>
                     <p className="mt-4 text-sm font-poppins font-semibold tracking-tight">
                       Use <span className="font-bold">Ctrl + Scroll</span> to explore
                     </p>
                   </div>
                   <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-xs uppercase tracking-[0.25em] font-bold text-white/95 backdrop-blur-sm">
-                     Pro tip
+                    Pro tip
                   </div>
                 </div>
               </div>
