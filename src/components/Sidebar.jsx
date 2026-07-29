@@ -1,12 +1,17 @@
 ﻿import {
-  FaHome,
-  FaPlane,
-  FaMapMarkerAlt,
-  FaUser,
-  FaCog,
-  FaGlobe,
-  FaUsers
-} from "react-icons/fa";
+  LayoutDashboard,
+  Plane,
+  MapPinned,
+  User,
+  Settings,
+  Globe,
+  Users,
+  Heart,
+  Bell,
+  MessageCircle,
+  CalendarDays,
+  BarChart3,
+} from "lucide-react";
 
 import { NavLink } from "react-router-dom";
 
@@ -20,7 +25,7 @@ export default function Sidebar() {
 
         <div className="flex items-center gap-4 mb-8">
 
-          <FaGlobe className="text-4xl text-blue-400 drop-shadow-lg" />
+          <Globe size={38} className="text-cyan-400" />
 
           <h1 className="text-3xl font-poppins font-bold tracking-tight">
             Travel
@@ -39,7 +44,7 @@ export default function Sidebar() {
               }`
             }
           >
-            <FaHome className="text-2xl" />
+            <LayoutDashboard size={22} />
             Dashboard
           </NavLink>
 
@@ -52,7 +57,7 @@ export default function Sidebar() {
               }`
             }
           >
-            <FaPlane className="text-2xl" />
+            <Plane size={22} />
             Trips
           </NavLink>
 
@@ -65,7 +70,7 @@ export default function Sidebar() {
               }`
             }
           >
-            <FaMapMarkerAlt className="text-2xl" />
+            <MapPinned size={22} />
             Destinations
           </NavLink>
 
@@ -78,7 +83,7 @@ export default function Sidebar() {
               }`
             }
           >
-            <FaUsers className="text-2xl" />
+           <Users size={22} />
             Travelers
           </NavLink>
 
@@ -91,7 +96,7 @@ export default function Sidebar() {
               }`
             }
           >
-            <FaUser className="text-2xl" />
+            <User size={22} />
             Profile
           </NavLink>
 
@@ -104,7 +109,7 @@ export default function Sidebar() {
               }`
             }
           >
-            <FaCog className="text-2xl" />
+            <Settings size={22} />
             Settings
           </NavLink>
 

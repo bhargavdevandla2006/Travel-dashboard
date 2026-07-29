@@ -30,10 +30,11 @@ export default function Comments({ tripId }) {
     }
     async function addComment() {
 
+        console.log("Current comment:", comment);
+
         if (!comment.trim()) {
-
+            console.log("Comment is empty");
             return;
-
         }
 
         try {
@@ -52,6 +53,12 @@ export default function Comments({ tripId }) {
                 }
             );
 
+            console.log("Status:", response.status);
+
+            const data = await response.json();
+
+            console.log("Response:", data);
+
             if (response.ok) {
 
                 setComment("");
@@ -62,7 +69,7 @@ export default function Comments({ tripId }) {
 
         } catch (err) {
 
-            console.log(err);
+            console.log("ERROR:", err);
 
         }
 
@@ -81,13 +88,19 @@ export default function Comments({ tripId }) {
                 <input
                     type="text"
                     value={comment}
-                    onChange={(e) => setComment(e.target.value)}
+                    onChange={(e) => {
+                        console.log("Typing:", e.target.value);
+                        setComment(e.target.value);
+                    }}
                     placeholder="Write a comment..."
                     className="flex-1 border rounded-xl px-3 py-2"
                 />
 
                 <button
-                    onClick={addComment}
+                    onClick={() => {
+                        console.log("Current comment:", comment);
+                        addComment();
+                    }}
                     className="bg-blue-600 text-white px-5 rounded-xl"
                 >
                     Post
