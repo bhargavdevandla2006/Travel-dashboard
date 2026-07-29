@@ -73,11 +73,11 @@ export default function Index() {
 
   })
   return (
-    <div className="bg-[#020B2D] min-h-screen p-6">
+    <div className=" flex bg-[#020B2D] min-h-screen p-6">
       <div className="bg-[#F5F5F5] rounded-[40px] overflow-hidden flex flex-col lg:flex-row min-h-[calc(100vh-3rem)] shadow-xl">
         <Sidebar />
 
-        <div className="flex-1 p-5 lg:p-7">
+        <div className="flex-1 p-8 lg:p-7">
           <Navbar search={search} setSearch={setSearch} />
 
           <div className="space-y-6 mt-6">

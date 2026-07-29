@@ -1,143 +1,185 @@
-﻿import {
-  LayoutDashboard,
-  Plane,
-  MapPinned,
-  User,
-  Settings,
-  Globe,
-  Users,
-  Heart,
-  Bell,
-  MessageCircle,
-  CalendarDays,
-  BarChart3,
-} from "lucide-react";
-
+﻿import { useState } from "react";
 import { NavLink } from "react-router-dom";
+import {
+  FaBars,
+  FaHome,
+  FaPlane,
+  FaMapMarkerAlt,
+  FaUsers,
+  FaUserCircle,
+  FaCog,
+  FaGlobe,
+} from "react-icons/fa";
 
 export default function Sidebar() {
+  const [collapsed, setCollapsed] = useState(false);
+
+  const menu = [
+    { name: "Dashboard", icon: <FaHome />, path: "/" },
+    { name: "Trips", icon: <FaPlane />, path: "/trips" },
+    { name: "Destinations", icon: <FaMapMarkerAlt />, path: "/destinations" },
+    { name: "Travelers", icon: <FaUsers />, path: "/travelers" },
+    { name: "Profile", icon: <FaUserCircle />, path: "/profile" },
+    { name: "Settings", icon: <FaCog />, path: "/settings" },
+  ];
 
   return (
-
-    <div className="w-full lg:w-72 xl:w-[320px] min-h-screen bg-gradient-to-b from-[#021B4E] to-[#0D2555] text-white p-6 pt-8 pb-6 flex flex-col justify-between rounded-l-[28px] shadow-xl">
+    <div
+      className={`${collapsed ? "w-20" : "w-[290px]"
+        } min-h-screen bg-[#0B1220] border-r border-slate-800
+  text-white flex flex-col justify-between
+  transition-all duration-300 ease-in-out`}
+    >
 
       <div>
 
-        <div className="flex items-center gap-4 mb-8">
+        <div
+          className={`border-b border-slate-800 py-6 px-4 flex items-center ${collapsed ? "justify-center flex-col gap-4" : "justify-between"
+            }`}
+        >
 
-          <Globe size={38} className="text-cyan-400" />
+          <div className="flex items-center gap-3">
 
-          <h1 className="text-3xl font-poppins font-bold tracking-tight">
-            Travel
-          </h1>
+            <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+              <FaGlobe className="text-white text-xl" />
+            </div>
 
-        </div>
+            {!collapsed && (
+              <div>
+                <h1 className="text-xl font-bold tracking-wide">
+                  TravelHub
+                </h1>
 
-        <ul className="space-y-3">
+                <p className="text-xs text-slate-400">
+                  Premium Travel Dashboard
+                </p>
+              </div>
+            )}
 
-          <NavLink
-            to="/"
-            className={({ isActive }) =>
-              `flex items-center gap-4 px-5 py-3 rounded-[22px] transition-all duration-300 text-base font-poppins font-semibold ${isActive
-                ? "bg-gradient-to-r from-blue-600 to-blue-500 shadow-lg hover:shadow-xl scale-105"
-                : "text-gray-200 hover:bg-white/10 hover:text-white"
-              }`
-            }
+          </div>
+
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            className="h-10 w-10 rounded-xl flex items-center justify-center
+             hover:bg-slate-800 transition"
           >
-            <LayoutDashboard size={22} />
-            Dashboard
-          </NavLink>
-
-          <NavLink
-            to="/trips"
-            className={({ isActive }) =>
-              `flex items-center gap-4 px-5 py-3 rounded-[22px] transition-all duration-300 text-base font-poppins font-semibold ${isActive
-                ? "bg-gradient-to-r from-blue-600 to-blue-500 shadow-lg hover:shadow-xl scale-105"
-                : "text-gray-200 hover:bg-white/10 hover:text-white"
-              }`
-            }
-          >
-            <Plane size={22} />
-            Trips
-          </NavLink>
-
-          <NavLink
-            to="/destinations"
-            className={({ isActive }) =>
-              `flex items-center gap-4 px-5 py-3 rounded-[22px] transition-all duration-300 text-base font-poppins font-semibold ${isActive
-                ? "bg-gradient-to-r from-blue-600 to-blue-500 shadow-lg hover:shadow-xl scale-105"
-                : "text-gray-200 hover:bg-white/10 hover:text-white"
-              }`
-            }
-          >
-            <MapPinned size={22} />
-            Destinations
-          </NavLink>
-
-          <NavLink
-            to="/travelers"
-            className={({ isActive }) =>
-              `flex items-center gap-4 px-5 py-3 rounded-[22px] transition-all duration-300 text-base font-poppins font-semibold ${isActive
-                ? "bg-gradient-to-r from-blue-600 to-blue-500 shadow-lg hover:shadow-xl scale-105"
-                : "text-gray-200 hover:bg-white/10 hover:text-white"
-              }`
-            }
-          >
-           <Users size={22} />
-            Travelers
-          </NavLink>
-
-          <NavLink
-            to="/profile"
-            className={({ isActive }) =>
-              `flex items-center gap-4 px-5 py-3 rounded-[22px] transition-all duration-300 text-base font-poppins font-semibold ${isActive
-                ? "bg-gradient-to-r from-blue-600 to-blue-500 shadow-lg hover:shadow-xl scale-105"
-                : "text-gray-200 hover:bg-white/10 hover:text-white"
-              }`
-            }
-          >
-            <User size={22} />
-            Profile
-          </NavLink>
-
-          <NavLink
-            to="/settings"
-            className={({ isActive }) =>
-              `flex items-center gap-4 px-5 py-3 rounded-[22px] transition-all duration-300 text-base font-poppins font-semibold ${isActive
-                ? "bg-gradient-to-r from-blue-600 to-blue-500 shadow-lg hover:shadow-xl scale-105"
-                : "text-gray-200 hover:bg-white/10 hover:text-white"
-              }`
-            }
-          >
-            <Settings size={22} />
-            Settings
-          </NavLink>
-
-        </ul>
-
-      </div>
-
-      <div className="relative overflow-hidden rounded-[28px] bg-gradient-to-br from-blue-600 via-purple-500 to-pink-600 p-6 text-center shadow-2xl before:absolute before:inset-0 before:rounded-[28px] before:bg-white/5 before:backdrop-blur-sm">
-
-        <div className="absolute -right-12 -top-12 h-56 w-56 rounded-full bg-white/10 blur-3xl" />
-
-        <div className="absolute -bottom-12 -left-12 h-56 w-56 rounded-full bg-white/10 blur-3xl" />
-
-        <div className="relative z-10">
-          <h2 className="text-2xl font-poppins font-bold text-white tracking-tight leading-snug">
-            Plan your next adventure
-          </h2>
-
-          <p className="mt-4 text-sm text-blue-100/90 font-inter font-semibold uppercase tracking-[0.2em]">
-            Explore the world with us
-          </p>
-
-          <button className="relative mt-6 inline-flex items-center gap-2 rounded-full bg-white text-blue-600 px-8 py-3 font-poppins font-bold text-sm shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
-            Explore Now
+            <FaBars />
           </button>
+
         </div>
 
+
+
+        <div className="px-3 mt-7">
+
+          {menu.map((item) => (
+
+            <NavLink
+              key={item.name}
+              to={item.path}
+              className={({ isActive }) =>
+
+                `group flex items-center
+        ${collapsed ? "justify-center" : "justify-start"}
+        ${collapsed ? "" : "gap-4"}
+        ${collapsed ? "px-0" : "px-4"}
+        py-3.5
+        mb-2
+        rounded-2xl
+        transition-all
+        duration-300
+
+        ${isActive
+                  ? "bg-gradient-to-r from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/30"
+                  : "hover:bg-slate-800 hover:translate-x-1"
+                }`
+              }
+            >
+
+              <span className="text-[20px]">
+                {item.icon}
+              </span>
+
+              {!collapsed && (
+                <span className="font-medium tracking-wide">
+                  {item.name}
+                </span>
+              )}
+
+            </NavLink>
+
+          ))}
+
+        </div>
+
+
+        {!collapsed && (
+          <div className="px-5 mt-8">
+
+            <h2 className="text-xs uppercase tracking-[3px] text-slate-500 mb-4">
+              Recent Trips
+            </h2>
+
+            <div className="space-y-3">
+
+              <div className="bg-slate-800 hover:bg-slate-700 rounded-2xl p-4 transition cursor-pointer">
+                <p className="font-semibold">🏝 Bali</p>
+                <p className="text-xs text-slate-400">Indonesia</p>
+              </div>
+
+              <div className="bg-slate-800 hover:bg-slate-700 rounded-2xl p-4 transition cursor-pointer">
+                <p className="font-semibold">🗼 Paris</p>
+                <p className="text-xs text-slate-400">France</p>
+              </div>
+
+              <div className="bg-slate-800 hover:bg-slate-700 rounded-2xl p-4 transition cursor-pointer">
+                <p className="font-semibold">🗻 Tokyo</p>
+                <p className="text-xs text-slate-400">Japan</p>
+              </div>
+
+            </div>
+
+          </div>
+        )}
+
       </div>
+
+
+
+      {!collapsed && (
+        <div className="m-5">
+
+          <div className="rounded-3xl bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 p-6 relative overflow-hidden">
+
+            <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-white/10"></div>
+            <div className="absolute -left-10 bottom-0 h-20 w-20 rounded-full bg-white/10"></div>
+
+            <div className="relative">
+
+              <h2 className="text-xl font-bold">
+                Premium
+              </h2>
+
+              <p className="text-sm text-blue-100 mt-3 leading-6">
+                Unlimited Bookings
+                <br />
+                Hotel Discounts
+                <br />
+                Priority Support
+              </p>
+
+              <button
+                className="mt-6 w-full rounded-2xl bg-white text-blue-700 py-3 font-semibold hover:scale-105 transition"
+              >
+                Upgrade →
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+      )}
 
     </div>
   );
