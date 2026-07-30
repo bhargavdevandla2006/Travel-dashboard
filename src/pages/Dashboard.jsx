@@ -91,10 +91,51 @@ export default function Index() {
         <div className="flex-1 p-5 lg:p-7">
           <Navbar search={search} setSearch={setSearch} />
 
-          
+          <div className="mt-8 relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-700 via-indigo-600 to-purple-600 p-8 shadow-2xl">
+
+            <div className="absolute -top-20 -right-20 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
+
+            <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-cyan-400/10 rounded-full blur-3xl"></div>
+
+            <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between">
+
+              <div>
+
+                <p className="uppercase tracking-[4px] text-blue-200 text-sm font-semibold">
+                  Welcome Back
+                </p>
+
+                <h1 className="text-5xl font-black text-white mt-4">
+                  Good Morning,
+                  <br />
+                  Bhargav 👋
+                </h1>
+
+                <p className="mt-5 max-w-xl text-blue-100 leading-8">
+                  Explore new destinations, manage trips,
+                  book hotels, track expenses and enjoy your
+                  travel experience in one beautiful dashboard.
+                </p>
+
+                <button className="mt-8 bg-white text-blue-700 px-8 py-4 rounded-2xl font-bold hover:scale-105 hover:shadow-xl transition-all duration-300">
+                  Start New Trip
+                </button>
+
+              </div>
+
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/201/201623.png"
+                alt="Travel"
+                className="w-64 mt-10 lg:mt-0"
+              />
+
+            </div>
+
+          </div>
+
 
           <div className="space-y-6 mt-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
               {stats.map((item, index) => (
                 <StatsCard
                   key={index}
@@ -143,7 +184,7 @@ export default function Index() {
               <div className="grid gap-6 lg:grid-cols-[1.5fr_0.9fr] mb-8">
                 <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-md hover:shadow-lg transition-all duration-300">
                   <p className="text-accent text-emerald-600">
-                     Destination
+                    Destination
                   </p>
                   <h2 className="mt-4 text-2xl font-playfair font-bold text-slate-900 tracking-tight">
                     Maldives
@@ -156,14 +197,14 @@ export default function Index() {
                 <div className="rounded-2xl bg-gradient-to-br from-blue-600 via-cyan-500 to-sky-500 p-4 text-white shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
                   <div>
                     <p className="text-accent text-cyan-100/80">
-                       Navigation
+                      Navigation
                     </p>
                     <p className="mt-4 text-sm font-poppins font-semibold tracking-tight">
                       Use <span className="font-bold">Ctrl + Scroll</span> to explore
                     </p>
                   </div>
                   <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-xs uppercase tracking-[0.25em] font-bold text-white/95 backdrop-blur-sm">
-                     Pro tip
+                    Pro tip
                   </div>
                 </div>
               </div>
