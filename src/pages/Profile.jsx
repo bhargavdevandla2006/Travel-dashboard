@@ -10,16 +10,43 @@ export default function Profile() {
 
   const [user, setUser] = useState(null)
   const [showModal, setShowModal] = useState(false)
+  const [followers, setFollowers] = useState(0);
+  const [following, setFollowing] = useState(0);
+  const [trips, setTrips] = useState(0);
+
   useEffect(() => {
     loadProfile();
   }, []);
 
   async function loadProfile() {
     try {
+
       const data = await getProfile();
+
       setUser(data);
+
+     const followersRes = await fetch(
+  `https://travel-dashboard-backend-2.onrender.com/followers-count/${data.id}`,
+  {
+    credentials: "include",
+  }
+);
+
+const followingRes = await fetch(
+  `https://travel-dashboard-backend-2.onrender.com/following-count/${data.id}`,
+  {
+    credentials: "include",
+  }
+);
+
+const tripsRes = await fetch(
+  `https://travel-dashboard-backend-2.onrender.com/users/${data.id}/trips`,
+  {
+    credentials: "include",
+  }
+);
     } catch (error) {
-      console.error("loadProfile error", error);
+      console.error(error);
     }
   }
 
@@ -85,39 +112,33 @@ export default function Profile() {
             <div className="grid grid-cols-3 gap-6 mt-12">
 
               <div className="bg-blue-50 p-6 rounded-3xl">
-
                 <h1 className="text-gray-500 text-sm">
-                  Total Trips
+                  Trips
                 </h1>
 
                 <h2 className="text-xl font-bold text-blue-600 mt-3">
-                  12
+                  {trips}
                 </h2>
-
               </div>
 
               <div className="bg-purple-50 p-6 rounded-3xl">
-
                 <h1 className="text-gray-500 text-sm">
-                  Countries Visited
+                  Followers
                 </h1>
 
                 <h2 className="text-xl font-bold text-purple-600 mt-3">
-                  8
+                  {followers}
                 </h2>
-
               </div>
 
               <div className="bg-green-50 p-6 rounded-3xl">
-
                 <h1 className="text-gray-500 text-sm">
-                  Total Spending
+                  Following
                 </h1>
 
                 <h2 className="text-xl font-bold text-green-600 mt-3">
-                  ₹50000
+                  {following}
                 </h2>
-
               </div>
 
             </div>
