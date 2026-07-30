@@ -93,7 +93,7 @@ export default function TripCard({ id, image, title, location, price, }) {
 
         setLiked(true);
 
-        setLikes(prev => prev + 1);
+        await loadLikes();
 
       }
 
@@ -123,7 +123,7 @@ export default function TripCard({ id, image, title, location, price, }) {
 
         setLiked(false);
 
-        setLikes(prev => prev - 1);
+        await loadLikes();
 
       }
 
@@ -136,72 +136,127 @@ export default function TripCard({ id, image, title, location, price, }) {
   }
 
   return (
-    <div className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition">
+    <div className="group bg-white rounded-3xl overflow-hidden border border-gray-200 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
 
-      <img src={image} className="h-24 w-full object-cover" />
+      {/* Image */}
+      <div className="relative overflow-hidden">
 
-      <div className="p-3">
+        <img
+          src={image}
+          alt={title}
+          className="w-full h-56 object-cover group-hover:scale-110 transition duration-700"
+        />
 
-        <h2 className="text-lg font-bold text-black-900">
-          {title}
-        </h2>
+        <div className="absolute top-4 left-4 bg-white rounded-full px-3 py-1 flex items-center gap-2 shadow-lg">
 
-        <p className="text-sm font-semibold text-gray-600 mt-1">
-          {location}
-        </p>
+          <span className="text-yellow-500">⭐</span>
 
-        <h2 className="text-base text-blue-600 font-bold mt-2">
-          ₹{price}
-        </h2>
-
-        <div className="mt-3 flex items-center justify-between">
-
-          <button
-            onClick={liked ? handleUnlike : handleLike}
-            className={`px-4 py-2 rounded-xl font-semibold transition ${liked
-              ? "bg-red-500 text-white hover:bg-red-600"
-              : "bg-gray-200 text-gray-800 hover:bg-gray-300"
-              }`}
-          >
-            {loading
-              ? "Loading..."
-              : liked
-                ? "❤️ Liked"
-                : "🤍 Like"}
-          </button>
-
-          <span className="text-sm font-semibold text-gray-600">
-            ❤️ {likes}
+          <span className="font-semibold text-sm">
+            4.8
           </span>
 
         </div>
 
-        <div className="flex flex-wrap gap-2 mt-3">
-          <button onClick={() => navigate(`/hotels/${location}`)}
-            className="bg-green-100 text-green-700 px-2.5 py-1.5 rounded-lg text-xs font-semibold"
-          >Hotels</button>
+        <button
+          onClick={liked ? handleUnlike : handleLike}
+          className={`absolute top-4 right-4 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition
+        ${liked
+              ? "bg-red-500 text-white"
+              : "bg-white text-gray-700 hover:bg-red-500 hover:text-white"
+            }`}
+        >
+          ❤️
+        </button>
 
-          <button onClick={() => navigate(`/transport/${location}`)} className="bg-orange-100 text-orange-700 px-2.5 py-1.5 rounded-lg text-xs font-semibold">Transport</button>
+      </div>
+
+
+
+      <div className="p-6">
+
+        <h2 className="text-2xl font-bold text-gray-900">
+          {title}
+        </h2>
+
+        <p className="flex items-center gap-2 text-gray-500 mt-3">
+
+          📍 {location}
+
+        </p>
+
+        <div className="flex items-center justify-between mt-5">
+
+          <div>
+
+            <p className="text-sm text-gray-400">
+              Starting From
+            </p>
+
+            <h2 className="text-3xl font-extrabold text-blue-600">
+              ₹{price}
+            </h2>
+
+          </div>
+
+          <div className="text-right">
+
+            <p className="text-red-500 font-bold text-lg">
+              ❤️ {likes}
+            </p>
+
+            <p className="text-xs text-gray-500">
+              Total Likes
+            </p>
+
+          </div>
+
+        </div>
+
+        {/* Buttons */}
+
+        <div className="grid grid-cols-2 gap-3 mt-6">
 
           <button
-            onClick={() =>
-              navigate(`/trip/${title}`, {
-                state: {
-                  id,
-                  title,
-                  location,
-                  price,
-                  image,
-                },
-              })
-            }
-            className="mt-3 bg-blue-600 text-white px-3 py-1.5 rounded-xl text-xs"
+            onClick={() => navigate(`/hotels/${location}`)}
+            className="bg-green-100 text-green-700 py-3 rounded-xl font-semibold hover:bg-green-600 hover:text-white transition"
           >
-            Book Now
+            🏨 Hotels
           </button>
+
+          <button
+            onClick={() => navigate(`/transport/${location}`)}
+            className="bg-orange-100 text-orange-700 py-3 rounded-xl font-semibold hover:bg-orange-600 hover:text-white transition"
+          >
+            🚖 Transport
+          </button>
+
         </div>
-        <Comments tripId={id} />
+
+        <button
+          onClick={() =>
+            navigate(`/trip/${title}`, {
+              state: {
+                id,
+                title,
+                location,
+                price,
+                image,
+              },
+            })
+          }
+          className="w-full mt-5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-2xl font-bold hover:shadow-xl hover:scale-[1.02] transition-all"
+        >
+          Book Now →
+        </button>
+
+        <div className="mt-6 border-t pt-5">
+
+          <Comments tripId={id} />
+
+        </div>
+
       </div>
+
     </div>
   );
 }

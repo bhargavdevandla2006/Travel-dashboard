@@ -1,5 +1,4 @@
-const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-export const apiUrl = isDev ? "/api" : "https://travel-dashboard-backend-2.onrender.com";
+export const apiUrl = "https://travel-dashboard-backend-2.onrender.com";
 
 async function parseJsonResponse(response) {
   const text = await response.text();
