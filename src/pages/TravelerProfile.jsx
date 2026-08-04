@@ -57,23 +57,36 @@ export default function TravelerProfile() {
   }
   async function loadTrips() {
 
-    try {
+  try {
 
-      const response = await fetch(
-        `https://travel-dashboard-backend-2.onrender.com/users/${id}/trips`
-      );
+    const response = await fetch(
+      `${apiUrl}/users/${id}/trips`
+    );
 
-      const data = await response.json();
+    const data = await response.json();
+
+    console.log("Trips API response:", data);
+
+
+    if(Array.isArray(data)) {
 
       setTrips(data);
 
-    } catch (err) {
+    } else {
 
-      console.log(err);
+      setTrips([]);
 
     }
 
+
+  } catch (err) {
+
+    console.log(err);
+    setTrips([]);
+
   }
+
+}
 
   async function loadCurrentUser() {
     try {
