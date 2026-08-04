@@ -166,13 +166,24 @@ export default function Settings() {
                 Switch your travel UI mood
               </p>
 
-              <button
-                onClick={() => setDarkMode(!darkMode)}
-                className={`mt-6 px-6 py-3 rounded-2xl text-white font-semibold transition ${darkMode ? "bg-gray-700 hover:bg-gray-600" : "bg-black hover:bg-gray-800"
-                  }`}
-              >
-                {darkMode ? "Dark ON" : "Light ON"}
-              </button>
+              <div className="mt-6 flex items-center justify-between">
+
+                <span className="font-semibold text-gray-700">
+                  {darkMode ? "Dark Mode" : "Light Mode"}
+                </span>
+
+                <button
+                  onClick={() => setDarkMode(!darkMode)}
+                  className={`relative w-16 h-8 rounded-full transition-all duration-300 ${darkMode ? "bg-blue-600" : "bg-gray-300"
+                    }`}
+                >
+                  <div
+                    className={`absolute top-1 w-6 h-6 bg-white rounded-full transition-all duration-300 ${darkMode ? "left-9" : "left-1"
+                      }`}
+                  />
+                </button>
+
+              </div>
             </div>
 
 
@@ -185,13 +196,24 @@ export default function Settings() {
                 Trip alerts & updates
               </p>
 
-              <button
-                onClick={() => setNotifications(!notifications)}
-                className={`mt-6 px-6 py-3 rounded-2xl text-white font-semibold transition ${notifications ? "bg-blue-600 hover:bg-blue-700" : "bg-gray-400 hover:bg-gray-500"
-                  }`}
-              >
-                {notifications ? "ON" : "OFF"}
-              </button>
+              <div className="mt-6 flex items-center justify-between">
+
+                <span className="font-semibold text-gray-700">
+                  Trip Alerts
+                </span>
+
+                <button
+                  onClick={() => setNotifications(!notifications)}
+                  className={`relative w-16 h-8 rounded-full transition-all duration-300 ${notifications ? "bg-blue-600" : "bg-gray-300"
+                    }`}
+                >
+                  <div
+                    className={`absolute top-1 w-6 h-6 bg-white rounded-full transition-all duration-300 ${notifications ? "left-9" : "left-1"
+                      }`}
+                  />
+                </button>
+
+              </div>
             </div>
 
             <div className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow">
@@ -200,13 +222,24 @@ export default function Settings() {
                 Receive deals & offers
               </p>
 
-              <button
-                onClick={() => setEmailAlerts(!emailAlerts)}
-                className={`mt-6 px-6 py-3 rounded-2xl text-white font-semibold transition ${emailAlerts ? "bg-green-600 hover:bg-green-700" : "bg-gray-400 hover:bg-gray-500"
-                  }`}
-              >
-                {emailAlerts ? "Enabled" : "Disabled"}
-              </button>
+              <div className="mt-6 flex items-center justify-between">
+
+                <span className="font-semibold text-gray-700">
+                  Receive Offers
+                </span>
+
+                <button
+                  onClick={() => setEmailAlerts(!emailAlerts)}
+                  className={`relative w-16 h-8 rounded-full transition-all duration-300 ${emailAlerts ? "bg-green-600" : "bg-gray-300"
+                    }`}
+                >
+                  <div
+                    className={`absolute top-1 w-6 h-6 bg-white rounded-full transition-all duration-300 ${emailAlerts ? "left-9" : "left-1"
+                      }`}
+                  />
+                </button>
+
+              </div>
             </div>
 
 
@@ -219,13 +252,24 @@ export default function Settings() {
                 Protect your account
               </p>
 
-              <button
-                onClick={() => setTwoFA(!twoFA)}
-                className={`mt-6 px-6 py-3 rounded-2xl text-white font-semibold transition ${twoFA ? "bg-purple-600 hover:bg-purple-700" : "bg-gray-400 hover:bg-gray-500"
-                  }`}
-              >
-                {twoFA ? "2FA ON" : "Enable 2FA"}
-              </button>
+              <div className="mt-6 flex items-center justify-between">
+
+                <span className="font-semibold text-gray-700">
+                  Two Factor Authentication
+                </span>
+
+                <button
+                  onClick={() => setTwoFA(!twoFA)}
+                  className={`relative w-16 h-8 rounded-full transition-all duration-300 ${twoFA ? "bg-purple-600" : "bg-gray-300"
+                    }`}
+                >
+                  <div
+                    className={`absolute top-1 w-6 h-6 bg-white rounded-full transition-all duration-300 ${twoFA ? "left-9" : "left-1"
+                      }`}
+                  />
+                </button>
+
+              </div>
             </div>
 
 
