@@ -180,7 +180,10 @@ export default function Sidebar() {
                           Notifications
                         </button>
 
-                        <button className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200">
+                        <button
+                          onClick={() => openSettingsSection("security")}
+                          className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200"
+                        >
                           <FaShieldAlt className="text-green-600" />
                           Security
                         </button>

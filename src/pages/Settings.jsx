@@ -15,6 +15,7 @@ export default function Settings() {
   const profileRef = useRef(null);
   const themeRef = useRef(null);
   const notificationsRef = useRef(null);
+  const securityRef = useRef(null);
 
   const { setLocation } = useMap();
 
@@ -74,6 +75,13 @@ export default function Settings() {
 
       case "notifications":
         notificationsRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+        break;
+
+      case "security":
+        securityRef.current?.scrollIntoView({
           behavior: "smooth",
           block: "start",
         });
@@ -177,7 +185,10 @@ export default function Settings() {
             </div>
 
 
-            <div className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow">
+            <div
+              ref={securityRef}
+              className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow"
+            >
               <h2 className="font-bold text-2xl font-poppins">Security</h2>
               <p className="text-gray-500 text-base mt-2">
                 Protect your account
