@@ -76,15 +76,15 @@ export default function Sidebar() {
 
         </div>
 
-<div className="px-3 mt-7">
+        <div className="px-3 mt-7">
 
-        {menu.map((item) => {
-          if (item.name === "Settings") {
-            return (
-              <div key={item.name} className="relative">
-                <button
-                  onClick={() => setShowSettingsMenu(!showSettingsMenu)}
-                  className={`w-full group flex items-center
+          {menu.map((item) => {
+            if (item.name === "Settings") {
+              return (
+                <div key={item.name} className="relative">
+                  <button
+                    onClick={() => setShowSettingsMenu(!showSettingsMenu)}
+                    className={`w-full group flex items-center
           ${collapsed ? "justify-center" : "justify-start"}
           ${collapsed ? "" : "gap-4"}
           ${collapsed ? "px-0" : "px-4"}
@@ -94,25 +94,90 @@ export default function Sidebar() {
           transition-all
           duration-300
           hover:bg-slate-800 hover:translate-x-1`}
-                >
-                  <span className="text-[20px]">{item.icon}</span>
+                  >
+                    <span className="text-[20px]">{item.icon}</span>
 
-                  {!collapsed && (
-                    <span className="font-medium tracking-wide">
-                      {item.name}
-                    </span>
+                    {!collapsed && (
+                      <span className="font-medium tracking-wide">
+                        {item.name}
+                      </span>
+                    )}
+                  </button>
+
+                  {showSettingsMenu && !collapsed && (
+                    <div className="absolute left-full ml-3 top-0 w-72 bg-white rounded-3xl shadow-2xl border border-gray-200 overflow-hidden z-50">
+
+                      <div className="px-5 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+                        <h2 className="text-lg font-bold">
+                          ⚙️ Settings
+                        </h2>
+
+                        <p className="text-sm text-blue-100">
+                          Customize your travel experience
+                        </p>
+                      </div>
+
+                      <div className="py-2">
+
+                        <button className="w-full px-5 py-3 flex items-center gap-4 hover:bg-blue-50 transition">
+                          <FaUser className="text-blue-600" />
+                          Profile
+                        </button>
+
+                        <button className="w-full px-5 py-3 flex items-center gap-4 hover:bg-blue-50 transition">
+                          <FaPalette className="text-purple-600" />
+                          Appearance
+                        </button>
+
+                        <button className="w-full px-5 py-3 flex items-center gap-4 hover:bg-blue-50 transition">
+                          <FaBell className="text-yellow-500" />
+                          Notifications
+                        </button>
+
+                        <button className="w-full px-5 py-3 flex items-center gap-4 hover:bg-blue-50 transition">
+                          <FaShieldAlt className="text-green-600" />
+                          Security
+                        </button>
+
+                        <button className="w-full px-5 py-3 flex items-center gap-4 hover:bg-blue-50 transition">
+                          <FaGlobe className="text-cyan-600" />
+                          Travel Style
+                        </button>
+
+                        <button className="w-full px-5 py-3 flex items-center gap-4 hover:bg-blue-50 transition">
+                          <FaMapMarkerAlt className="text-red-500" />
+                          Home Location
+                        </button>
+
+                        <button className="w-full px-5 py-3 flex items-center gap-4 hover:bg-blue-50 transition">
+                          <FaCreditCard className="text-indigo-600" />
+                          Payments
+                        </button>
+
+                        <button className="w-full px-5 py-3 flex items-center gap-4 hover:bg-blue-50 transition">
+                          <FaLanguage className="text-pink-500" />
+                          Language
+                        </button>
+
+                        <button className="w-full px-5 py-3 flex items-center gap-4 text-red-500 hover:bg-red-50 transition">
+                          <FaTrash />
+                          Danger Zone
+                        </button>
+
+                      </div>
+
+                    </div>
                   )}
-                </button>
-              </div>
-            );
-          }
+                </div>
+              );
+            }
 
-          return (
-            <NavLink
-              key={item.name}
-              to={item.path}
-              className={({ isActive }) =>
-                `group flex items-center
+            return (
+              <NavLink
+                key={item.name}
+                to={item.path}
+                className={({ isActive }) =>
+                  `group flex items-center
         ${collapsed ? "justify-center" : "justify-start"}
         ${collapsed ? "" : "gap-4"}
         ${collapsed ? "px-0" : "px-4"}
@@ -122,25 +187,25 @@ export default function Sidebar() {
         transition-all
         duration-300
         ${isActive
-                  ? "bg-gradient-to-r from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/30"
-                  : "hover:bg-slate-800 hover:translate-x-1"
-                }`
-              }
-            >
-              <span className="text-[20px]">{item.icon}</span>
+                    ? "bg-gradient-to-r from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/30"
+                    : "hover:bg-slate-800 hover:translate-x-1"
+                  }`
+                }
+              >
+                <span className="text-[20px]">{item.icon}</span>
 
-              {!collapsed && (
-                <span className="font-medium tracking-wide">
-                  {item.name}
-                </span>
-              )}
-            </NavLink>
-          );
-        })}
+                {!collapsed && (
+                  <span className="font-medium tracking-wide">
+                    {item.name}
+                  </span>
+                )}
+              </NavLink>
+            );
+          })}
 
- 
 
-</div>
+
+        </div>
         {!collapsed && (
           <div className="px-5 mt-8">
 
