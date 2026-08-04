@@ -144,47 +144,47 @@ export default function Sidebar() {
 
                       <div className="py-2">
 
-                        <button className="w-full px-5 py-3 flex items-center gap-4 hover:bg-blue-50 transition">
+                        <button className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200">
                           <FaUser className="text-blue-600" />
                           Profile
                         </button>
 
-                        <button className="w-full px-5 py-3 flex items-center gap-4 hover:bg-blue-50 transition">
+                        <button className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200">
                           <FaPalette className="text-purple-600" />
                           Appearance
                         </button>
 
-                        <button className="w-full px-5 py-3 flex items-center gap-4 hover:bg-blue-50 transition">
+                        <button className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200">
                           <FaBell className="text-yellow-500" />
                           Notifications
                         </button>
 
-                        <button className="w-full px-5 py-3 flex items-center gap-4 hover:bg-blue-50 transition">
+                        <button className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200">
                           <FaShieldAlt className="text-green-600" />
                           Security
                         </button>
 
-                        <button className="w-full px-5 py-3 flex items-center gap-4 hover:bg-blue-50 transition">
+                        <button className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200">
                           <FaGlobe className="text-cyan-600" />
                           Travel Style
                         </button>
 
-                        <button className="w-full px-5 py-3 flex items-center gap-4 hover:bg-blue-50 transition">
+                        <button className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200">
                           <FaMapMarkerAlt className="text-red-500" />
                           Home Location
                         </button>
 
-                        <button className="w-full px-5 py-3 flex items-center gap-4 hover:bg-blue-50 transition">
+                        <button className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200">
                           <FaCreditCard className="text-indigo-600" />
                           Payments
                         </button>
 
-                        <button className="w-full px-5 py-3 flex items-center gap-4 hover:bg-blue-50 transition">
+                        <button className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200">
                           <FaLanguage className="text-pink-500" />
                           Language
                         </button>
 
-                        <button className="w-full px-5 py-3 flex items-center gap-4 text-red-500 hover:bg-red-50 transition">
+                        <button className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200">
                           <FaTrash />
                           Danger Zone
                         </button>
