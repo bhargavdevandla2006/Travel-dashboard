@@ -139,17 +139,87 @@ export default function Settings() {
             ref={profileRef}
             className="bg-white p-10 rounded-3xl shadow-lg mt-14 flex items-center justify-between"
           >
-            <div className="flex items-center gap-6">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 shadow-md"></div>
+            <div className="flex items-center gap-8">
+
+              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-4xl font-bold shadow-lg">
+                B
+              </div>
 
               <div>
-                <h2 className="text-2xl font-bold font-poppins">Your Profile</h2>
-                <p className="text-gray-500 text-base mt-1">Traveler • Explorer • Dreamer</p>
+
+                <div className="flex items-center gap-3">
+
+                  <h2 className="text-3xl font-bold">
+                    Bhargav Devandla
+                  </h2>
+
+                  <span className="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm font-semibold">
+                    ⭐ Premium
+                  </span>
+
+                </div>
+
+                <p className="text-gray-500 mt-2">
+                  Traveler • Explorer • Dreamer
+                </p>
+
+                <div className="flex gap-8 mt-6">
+
+                  <div>
+                    <h3 className="text-2xl font-bold text-blue-600">
+                      18
+                    </h3>
+
+                    <p className="text-gray-500 text-sm">
+                      Trips
+                    </p>
+                  </div>
+
+                  <div>
+                    <h3 className="text-2xl font-bold text-green-600">
+                      12
+                    </h3>
+
+                    <p className="text-gray-500 text-sm">
+                      Countries
+                    </p>
+                  </div>
+
+                  <div>
+                    <h3 className="text-2xl font-bold text-pink-600">
+                      24
+                    </h3>
+
+                    <p className="text-gray-500 text-sm">
+                      Favorites
+                    </p>
+                  </div>
+
+                </div>
+
+                <div className="mt-6">
+
+                  <div className="flex justify-between text-sm mb-2">
+                    <span>Explorer Level</span>
+                    <span>75%</span>
+                  </div>
+
+                  <div className="w-full bg-gray-200 rounded-full h-3">
+
+                    <div className="bg-blue-600 h-3 rounded-full w-3/4"></div>
+
+                  </div>
+
+                </div>
+
               </div>
+
             </div>
 
-            <button className="bg-black text-white px-6 py-3 rounded-2xl font-bold hover:bg-gray-800 transition shadow-md">
-              Edit
+            <button
+              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl font-semibold transition"
+            >
+              ✏️ Edit Profile
             </button>
           </div>
 
