@@ -33,10 +33,20 @@ export default function Sidebar() {
 
   return (
     <div
-      className={`${collapsed ? "w-20" : "w-[290px]"
-        } min-h-screen bg-[#0B1220] border-r border-slate-800
-  text-white flex flex-col justify-between
-  transition-all duration-300 ease-in-out`}
+      className={`${collapsed ? "w-20" : "w-[290px]"}
+  min-h-screen
+  bg-[#0B1220]
+  border-r
+  border-slate-800
+  text-white
+  flex
+  flex-col
+  justify-between
+  transition-all
+  duration-300
+  ease-in-out
+  overflow-visible
+`}
     >
 
       <div>
@@ -81,7 +91,7 @@ export default function Sidebar() {
           {menu.map((item) => {
             if (item.name === "Settings") {
               return (
-                <div key={item.name} className="relative">
+                <div key={item.name} className="relative overflow-visible">
                   <button
                     onClick={() => setShowSettingsMenu(!showSettingsMenu)}
                     className={`w-full group flex items-center
@@ -105,7 +115,22 @@ export default function Sidebar() {
                   </button>
 
                   {showSettingsMenu && !collapsed && (
-                    <div className="absolute left-full ml-3 top-0 w-72 bg-white rounded-3xl shadow-2xl border border-gray-200 overflow-hidden z-50">
+                    <div
+                      className="
+    absolute
+    left-full
+    top-0
+    ml-4
+    w-72
+    bg-white
+    rounded-3xl
+    shadow-2xl
+    border
+    border-gray-200
+    z-[9999]
+    overflow-hidden
+  "
+                    >
 
                       <div className="px-5 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
                         <h2 className="text-lg font-bold">
