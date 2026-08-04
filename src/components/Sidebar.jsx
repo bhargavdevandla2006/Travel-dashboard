@@ -196,7 +196,10 @@ export default function Sidebar() {
                           Travel Style
                         </button>
 
-                        <button className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200">
+                        <button
+                          onClick={() => openSettingsSection("location")}
+                          className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200"
+                        >
                           <FaMapMarkerAlt className="text-red-500" />
                           Home Location
                         </button>
@@ -211,8 +214,11 @@ export default function Sidebar() {
                           Language
                         </button>
 
-                        <button className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200">
-                          <FaTrash />
+                        <button
+                          onClick={() => openSettingsSection("Danger Zone")}
+                          className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200"
+                        >
+                          <FaMapMarkerAlt className="text-red-500" />
                           Danger Zone
                         </button>
 
