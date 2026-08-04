@@ -215,7 +215,7 @@ export default function Sidebar() {
                         </button>
 
                         <button
-                          onClick={() => openSettingsSection("Danger Zone")}
+                          onClick={() => openSettingsSection("danger")}
                           className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200"
                         >
                           <FaMapMarkerAlt className="text-red-500" />

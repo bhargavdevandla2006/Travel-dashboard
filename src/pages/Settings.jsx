@@ -18,7 +18,7 @@ export default function Settings() {
   const securityRef = useRef(null);
   const travelStyleRef = useRef(null);
   const locationRef = useRef(null);
-
+  const dangerRef = useRef(null);
 
   const { setLocation } = useMap();
   const navigate = useNavigate()
@@ -98,6 +98,13 @@ export default function Settings() {
 
       case "location":
         locationRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+        break;
+
+      case "danger":
+        dangerRef.current?.scrollIntoView({
           behavior: "smooth",
           block: "start",
         });
@@ -290,26 +297,28 @@ export default function Settings() {
               </p>
             </div>
 
+            <div
+              ref={dangerRef}
+              className="bg-red-50 p-8 rounded-3xl shadow-lg col-span-3 border-2 border-red-200"
+            > <div className="bg-red-50 p-8 rounded-3xl shadow-lg col-span-3 border-2 border-red-200">
+                <h2 className="font-bold text-2xl text-red-600 font-poppins">
+                  Danger Zone
+                </h2>
+                <p className="text-gray-600 text-base mt-2 font-medium">
+                  Logout from all devices and reset session
+                </p>
 
-            <div className="bg-red-50 p-8 rounded-3xl shadow-lg col-span-3 border-2 border-red-200">
-              <h2 className="font-bold text-2xl text-red-600 font-poppins">
-                Danger Zone
-              </h2>
-              <p className="text-gray-600 text-base mt-2 font-medium">
-                Logout from all devices and reset session
-              </p>
+                <button
+                  onClick={handleLogout}
+                  className="mt-6 bg-red-500 hover:bg-red-600 text-white px-8 py-3 rounded-2xl font-bold transition shadow-md"
+                >
+                  Logout Everywhere
+                </button>
+              </div>
 
-              <button
-                onClick={handleLogout}
-                className="mt-6 bg-red-500 hover:bg-red-600 text-white px-8 py-3 rounded-2xl font-bold transition shadow-md"
-              >
-                Logout Everywhere
-              </button>
             </div>
-
           </div>
         </div>
       </div>
-    </div>
-  );
+      );
 }
