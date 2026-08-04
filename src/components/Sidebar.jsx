@@ -1,5 +1,5 @@
 ﻿import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   FaBars,
   FaBell,
@@ -22,6 +22,8 @@ export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const [showSettingsMenu, setShowSettingsMenu] = useState(false);
 
+  const navigate = useNavigate();
+
   const menu = [
     { name: "Dashboard", icon: <FaHome />, path: "/" },
     { name: "Trips", icon: <FaPlane />, path: "/trips" },
@@ -30,6 +32,16 @@ export default function Sidebar() {
     { name: "Profile", icon: <FaUserCircle />, path: "/profile" },
     { name: "Settings", icon: <FaCog />, path: "/settings" },
   ];
+
+  const openSettingsSection = (section) => {
+    setShowSettingsMenu(false);
+
+    navigate("/settings", {
+      state: {
+        section,
+      },
+    });
+  };
 
   return (
     <div
@@ -144,7 +156,10 @@ export default function Sidebar() {
 
                       <div className="py-2">
 
-                        <button className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200">
+                        <button
+                          onClick={() => openSettingsSection("profile")}
+                          className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200"
+                        >
                           <FaUser className="text-blue-600" />
                           Profile
                         </button>
