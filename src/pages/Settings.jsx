@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import { useMap } from "../context/MapContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function Settings() {
   const [darkMode, setDarkMode] = useState(false);
@@ -12,43 +12,56 @@ export default function Settings() {
   const [city, setCity] = useState('')
   const [twoFA, setTwoFA] = useState(false);
 
- const {setLocation} = useMap();
- const navigate = useNavigate()
+  const profileRef = useRef(null);
+
+  const { setLocation } = useMap();
+
+  const navigate = useNavigate()
+  const location = useLocation();
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/login");
-};
- const handleLocationSearch = async () => {
+  };
+  const handleLocationSearch = async () => {
 
-  if (!city.trim()) {
-    alert("Please enter a city");
-    return;
-  }
-
-  try {
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?q=${city}&format=json&limit=1`
-    );
-
-    const data = await response.json();
-
-    if (data.length > 0) {
-      setLocation({
-        name: city,
-        lat: parseFloat(data[0].lat),
-        lng: parseFloat(data[0].lon),
-      });
-
-      alert("Location Updated!");
-    } else {
-      alert("Location not found");
+    if (!city.trim()) {
+      alert("Please enter a city");
+      return;
     }
-  } catch (error) {
-    console.log(error);
-    alert("Something went wrong");
-  }
-};
+
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?q=${city}&format=json&limit=1`
+      );
+
+      const data = await response.json();
+
+      if (data.length > 0) {
+        setLocation({
+          name: city,
+          lat: parseFloat(data[0].lat),
+          lng: parseFloat(data[0].lon),
+        });
+
+        alert("Location Updated!");
+      } else {
+        alert("Location not found");
+      }
+    } catch (error) {
+      console.log(error);
+      alert("Something went wrong");
+    }
+  };
+
+  useEffect(() => {
+    if (location.state?.section === "profile") {
+      profileRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, [location]);
 
   return (
     <div className="bg-[#020B2D] min-h-screen p-6">
@@ -68,7 +81,10 @@ export default function Settings() {
           </p>
 
 
-          <div className="bg-white p-10 rounded-3xl shadow-lg mt-14 flex items-center justify-between">
+          <div
+            ref={profileRef}
+            className="bg-white p-10 rounded-3xl shadow-lg mt-14 flex items-center justify-between"
+          >
             <div className="flex items-center gap-6">
               <div className="w-20 h-20 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 shadow-md"></div>
 
@@ -205,8 +221,8 @@ export default function Settings() {
 
               <button onClick={handleLocationSearch} className="mt-4 bg-blue-500 text-white px-6 py-3 rounded-2xl font-semibold hover:bg-blue-600 transition"
               >
-              Update Location
-              
+                Update Location
+
               </button>
 
               <p className="mt-4 text-gray-600 font-medium">
