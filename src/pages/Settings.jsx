@@ -14,6 +14,7 @@ export default function Settings() {
 
   const profileRef = useRef(null);
   const themeRef = useRef(null);
+  const notificationsRef = useRef(null);
 
   const { setLocation } = useMap();
 
@@ -66,6 +67,13 @@ export default function Settings() {
 
       case "theme":
         themeRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+        break;
+
+      case "notifications":
+        notificationsRef.current?.scrollIntoView({
           behavior: "smooth",
           block: "start",
         });
@@ -135,7 +143,10 @@ export default function Settings() {
             </div>
 
 
-            <div className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow">
+            <div
+              ref={notificationsRef}
+              className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow"
+            >
               <h2 className="font-bold text-2xl font-poppins">Notifications</h2>
               <p className="text-gray-500 text-base mt-2">
                 Trip alerts & updates
