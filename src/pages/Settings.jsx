@@ -13,6 +13,7 @@ export default function Settings() {
   const [twoFA, setTwoFA] = useState(false);
 
   const profileRef = useRef(null);
+  const themeRef = useRef(null);
 
   const { setLocation } = useMap();
 
@@ -55,11 +56,23 @@ export default function Settings() {
   };
 
   useEffect(() => {
-    if (location.state?.section === "profile") {
-      profileRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
+    switch (location.state?.section) {
+      case "profile":
+        profileRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+        break;
+
+      case "theme":
+        themeRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+        break;
+
+      default:
+        break;
     }
   }, [location]);
 
@@ -103,7 +116,10 @@ export default function Settings() {
           <div className="grid grid-cols-3 gap-10 mt-16">
 
 
-            <div className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow">
+            <div
+              ref={themeRef}
+              className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow"
+            >
               <h2 className="font-bold text-2xl font-poppins">Theme</h2>
               <p className="text-gray-500 text-base mt-2">
                 Switch your travel UI mood
