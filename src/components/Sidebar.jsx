@@ -2,17 +2,25 @@
 import { NavLink } from "react-router-dom";
 import {
   FaBars,
-  FaHome,
-  FaPlane,
-  FaMapMarkerAlt,
-  FaUsers,
-  FaUserCircle,
+  FaBell,
   FaCog,
+  FaCreditCard,
   FaGlobe,
+  FaHome,
+  FaLanguage,
+  FaMapMarkerAlt,
+  FaPalette,
+  FaPlane,
+  FaShieldAlt,
+  FaTrash,
+  FaUser,
+  FaUserCircle,
+  FaUsers,
 } from "react-icons/fa";
 
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
+  const [showSettingsMenu, setShowSettingsMenu] = useState(false);
 
   const menu = [
     { name: "Dashboard", icon: <FaHome />, path: "/" },
@@ -68,17 +76,42 @@ export default function Sidebar() {
 
         </div>
 
+<div className="px-3 mt-7">
 
+        {menu.map((item) => {
+          if (item.name === "Settings") {
+            return (
+              <div key={item.name} className="relative">
+                <button
+                  onClick={() => setShowSettingsMenu(!showSettingsMenu)}
+                  className={`w-full group flex items-center
+          ${collapsed ? "justify-center" : "justify-start"}
+          ${collapsed ? "" : "gap-4"}
+          ${collapsed ? "px-0" : "px-4"}
+          py-3.5
+          mb-2
+          rounded-2xl
+          transition-all
+          duration-300
+          hover:bg-slate-800 hover:translate-x-1`}
+                >
+                  <span className="text-[20px]">{item.icon}</span>
 
-        <div className="px-3 mt-7">
+                  {!collapsed && (
+                    <span className="font-medium tracking-wide">
+                      {item.name}
+                    </span>
+                  )}
+                </button>
+              </div>
+            );
+          }
 
-          {menu.map((item) => (
-
+          return (
             <NavLink
               key={item.name}
               to={item.path}
               className={({ isActive }) =>
-
                 `group flex items-center
         ${collapsed ? "justify-center" : "justify-start"}
         ${collapsed ? "" : "gap-4"}
@@ -88,31 +121,26 @@ export default function Sidebar() {
         rounded-2xl
         transition-all
         duration-300
-
         ${isActive
                   ? "bg-gradient-to-r from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/30"
                   : "hover:bg-slate-800 hover:translate-x-1"
                 }`
               }
             >
-
-              <span className="text-[20px]">
-                {item.icon}
-              </span>
+              <span className="text-[20px]">{item.icon}</span>
 
               {!collapsed && (
                 <span className="font-medium tracking-wide">
                   {item.name}
                 </span>
               )}
-
             </NavLink>
+          );
+        })}
 
-          ))}
+ 
 
-        </div>
-
-
+</div>
         {!collapsed && (
           <div className="px-5 mt-8">
 
