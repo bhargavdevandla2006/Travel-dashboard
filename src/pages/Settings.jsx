@@ -297,28 +297,69 @@ export default function Settings() {
               </p>
             </div>
 
+            <div className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow">
+
+              <h2 className="font-bold text-2xl font-poppins">
+                💳 Payment Methods
+              </h2>
+
+              <p className="text-gray-500 text-base mt-2">
+                Manage your saved payment methods
+              </p>
+
+              <div className="mt-6 space-y-3">
+
+                <div className="flex justify-between items-center bg-gray-100 rounded-2xl p-4">
+                  <span>💳 Visa •••• 4821</span>
+                  <span className="text-green-600 font-semibold">Default</span>
+                </div>
+
+                <div className="flex justify-between items-center bg-gray-100 rounded-2xl p-4">
+                  <span>💳 MasterCard •••• 7812</span>
+                  <button className="text-blue-600 font-semibold">
+                    Edit
+                  </button>
+                </div>
+
+                <div className="flex justify-between items-center bg-gray-100 rounded-2xl p-4">
+                  <span>📱 bhargav@upi</span>
+                  <button className="text-blue-600 font-semibold">
+                    Edit
+                  </button>
+                </div>
+
+              </div>
+
+              <button
+                className="mt-6 w-full bg-blue-600 text-white py-3 rounded-2xl font-semibold hover:bg-blue-700 transition"
+              >
+                + Add Payment Method
+              </button>
+
+            </div>
+
             <div
               ref={dangerRef}
               className="bg-red-50 p-8 rounded-3xl shadow-lg col-span-3 border-2 border-red-200"
-            > <div className="bg-red-50 p-8 rounded-3xl shadow-lg col-span-3 border-2 border-red-200">
-                <h2 className="font-bold text-2xl text-red-600 font-poppins">
-                  Danger Zone
-                </h2>
-                <p className="text-gray-600 text-base mt-2 font-medium">
-                  Logout from all devices and reset session
-                </p>
+            >
+              <h2 className="font-bold text-2xl text-red-600 font-poppins">
+                Danger Zone
+              </h2>
 
-                <button
-                  onClick={handleLogout}
-                  className="mt-6 bg-red-500 hover:bg-red-600 text-white px-8 py-3 rounded-2xl font-bold transition shadow-md"
-                >
-                  Logout Everywhere
-                </button>
-              </div>
+              <p className="text-gray-600 text-base mt-2 font-medium">
+                Logout from all devices and reset session
+              </p>
 
+              <button
+                onClick={handleLogout}
+                className="mt-6 bg-red-500 hover:bg-red-600 text-white px-8 py-3 rounded-2xl font-bold transition shadow-md"
+              >
+                Logout Everywhere
+              </button>
             </div>
           </div>
         </div>
       </div>
-      );
+    </div>
+  );
 }
