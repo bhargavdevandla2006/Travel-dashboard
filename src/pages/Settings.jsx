@@ -17,9 +17,10 @@ export default function Settings() {
   const notificationsRef = useRef(null);
   const securityRef = useRef(null);
   const travelStyleRef = useRef(null);
+  const locationRef = useRef(null);
+
 
   const { setLocation } = useMap();
-
   const navigate = useNavigate()
   const location = useLocation();
 
@@ -90,6 +91,13 @@ export default function Settings() {
 
       case "travelStyle":
         travelStyleRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+        break;
+
+      case "location":
+        locationRef.current?.scrollIntoView({
           behavior: "smooth",
           block: "start",
         });
@@ -255,7 +263,10 @@ export default function Settings() {
             </div>
 
 
-            <div className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow">
+            <div
+              ref={locationRef}
+              className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow"
+            >
               <h2 className="font-bold text-2xl font-poppins">Home Location</h2>
               <p className="text-gray-500 text-base mt-2">
                 Set your base city
