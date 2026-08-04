@@ -11,6 +11,8 @@ export default function Settings() {
   const [travelStyle, setTravelStyle] = useState('Adventure')
   const [city, setCity] = useState('')
   const [twoFA, setTwoFA] = useState(false);
+  const [language, setLanguage] = useState("English");
+
 
   const profileRef = useRef(null);
   const themeRef = useRef(null);
@@ -335,6 +337,51 @@ export default function Settings() {
               >
                 + Add Payment Method
               </button>
+
+            </div>
+
+            <div className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow">
+
+              <h2 className="font-bold text-2xl font-poppins">
+                🌐 Language
+              </h2>
+
+              <p className="text-gray-500 text-base mt-2">
+                Choose your preferred language
+              </p>
+
+              <div className="mt-6 flex flex-wrap gap-3">
+
+                {[
+                  "English",
+                  "తెలుగు",
+                  "हिन्दी",
+                  "தமிழ்",
+                  "ಕನ್ನಡ"
+                ].map((lang) => (
+
+                  <button
+                    key={lang}
+                    onClick={() => setLanguage(lang)}
+                    className={`px-5 py-3 rounded-2xl font-semibold transition
+                    ${language === lang
+                        ? "bg-blue-600 text-white shadow-lg"
+                        : "bg-gray-100 hover:bg-blue-100"
+                      }`}
+                  >
+                    {lang}
+                  </button>
+
+                ))}
+
+              </div>
+
+              <p className="mt-6 text-gray-600 font-medium">
+                Selected Language:
+                <span className="font-bold text-blue-600 ml-2">
+                  {language}
+                </span>
+              </p>
 
             </div>
 
