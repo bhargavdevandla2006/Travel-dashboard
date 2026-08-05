@@ -18,6 +18,8 @@ import HotelDetails from "./pages/HotelDetails";
 import Booking from "./pages/Booking";
 import DestinationDetails from "./pages/DestinationDetails";
 import TravelerProfile from "./pages/TravelerProfile";
+import Favorites from "./pages/Favorites";
+
 
 export default function App() {
 
@@ -30,12 +32,17 @@ export default function App() {
         <Routes>
 
           <Route
+            path="/favorites"
+            element={<Favorites />}
+          />
+
+          <Route
             path="/traveler/:id"
             element={<TravelerProfile />}
           />
 
           <Route path="/travelers"
-           element={<Travelers />} />
+            element={<Travelers />} />
 
           <Route
             path="/destinations/:id"

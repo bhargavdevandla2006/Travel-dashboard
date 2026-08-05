@@ -25,6 +25,11 @@ export default function Sidebar() {
   const navigate = useNavigate();
 
   const menu = [
+    {
+      name: "Favorites",
+      icon: <FaHeart />,
+      path: "/favorites",
+    },
     { name: "Dashboard", icon: <FaHome />, path: "/" },
     { name: "Trips", icon: <FaPlane />, path: "/trips" },
     { name: "Destinations", icon: <FaMapMarkerAlt />, path: "/destinations" },
