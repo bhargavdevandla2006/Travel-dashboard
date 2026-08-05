@@ -19,11 +19,13 @@ export default function Travelers() {
     async function loadUsers() {
 
         try {
+            const endpoint = search.trim()
+                ? `${apiUrl}/search-users?search=${encodeURIComponent(search)}`
+                : `${apiUrl}/users`;
 
-            const response = await fetch(`http://localhost:3000/search-users?search=${search}` , {
+            const response = await fetch(endpoint, {
                 credentials: "include",
             });
-
 
             const data = await response.json();
 

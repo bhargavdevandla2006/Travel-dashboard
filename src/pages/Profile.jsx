@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import EditProfile from "../components/EditProfile";
 import { FaUserEdit, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 import { useState, useEffect } from "react";
+import apiUrl from "../services/api";
 import { getProfile, logoutUser } from "../services/api";
 
 
@@ -25,26 +26,32 @@ export default function Profile() {
 
       setUser(data);
 
-     const followersRes = await fetch(
-  `https://travel-dashboard-backend-2.onrender.com/followers-count/${data.id}`,
-  {
-    credentials: "include",
-  }
-);
+      const followersRes = await fetch(
+        `${apiUrl}/followers-count/${data.id}`,
+        {
+          credentials: "include",
+        }
+      );
+      const followersData = await followersRes.json();
+      setFollowers(followersData.count || 0);
 
-const followingRes = await fetch(
-  `https://travel-dashboard-backend-2.onrender.com/following-count/${data.id}`,
-  {
-    credentials: "include",
-  }
-);
+      const followingRes = await fetch(
+        `${apiUrl}/following-count/${data.id}`,
+        {
+          credentials: "include",
+        }
+      );
+      const followingData = await followingRes.json();
+      setFollowing(followingData.count || 0);
 
-const tripsRes = await fetch(
-  `https://travel-dashboard-backend-2.onrender.com/users/${data.id}/trips`,
-  {
-    credentials: "include",
-  }
-);
+      const tripsRes = await fetch(
+        `${apiUrl}/users/${data.id}/trips`,
+        {
+          credentials: "include",
+        }
+      );
+      const tripsData = await tripsRes.json();
+      setTrips(Array.isArray(tripsData) ? tripsData.length : 0);
     } catch (error) {
       console.error(error);
     }

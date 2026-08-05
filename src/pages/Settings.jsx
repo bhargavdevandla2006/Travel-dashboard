@@ -13,6 +13,15 @@ export default function Settings() {
   const [twoFA, setTwoFA] = useState(false);
   const [language, setLanguage] = useState("English");
 
+  const [showEditProfile, setShowEditProfile] = useState(false);
+
+  const [profile, setProfile] = useState({
+    name: "Bhargav Devandla",
+    email: "bhargav@gmail.com",
+    phone: "+91 9876543210",
+    country: "India",
+    bio: "Traveler • Explorer • Dreamer",
+  });
 
   const profileRef = useRef(null);
   const themeRef = useRef(null);
@@ -217,6 +226,7 @@ export default function Settings() {
             </div>
 
             <button
+              onClick={() => setShowEditProfile(true)}
               className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl font-semibold transition"
             >
               ✏️ Edit Profile
@@ -521,6 +531,88 @@ export default function Settings() {
           </div>
         </div>
       </div>
+
+      {showEditProfile && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+
+          <div className="bg-white w-[600px] rounded-3xl p-8 shadow-2xl">
+
+            <h2 className="text-3xl font-bold mb-8">
+              Edit Profile
+            </h2>
+
+            <div className="space-y-5">
+
+              <input
+                value={profile.name}
+                onChange={(e) =>
+                  setProfile({ ...profile, name: e.target.value })
+                }
+                placeholder="Full Name"
+                className="w-full border rounded-xl p-4"
+              />
+
+              <input
+                value={profile.email}
+                onChange={(e) =>
+                  setProfile({ ...profile, email: e.target.value })
+                }
+                placeholder="Email"
+                className="w-full border rounded-xl p-4"
+              />
+
+              <input
+                value={profile.phone}
+                onChange={(e) =>
+                  setProfile({ ...profile, phone: e.target.value })
+                }
+                placeholder="Phone"
+                className="w-full border rounded-xl p-4"
+              />
+
+              <input
+                value={profile.country}
+                onChange={(e) =>
+                  setProfile({ ...profile, country: e.target.value })
+                }
+                placeholder="Country"
+                className="w-full border rounded-xl p-4"
+              />
+
+              <textarea
+                rows={4}
+                value={profile.bio}
+                onChange={(e) =>
+                  setProfile({ ...profile, bio: e.target.value })
+                }
+                placeholder="Bio"
+                className="w-full border rounded-xl p-4"
+              />
+
+            </div>
+
+            <div className="flex justify-end gap-4 mt-8">
+
+              <button
+                onClick={() => setShowEditProfile(false)}
+                className="px-6 py-3 rounded-xl bg-gray-200"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={() => setShowEditProfile(false)}
+                className="px-6 py-3 rounded-xl bg-blue-600 text-white"
+              >
+                Save Changes
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+      )}
     </div>
   );
 }
