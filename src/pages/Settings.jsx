@@ -644,15 +644,36 @@ export default function Settings() {
 
               <div>
 
-                <label className="block mb-2 font-semibold">
+                <label className="block mb-3 font-semibold text-gray-700">
                   Profile Picture
                 </label>
 
+                <label
+                  htmlFor="profileImage"
+                  className="flex items-center justify-between
+    border-2 border-dashed border-blue-300
+    rounded-2xl p-4 cursor-pointer
+    hover:border-blue-600
+    hover:bg-blue-50
+    transition"
+                >
+
+                  <span className="text-gray-500">
+                    {profileImage ? "✅ Image Selected" : "📷 Choose Profile Picture"}
+                  </span>
+
+                  <span className="bg-blue-600 text-white px-4 py-2 rounded-xl font-semibold">
+                    Browse
+                  </span>
+
+                </label>
+
                 <input
+                  id="profileImage"
                   type="file"
                   accept="image/*"
                   onChange={handleImageUpload}
-                  className="w-full"
+                  className="hidden"
                 />
 
               </div>
