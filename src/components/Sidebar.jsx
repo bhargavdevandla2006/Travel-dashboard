@@ -55,9 +55,9 @@ export default function Sidebar() {
     <div
       className={`${collapsed ? "w-20" : "w-[290px]"}
   min-h-screen
-  bg-[#0B1220]
+  bg-[#0B1220] dark:bg-[#07111a]
   border-r
-  border-slate-800
+  border-slate-800 dark:border-slate-900
   text-white
   flex
   flex-col
@@ -142,11 +142,12 @@ export default function Sidebar() {
     top-0
     ml-4
     w-72
-    bg-white
+    bg-white dark:bg-gray-900
     rounded-3xl
-    shadow-2xl
+    shadow-2xl dark:shadow-lg
     border
-    border-gray-200
+    border-gray-200 dark:border-gray-800
+    text-gray-900 dark:text-gray-100
     z-[9999]
     overflow-hidden
   "
@@ -166,7 +167,7 @@ export default function Sidebar() {
 
                         <button
                           onClick={() => openSettingsSection("profile")}
-                          className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200"
+                          className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/40 hover:text-blue-600 dark:hover:text-blue-300 transition duration-200"
                         >
                           <FaUser className="text-blue-600" />
                           {t("Profile")}
@@ -174,7 +175,7 @@ export default function Sidebar() {
 
                         <button
                           onClick={() => openSettingsSection("theme")}
-                          className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200"
+                          className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/40 hover:text-blue-600 dark:hover:text-blue-300 transition duration-200"
                         >
                           <FaPalette className="text-purple-600" />
                           {t("Theme")}
@@ -182,7 +183,7 @@ export default function Sidebar() {
 
                         <button
                           onClick={() => openSettingsSection("notifications")}
-                          className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200"
+                          className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/40 hover:text-blue-600 dark:hover:text-blue-300 transition duration-200"
                         >
                           <FaBell className="text-yellow-500" />
                           {t("TripAlerts")}
@@ -190,7 +191,7 @@ export default function Sidebar() {
 
                         <button
                           onClick={() => openSettingsSection("security")}
-                          className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200"
+                          className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/40 hover:text-blue-600 dark:hover:text-blue-300 transition duration-200"
                         >
                           <FaShieldAlt className="text-green-600" />
                           {t("Security")}
@@ -198,7 +199,7 @@ export default function Sidebar() {
 
                         <button
                           onClick={() => openSettingsSection("travelStyle")}
-                          className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200"
+                          className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/40 hover:text-blue-600 dark:hover:text-blue-300 transition duration-200"
                         >
                           <FaGlobe className="text-cyan-600" />
                           {t("TravelStyle")}
@@ -206,18 +207,18 @@ export default function Sidebar() {
 
                         <button
                           onClick={() => openSettingsSection("location")}
-                          className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200"
+                          className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/40 hover:text-blue-600 dark:hover:text-blue-300 transition duration-200"
                         >
                           <FaMapMarkerAlt className="text-red-500" />
                           {t("HomeLocation")}
                         </button>
 
-                        <button className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200">
+                        <button className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/40 hover:text-blue-600 dark:hover:text-blue-300 transition duration-200">
                           <FaCreditCard className="text-indigo-600" />
                           Payments
                         </button>
 
-                        <button className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200">
+                        <button className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/40 hover:text-blue-600 dark:hover:text-blue-300 transition duration-200">
                           <FaLanguage className="text-pink-500" />
                           {t("Language")}
                         </button>
@@ -239,11 +240,10 @@ export default function Sidebar() {
             }
 
             return (
-              <NavLink
-                key={item.name}
-                to={item.path}
-                className={({ isActive }) =>
-                  `group flex items-center
+              <NavLink key={item.name} to={item.path}>
+                {({ isActive }) => (
+                  <div
+                    className={`relative group flex items-center
         ${collapsed ? "justify-center" : "justify-start"}
         ${collapsed ? "" : "gap-4"}
         ${collapsed ? "px-0" : "px-4"}
@@ -253,17 +253,25 @@ export default function Sidebar() {
         transition-all
         duration-300
         ${isActive
-                    ? "bg-gradient-to-r from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/30"
-                    : "hover:bg-slate-800 hover:translate-x-1"
-                  }`
-                }
-              >
-                <span className="text-[20px]">{item.icon}</span>
+                        ? "bg-gradient-to-r from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/30"
+                        : "hover:bg-slate-800 hover:translate-x-1"
+                      }`}
+                  >
+                    {/* left active indicator for expanded sidebar */}
+                    {!collapsed && isActive && (
+                      <div className="absolute left-0 top-0 h-full w-1 rounded-r-2xl bg-gradient-to-b from-blue-500 to-indigo-600" />
+                    )}
 
-                {!collapsed && (
-                  <span className="font-medium tracking-wide">
-                    {item.name}
-                  </span>
+                    <span className={`text-[20px] ${isActive ? "text-white" : "text-slate-100"}`}>
+                      {item.icon}
+                    </span>
+
+                    {!collapsed && (
+                      <span className={`font-medium tracking-wide ${isActive ? "text-white" : "text-slate-100"}`}>
+                        {item.name}
+                      </span>
+                    )}
+                  </div>
                 )}
               </NavLink>
             );
@@ -275,7 +283,7 @@ export default function Sidebar() {
         {!collapsed && (
           <div className="px-5 mt-8">
 
-            <h2 className="text-xs uppercase tracking-[3px] text-slate-500 mb-4">
+            <h2 className="text-xs uppercase tracking-[3px] text-slate-400 dark:text-slate-300 mb-4">
               Recent Trips
             </h2>
 
@@ -283,17 +291,17 @@ export default function Sidebar() {
 
               <div className="bg-slate-800 hover:bg-slate-700 rounded-2xl p-4 transition cursor-pointer">
                 <p className="font-semibold">🏝 Bali</p>
-                <p className="text-xs text-slate-400">Indonesia</p>
+                <p className="text-xs text-slate-400 dark:text-slate-300">Indonesia</p>
               </div>
 
               <div className="bg-slate-800 hover:bg-slate-700 rounded-2xl p-4 transition cursor-pointer">
                 <p className="font-semibold">🗼 Paris</p>
-                <p className="text-xs text-slate-400">France</p>
+                <p className="text-xs text-slate-400 dark:text-slate-300">France</p>
               </div>
 
               <div className="bg-slate-800 hover:bg-slate-700 rounded-2xl p-4 transition cursor-pointer">
                 <p className="font-semibold">🗻 Tokyo</p>
-                <p className="text-xs text-slate-400">Japan</p>
+                <p className="text-xs text-slate-400 dark:text-slate-300">Japan</p>
               </div>
 
             </div>

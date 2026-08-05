@@ -17,50 +17,11 @@ body {
   color: #0f172a;
 }
 
-/* Global dark-mode overrides for elements that don't have Tailwind dark: variants */
+/* Minimal dark-mode base — component-level dark: classes preferred */
 .dark body {
-  background-color: #0b1220;
+  background-color: #07111a;
   color: #e6eef8;
 }
-
-/* Cards and white backgrounds */
-.dark .bg-white {
-  background-color: #0f1724 !important;
-}
-
-/* Light gray backgrounds */
-.dark .bg-gray-100 {
-  background-color: #0b1624 !important;
-}
-.dark .bg-gray-200 {
-  background-color: #0d1b2a !important;
-}
-
-/* Text muted/grays */
-.dark .text-gray-500,
-.dark .text-gray-600,
-.dark .text-gray-400,
-.dark .text-gray-700 {
-  color: #9fb0c8 !important;
-}
-
-/* Borders */
-.dark .border-gray-200,
-.dark .border-gray-300 {
-  border-color: rgba(255,255,255,0.06) !important;
-}
-
-/* Input backgrounds */
-.dark input,
-.dark textarea,
-.dark select {
-  background-color: #07111a !important;
-  color: #e6eef8 !important;
-  border-color: rgba(255,255,255,0.06) !important;
-}
-
-/* small utility tweaks for cards shadows in dark */
-.dark .shadow-lg { box-shadow: 0 8px 30px rgba(2,6,23,0.6) !important; }
 
 
 h1 {
