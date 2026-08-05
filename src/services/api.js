@@ -1,4 +1,4 @@
-export const apiUrl = "https://travel-dashboard-backend-2.onrender.com";
+export const apiUrl = import.meta.env.VITE_API_URL || "https://travel-dashboard-backend-2.onrender.com";
 
 async function parseJsonResponse(response) {
   const text = await response.text();

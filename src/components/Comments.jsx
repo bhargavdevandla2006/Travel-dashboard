@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import apiUrl from "../services/api";
 
 export default function Comments({ tripId }) {
 
@@ -14,7 +15,7 @@ export default function Comments({ tripId }) {
         try {
 
             const response = await fetch(
-                `https://travel-dashboard-backend-2.onrender.com/comments/${tripId}`
+                `${apiUrl}/comments/${tripId}`
             );
 
             const data = await response.json();
@@ -40,7 +41,7 @@ export default function Comments({ tripId }) {
         try {
 
             const response = await fetch(
-                `https://travel-dashboard-backend-2.onrender.com/comments/${tripId}`,
+                `${apiUrl}/comments/${tripId}`,
                 {
                     method: "POST",
                     headers: {

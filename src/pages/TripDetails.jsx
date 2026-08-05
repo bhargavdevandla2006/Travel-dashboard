@@ -1,6 +1,7 @@
 import { useLocation } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
+import apiUrl from "../services/api";
 import { FaMapMarkerAlt, FaStar, FaPlane } from "react-icons/fa";
 
 export default function TripDetails() {
@@ -19,7 +20,7 @@ const handlePayment = async () => {
   try {
 
     const response = await fetch(
-      "http://localhost:3000/create-order",
+      `${apiUrl}/create-order`,
       {
         method: "POST",
         headers: {

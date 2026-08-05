@@ -1,6 +1,7 @@
 ﻿import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Comments from "./Comments";
+import apiUrl from "../services/api";
 
 export default function TripCard({ id, image, title, location, price, }) {
 
@@ -31,7 +32,7 @@ export default function TripCard({ id, image, title, location, price, }) {
     try {
 
       const response = await fetch(
-        `https://travel-dashboard-backend-2.onrender.com/check-like/${id}`,
+        `${apiUrl}/check-like/${id}`,
         {
           credentials: "include"
         }
@@ -56,7 +57,7 @@ export default function TripCard({ id, image, title, location, price, }) {
     try {
 
       const response = await fetch(
-        `https://travel-dashboard-backend-2.onrender.com/likes-count/${id}`
+        `${apiUrl}/likes-count/${id}`
       );
 
       if (response.ok) {
@@ -80,7 +81,7 @@ export default function TripCard({ id, image, title, location, price, }) {
     try {
 
       const response = await fetch(
-        `https://travel-dashboard-backend-2.onrender.com/like/${id}`,
+        `${apiUrl}/like/${id}`,
         {
           method: "POST",
           credentials: "include"
@@ -110,7 +111,7 @@ export default function TripCard({ id, image, title, location, price, }) {
     try {
 
       const response = await fetch(
-        `https://travel-dashboard-backend-2.onrender.com/unlike/${id}`,
+        `${apiUrl}/unlike/${id}`,
         {
           method: "DELETE",
           credentials: "include"
