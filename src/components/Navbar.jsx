@@ -8,10 +8,12 @@
 } from "react-icons/fa";
 
 import { useState } from "react";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function Navbar({ search, setSearch }) {
 
   const [open, setOpen] = useState(false);
+  const { t } = useLanguage();
 
   return (
 
@@ -22,11 +24,11 @@ export default function Navbar({ search, setSearch }) {
       <div>
 
         <h1 className="text-3xl font-bold text-slate-900">
-          Dashboard
+          {t("Dashboard")}
         </h1>
 
         <p className="text-gray-500 mt-1 text-sm">
-          Welcome back 👋 Plan your next adventure.
+          {t("WelcomeBack")}
         </p>
 
       </div>
@@ -43,7 +45,7 @@ export default function Navbar({ search, setSearch }) {
           value={search}
           onChange={(e)=>setSearch(e.target.value)}
           type="text"
-          placeholder="Search trips, hotels, destinations..."
+          placeholder={t("SearchPlaceholder")}
           className="w-full bg-gray-100 pl-14 pr-5 py-3 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 transition"
         />
 
@@ -125,7 +127,7 @@ export default function Navbar({ search, setSearch }) {
 
                   <FaUserCircle/>
 
-                  My Profile
+                  {t("Profile")}
 
                 </button>
 
@@ -133,7 +135,7 @@ export default function Navbar({ search, setSearch }) {
 
                   <FaCog/>
 
-                  Settings
+                  {t("Settings")}
 
                 </button>
 

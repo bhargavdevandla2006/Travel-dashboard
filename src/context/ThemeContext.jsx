@@ -11,6 +11,10 @@ export function ThemeProvider({ children }) {
     localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
 
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", darkMode);
+  }, [darkMode]);
+
   const toggleTheme = () => {
     setDarkMode((prev) => !prev);
   };
@@ -19,7 +23,9 @@ export function ThemeProvider({ children }) {
     <ThemeContext.Provider
       value={{
         darkMode,
+        setDarkMode,
         toggleTheme,
+
       }}
     >
       {children}
