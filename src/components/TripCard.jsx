@@ -95,6 +95,18 @@ export default function TripCard({ id, image, title, location, price, }) {
         setLiked(true);
 
         await loadLikes();
+        // add to local favorites so Favorites page shows this item
+        try {
+          const existing = JSON.parse(localStorage.getItem("favorites")) || [];
+          const place = { name: title, country: location, image };
+          const found = existing.find((p) => p.name === place.name && p.country === place.country);
+          if (!found) {
+            existing.push(place);
+            localStorage.setItem("favorites", JSON.stringify(existing));
+          }
+        } catch (e) {
+          console.error('Failed to add favorite', e);
+        }
 
       }
 
@@ -125,6 +137,14 @@ export default function TripCard({ id, image, title, location, price, }) {
         setLiked(false);
 
         await loadLikes();
+        // remove from local favorites
+        try {
+          const existing = JSON.parse(localStorage.getItem("favorites")) || [];
+          const filtered = existing.filter((p) => !(p.name === title && p.country === location));
+          localStorage.setItem("favorites", JSON.stringify(filtered));
+        } catch (e) {
+          console.error('Failed to remove favorite', e);
+        }
 
       }
 

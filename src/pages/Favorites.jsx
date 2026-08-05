@@ -6,9 +6,9 @@ export default function Favorites() {
     JSON.parse(localStorage.getItem("favorites")) || [];
 
   return (
-    <div className="bg-[#020B2D] min-h-screen p-6">
+    <div className="min-h-screen p-6 bg-gray-100 dark:bg-[#07111a]">
 
-      <div className="bg-[#F5F5F5] rounded-[40px] overflow-hidden flex">
+      <div className="bg-white dark:bg-gray-900 rounded-[40px] overflow-hidden flex">
 
         <Sidebar />
 
@@ -16,7 +16,7 @@ export default function Favorites() {
 
           <Navbar />
 
-          <h1 className="text-4xl font-bold mt-10">
+          <h1 className="text-4xl font-bold mt-10 text-gray-900 dark:text-gray-100">
             ❤️ Favorite Destinations
           </h1>
 
@@ -24,7 +24,7 @@ export default function Favorites() {
 
             {favorites.length === 0 ? (
 
-              <h2>No Favorite Destinations Yet ❤️</h2>
+              <h2 className="text-gray-600 dark:text-gray-300">No Favorite Destinations Yet ❤️</h2>
 
             ) : (
 
@@ -32,7 +32,7 @@ export default function Favorites() {
 
                 <div
                   key={place.name}
-                  className="bg-white rounded-3xl shadow-lg p-6"
+                  className="bg-white dark:bg-gray-800 rounded-3xl shadow-lg dark:shadow-none p-6"
                 >
 
                   <img
@@ -41,11 +41,11 @@ export default function Favorites() {
                     alt={place.name}
                   />
 
-                  <h2 className="text-xl font-bold mt-4">
+                  <h2 className="text-xl font-bold mt-4 text-gray-900 dark:text-gray-100">
                     {place.name}
                   </h2>
 
-                  <p className="text-gray-500">
+                  <p className="text-gray-500 dark:text-gray-300">
                     {place.country}
                   </p>
 
