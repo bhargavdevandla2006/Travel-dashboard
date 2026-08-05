@@ -22,6 +22,7 @@ export default function Settings() {
     country: "India",
     bio: "Traveler • Explorer • Dreamer",
   });
+  const [profileImage, setProfileImage] = useState(null);
 
   const profileRef = useRef(null);
   const themeRef = useRef(null);
@@ -168,6 +169,16 @@ export default function Settings() {
     URL.revokeObjectURL(url);
   };
 
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    const imageUrl = URL.createObjectURL(file);
+
+    setProfileImage(imageUrl);
+  };
+
   return (
     <div className="bg-[#020B2D] min-h-screen p-6">
       <div className="bg-[#F5F5F5] rounded-[40px] overflow-hidden flex">
@@ -192,8 +203,24 @@ export default function Settings() {
           >
             <div className="flex items-center gap-8">
 
-              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-4xl font-bold shadow-lg">
-                B
+              <div className="w-24 h-24 rounded-full overflow-hidden shadow-lg">
+
+                {profileImage ? (
+
+                  <img
+                    src={profileImage}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
+
+                ) : (
+
+                  <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-4xl font-bold">
+                    B
+                  </div>
+
+                )}
+
               </div>
 
               <div>
@@ -614,6 +641,21 @@ export default function Settings() {
             </h2>
 
             <div className="space-y-5">
+
+              <div>
+
+                <label className="block mb-2 font-semibold">
+                  Profile Picture
+                </label>
+
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="w-full"
+                />
+
+              </div>
 
               <input
                 value={profile.name}
