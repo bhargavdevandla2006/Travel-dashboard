@@ -126,16 +126,47 @@ export default function Settings() {
     }
   }, [location]);
 
-const handleSaveProfile = () => {
-  setShowEditProfile(false);
-  setShowToast(true);
+  const handleSaveProfile = () => {
+    setShowEditProfile(false);
+    setShowToast(true);
 
-  const timer = setTimeout(() => {
-    setShowToast(false);
-  }, 3000);
+    const timer = setTimeout(() => {
+      setShowToast(false);
+    }, 3000);
 
-  return () => clearTimeout(timer);
-};
+    return () => clearTimeout(timer);
+  };
+
+  const handleExportData = () => {
+    const data = {
+      profile,
+      travelStyle,
+      language,
+      notifications,
+      emailAlerts,
+      darkMode,
+      twoFA,
+      city,
+    };
+
+    const blob = new Blob(
+      [JSON.stringify(data, null, 2)],
+      {
+        type: "application/json",
+      }
+    );
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = "travelhub-profile.json";
+
+    link.click();
+
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="bg-[#020B2D] min-h-screen p-6">
@@ -528,6 +559,25 @@ const handleSaveProfile = () => {
                   {language}
                 </span>
               </p>
+
+            </div>
+
+            <div className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-xl transition">
+
+              <h2 className="text-2xl font-bold">
+                📥 Export Data
+              </h2>
+
+              <p className="text-gray-500 mt-2">
+                Download all your settings and profile information.
+              </p>
+
+              <button
+                onClick={handleExportData}
+                className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-2xl font-semibold transition"
+              >
+                Download JSON
+              </button>
 
             </div>
 
