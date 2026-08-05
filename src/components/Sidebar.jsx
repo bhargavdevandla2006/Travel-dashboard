@@ -16,6 +16,7 @@ import {
   FaUser,
   FaUserCircle,
   FaUsers,
+  FaHeart,
 } from "react-icons/fa";
 
 export default function Sidebar() {

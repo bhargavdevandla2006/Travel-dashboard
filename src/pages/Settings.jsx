@@ -5,24 +5,74 @@ import { useMap } from "../context/MapContext";
 import { useNavigate, useLocation } from "react-router-dom";
 
 export default function Settings() {
+  const SETTINGS_STORAGE_KEY = "travelhub-settings";
+  const PROFILE_STORAGE_KEY = "travelhub-profile";
+
   const [darkMode, setDarkMode] = useState(false);
   const [notifications, setNotifications] = useState(true);
   const [emailAlerts, setEmailAlerts] = useState(false);
-  const [travelStyle, setTravelStyle] = useState('Adventure')
-  const [city, setCity] = useState('')
+  const [travelStyle, setTravelStyle] = useState('Adventure');
+  const [city, setCity] = useState('');
   const [twoFA, setTwoFA] = useState(false);
   const [language, setLanguage] = useState("English");
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [showToast, setShowToast] = useState(false);
 
-  const [profile, setProfile] = useState({
+  const defaultProfile = {
     name: "Bhargav Devandla",
     email: "bhargav@gmail.com",
     phone: "+91 9876543210",
     country: "India",
     bio: "Traveler • Explorer • Dreamer",
-  });
+  };
+
+  const [profile, setProfile] = useState(defaultProfile);
   const [profileImage, setProfileImage] = useState(null);
+
+  useEffect(() => {
+    const savedSettings = JSON.parse(localStorage.getItem(SETTINGS_STORAGE_KEY) || "{}");
+    const savedProfile = JSON.parse(localStorage.getItem(PROFILE_STORAGE_KEY) || "{}");
+
+    if (savedSettings.darkMode !== undefined) setDarkMode(savedSettings.darkMode);
+    if (savedSettings.notifications !== undefined) setNotifications(savedSettings.notifications);
+    if (savedSettings.emailAlerts !== undefined) setEmailAlerts(savedSettings.emailAlerts);
+    if (savedSettings.travelStyle) setTravelStyle(savedSettings.travelStyle);
+    if (savedSettings.city) setCity(savedSettings.city);
+    if (savedSettings.twoFA !== undefined) setTwoFA(savedSettings.twoFA);
+    if (savedSettings.language) setLanguage(savedSettings.language);
+
+    if (savedProfile && Object.keys(savedProfile).length) {
+      setProfile(savedProfile);
+    }
+
+    if (savedSettings.profileImage) {
+      setProfileImage(savedSettings.profileImage);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem(
+      SETTINGS_STORAGE_KEY,
+      JSON.stringify({
+        darkMode,
+        notifications,
+        emailAlerts,
+        travelStyle,
+        city,
+        twoFA,
+        language,
+        profileImage,
+      })
+    );
+  }, [darkMode, notifications, emailAlerts, travelStyle, city, twoFA, language, profileImage]);
+
+  useEffect(() => {
+    localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
+  }, [profile]);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", darkMode);
+  }, [darkMode]);
 
   const profileRef = useRef(null);
   const themeRef = useRef(null);
@@ -40,6 +90,26 @@ export default function Settings() {
     localStorage.removeItem("token");
     navigate("/login");
   };
+
+  const handleResetSettings = () => {
+    setDarkMode(false);
+    setNotifications(true);
+    setEmailAlerts(false);
+    setTravelStyle("Adventure");
+    setCity("");
+    setTwoFA(false);
+    setLanguage("English");
+    setProfile(defaultProfile);
+    setProfileImage(null);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 2500);
+  };
+
+  const handleSaveSettings = () => {
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 2500);
+  };
+
   const handleLocationSearch = async () => {
 
     if (!city.trim()) {
@@ -130,44 +200,11 @@ export default function Settings() {
   const handleSaveProfile = () => {
     setShowEditProfile(false);
     setShowToast(true);
-
-    const timer = setTimeout(() => {
+    setTimeout(() => {
       setShowToast(false);
-    }, 3000);
-
-    return () => clearTimeout(timer);
+    }, 2500);
   };
 
-  const handleExportData = () => {
-    const data = {
-      profile,
-      travelStyle,
-      language,
-      notifications,
-      emailAlerts,
-      darkMode,
-      twoFA,
-      city,
-    };
-
-    const blob = new Blob(
-      [JSON.stringify(data, null, 2)],
-      {
-        type: "application/json",
-      }
-    );
-
-    const url = URL.createObjectURL(blob);
-
-    const link = document.createElement("a");
-
-    link.href = url;
-    link.download = "travelhub-profile.json";
-
-    link.click();
-
-    URL.revokeObjectURL(url);
-  };
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -592,19 +629,24 @@ export default function Settings() {
             <div className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-xl transition">
 
               <h2 className="text-2xl font-bold">
-                📥 Export Data
+                � Your Travel Hub
               </h2>
 
               <p className="text-gray-500 mt-2">
-                Download all your settings and profile information.
+                Use this section to personalize your app without leaving the dashboard.
               </p>
 
-              <button
-                onClick={handleExportData}
-                className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-2xl font-semibold transition"
-              >
-                Download JSON
-              </button>
+              <ul className="mt-6 space-y-3 text-gray-700">
+                <li className="flex items-center gap-3">
+                  <span className="text-blue-600">•</span> Keep your travel preferences synced.
+                </li>
+                <li className="flex items-center gap-3">
+                  <span className="text-blue-600">•</span> Switch themes, languages, and alerts on the fly.
+                </li>
+                <li className="flex items-center gap-3">
+                  <span className="text-blue-600">•</span> Control your home location and payment settings.
+                </li>
+              </ul>
 
             </div>
 
