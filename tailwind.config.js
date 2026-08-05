@@ -1,9 +1,12 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: "class", 
+
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+
   theme: {
     extend: {
       fontFamily: {
@@ -12,13 +15,14 @@ export default {
         playfair: ['Playfair Display', 'serif'],
       },
       colors: {
-        primary: '#1e40af', // Blue
-        secondary: '#64748b', // Slate
-        accent: '#f59e0b', // Amber
-        danger: '#ef4444', // Red
-        success: '#10b981', // Emerald
+        primary: '#1e40af',
+        secondary: '#64748b',
+        accent: '#f59e0b',
+        danger: '#ef4444',
+        success: '#10b981',
       },
     },
   },
+
   plugins: [],
 }

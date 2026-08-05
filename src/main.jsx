@@ -4,13 +4,16 @@ import "./index.css";
 import App from "./App.jsx";
 import { MapProvider } from "./context/MapContext";
 import { ThemeProvider } from "./context/ThemeContext";
+import { LanguageProvider } from "./context/LanguageContext";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <ThemeProvider>
-      <MapProvider>
-        <App />
-      </MapProvider>
+      <LanguageProvider>
+        <MapProvider>
+          <App />
+        </MapProvider>
+      </LanguageProvider>
     </ThemeProvider>
   </StrictMode>
 );

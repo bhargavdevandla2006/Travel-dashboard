@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar";
 import { useMap } from "../context/MapContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
+import { useLanguage } from "../context/LanguageContext";
 
 
 export default function Settings() {
@@ -15,9 +16,21 @@ export default function Settings() {
   const [travelStyle, setTravelStyle] = useState('Adventure');
   const [city, setCity] = useState('');
   const [twoFA, setTwoFA] = useState(false);
-  const [language, setLanguage] = useState("English");
+  const labelMap = {
+    en: "English",
+    te: "తెలుగు",
+    hi: "हिन्दी",
+    ta: "தமிழ்",
+    kn: "ಕನ್ನಡ",
+  };
+
+  const [language, setLanguage] = useState(() => {
+    const code = localStorage.getItem("lang") || "en";
+    return labelMap[code] || "English";
+  });
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [showToast, setShowToast] = useState(false);
+ const { darkMode, toggleTheme, setDarkMode } = useTheme();
 
   const defaultProfile = {
     name: "Bhargav Devandla",
@@ -34,13 +47,18 @@ export default function Settings() {
     const savedSettings = JSON.parse(localStorage.getItem(SETTINGS_STORAGE_KEY) || "{}");
     const savedProfile = JSON.parse(localStorage.getItem(PROFILE_STORAGE_KEY) || "{}");
 
-    if (savedSettings.darkMode !== undefined) setDarkMode(savedSettings.darkMode);
+   
     if (savedSettings.notifications !== undefined) setNotifications(savedSettings.notifications);
     if (savedSettings.emailAlerts !== undefined) setEmailAlerts(savedSettings.emailAlerts);
     if (savedSettings.travelStyle) setTravelStyle(savedSettings.travelStyle);
     if (savedSettings.city) setCity(savedSettings.city);
     if (savedSettings.twoFA !== undefined) setTwoFA(savedSettings.twoFA);
-    if (savedSettings.language) setLanguage(savedSettings.language);
+    if (savedSettings.language) {
+      setLanguage(savedSettings.language);
+      // sync language code in LanguageContext if possible
+      const code = Object.keys(labelMap).find((k) => labelMap[k] === savedSettings.language);
+      if (code) setLang(code);
+    }
 
     if (savedProfile && Object.keys(savedProfile).length) {
       setProfile(savedProfile);
@@ -71,9 +89,11 @@ export default function Settings() {
     localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
   }, [profile]);
 
+  const { t, setLang, lang } = useLanguage();
+
   useEffect(() => {
-    document.documentElement.classList.toggle("dark", darkMode);
-  }, [darkMode]);
+    setLanguage(labelMap[lang] || "English");
+  }, [lang]);
 
   const profileRef = useRef(null);
   const themeRef = useRef(null);
@@ -86,7 +106,7 @@ export default function Settings() {
   const { setLocation } = useMap();
   const navigate = useNavigate()
   const location = useLocation();
-const { darkMode, toggleTheme } = useTheme();
+
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -94,13 +114,14 @@ const { darkMode, toggleTheme } = useTheme();
   };
 
   const handleResetSettings = () => {
-    setDarkMode(false);
+    
     setNotifications(true);
     setEmailAlerts(false);
     setTravelStyle("Adventure");
     setCity("");
     setTwoFA(false);
     setLanguage("English");
+    setLang("en");
     setProfile(defaultProfile);
     setProfileImage(null);
     setShowToast(true);
@@ -219,17 +240,16 @@ const { darkMode, toggleTheme } = useTheme();
   };
 
   return (
-    <div className="bg-[#020B2D] min-h-screen p-6">
-      <div className="bg-[#F5F5F5] rounded-[40px] overflow-hidden flex">
-
+    <div className="min-h-screen p-6 bg-gray-100 dark:bg-gray-900">
+     <div className="bg-white dark:bg-gray-800 rounded-[40px] overflow-hidden flex">
         <Sidebar />
 
         <div className="flex-1 p-12">
           <Navbar />
 
 
-          <h1 className="text-3xl font-playfair font-bold text-gray-900 mt-12 tracking-tight">
-            Settings
+          <h1 className="text-3xl font-playfair font-bold text-gray-900 dark:text-white mt-12 tracking-tight">
+            {t("Settings")}
           </h1>
           <p className="text-gray-500 mt-3 text-lg font-medium">
             Customize your travel experience like your own universe
@@ -358,17 +378,17 @@ const { darkMode, toggleTheme } = useTheme();
 
             <div
               ref={themeRef}
-              className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow"
+              className="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-lg hover:shadow-xl"
             >
-              <h2 className="font-bold text-2xl font-poppins">Theme</h2>
+              <h2 className="font-bold text-2xl font-poppins">{t("Theme")}</h2>
               <p className="text-gray-500 text-base mt-2">
-                Switch your travel UI mood
+                {t("SwitchYourTravelUI")}
               </p>
 
               <div className="mt-6 flex items-center justify-between">
 
                 <span className="font-semibold text-gray-700">
-                  {darkMode ? "Dark Mode" : "Light Mode"}
+                  {darkMode ? t("DarkMode") : t("LightMode")}
                 </span>
 
                 <button
@@ -390,7 +410,7 @@ const { darkMode, toggleTheme } = useTheme();
               ref={notificationsRef}
               className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow"
             >
-              <h2 className="font-bold text-2xl font-poppins">Notifications</h2>
+              <h2 className="font-bold text-2xl font-poppins">{t("TripAlerts")}</h2>
               <p className="text-gray-500 text-base mt-2">
                 Trip alerts & updates
               </p>
@@ -416,7 +436,7 @@ const { darkMode, toggleTheme } = useTheme();
             </div>
 
             <div className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow">
-              <h2 className="font-bold text-2xl font-poppins">Email Alerts</h2>
+              <h2 className="font-bold text-2xl font-poppins">{t("EmailAlerts")}</h2>
               <p className="text-gray-500 text-base mt-2">
                 Receive deals & offers
               </p>
@@ -446,7 +466,7 @@ const { darkMode, toggleTheme } = useTheme();
               ref={securityRef}
               className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow"
             >
-              <h2 className="font-bold text-2xl font-poppins">Security</h2>
+              <h2 className="font-bold text-2xl font-poppins">{t("Security")}</h2>
               <p className="text-gray-500 text-base mt-2">
                 Protect your account
               </p>
@@ -454,7 +474,7 @@ const { darkMode, toggleTheme } = useTheme();
               <div className="mt-6 flex items-center justify-between">
 
                 <span className="font-semibold text-gray-700">
-                  Two Factor Authentication
+                  {t("TwoFactorAuth")}
                 </span>
 
                 <button
@@ -476,7 +496,7 @@ const { darkMode, toggleTheme } = useTheme();
               ref={travelStyleRef}
               className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow"
             >
-              <h2 className="font-bold text-2xl font-poppins">Travel Style</h2>
+              <h2 className="font-bold text-2xl font-poppins">{t("TravelStyle")}</h2>
               <p className="text-gray-500 text-base mt-2">
                 Adventure / Luxury / Budget
               </p>
@@ -519,9 +539,9 @@ const { darkMode, toggleTheme } = useTheme();
               ref={locationRef}
               className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow"
             >
-              <h2 className="font-bold text-2xl font-poppins">Home Location</h2>
+              <h2 className="font-bold text-2xl font-poppins">{t("HomeLocation")}</h2>
               <p className="text-gray-500 text-base mt-2">
-                Set your base city
+                {t("SetYourBaseCity")}
               </p>
 
               <input
@@ -533,12 +553,12 @@ const { darkMode, toggleTheme } = useTheme();
 
               <button onClick={handleLocationSearch} className="mt-4 bg-blue-500 text-white px-6 py-3 rounded-2xl font-semibold hover:bg-blue-600 transition"
               >
-                Update Location
+                {t("UpdateLocation")}
 
               </button>
 
               <p className="mt-4 text-gray-600 font-medium">
-                Current City: {city || "Not Set"}
+                {t("CurrentCity")}: {city || "Not Set"}
               </p>
             </div>
 
@@ -585,34 +605,35 @@ const { darkMode, toggleTheme } = useTheme();
 
             <div className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow">
 
-              <h2 className="font-bold text-2xl font-poppins">
-                🌐 Language
-              </h2>
+              <h2 className="font-bold text-2xl font-poppins">🌐 {t("Language")}</h2>
 
               <p className="text-gray-500 text-base mt-2">
-                Choose your preferred language
+                {t("ChooseYourLanguage")}
               </p>
 
               <div className="mt-6 flex flex-wrap gap-3">
 
                 {[
-                  "English",
-                  "తెలుగు",
-                  "हिन्दी",
-                  "தமிழ்",
-                  "ಕನ್ನಡ"
-                ].map((lang) => (
+                  { code: "en", label: "English" },
+                  { code: "te", label: "తెలుగు" },
+                  { code: "hi", label: "हिन्दी" },
+                  { code: "ta", label: "தமிழ்" },
+                  { code: "kn", label: "ಕನ್ನಡ" },
+                ].map((l) => (
 
                   <button
-                    key={lang}
-                    onClick={() => setLanguage(lang)}
+                    key={l.code}
+                    onClick={() => {
+                      setLanguage(l.label);
+                      setLang(l.code);
+                    }}
                     className={`px-5 py-3 rounded-2xl font-semibold transition
-                    ${language === lang
+                    ${language === l.label
                         ? "bg-blue-600 text-white shadow-lg"
                         : "bg-gray-100 hover:bg-blue-100"
                       }`}
                   >
-                    {lang}
+                    {l.label}
                   </button>
 
                 ))}
@@ -620,7 +641,7 @@ const { darkMode, toggleTheme } = useTheme();
               </div>
 
               <p className="mt-6 text-gray-600 font-medium">
-                Selected Language:
+                {t("SelectedLanguage")}:
                 <span className="font-bold text-blue-600 ml-2">
                   {language}
                 </span>
@@ -798,7 +819,7 @@ const { darkMode, toggleTheme } = useTheme();
           <div className="bg-green-600 text-white px-6 py-4 rounded-2xl shadow-2xl">
 
             <h3 className="font-bold">
-              ✅ Profile Updated
+              ✅ {t("ProfileUpdated")}
             </h3>
 
             <p className="text-sm text-green-100">

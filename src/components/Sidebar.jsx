@@ -1,5 +1,6 @@
 ﻿import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { useLanguage } from "../context/LanguageContext";
 import {
   FaBars,
   FaBell,
@@ -24,19 +25,20 @@ export default function Sidebar() {
   const [showSettingsMenu, setShowSettingsMenu] = useState(false);
 
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const menu = [
     {
-      name: "Favorites",
+      name: t("Favorites"),
       icon: <FaHeart />,
       path: "/favorites",
     },
-    { name: "Dashboard", icon: <FaHome />, path: "/" },
-    { name: "Trips", icon: <FaPlane />, path: "/trips" },
-    { name: "Destinations", icon: <FaMapMarkerAlt />, path: "/destinations" },
-    { name: "Travelers", icon: <FaUsers />, path: "/travelers" },
-    { name: "Profile", icon: <FaUserCircle />, path: "/profile" },
-    { name: "Settings", icon: <FaCog />, path: "/settings" },
+    { name: t("Dashboard"), icon: <FaHome />, path: "/" },
+    { name: t("Trips"), icon: <FaPlane />, path: "/trips" },
+    { name: t("Destinations"), icon: <FaMapMarkerAlt />, path: "/destinations" },
+    { name: t("Travelers"), icon: <FaUsers />, path: "/travelers" },
+    { name: t("Profile"), icon: <FaUserCircle />, path: "/profile" },
+    { name: t("Settings"), icon: <FaCog />, path: "/settings" },
   ];
 
   const openSettingsSection = (section) => {
@@ -87,7 +89,7 @@ export default function Sidebar() {
                 </h1>
 
                 <p className="text-xs text-slate-400">
-                  Premium Travel Dashboard
+                  {t("RecentTrips") /* small reuse as subtitle fallback */}
                 </p>
               </div>
             )}
@@ -107,7 +109,7 @@ export default function Sidebar() {
         <div className="px-3 mt-7">
 
           {menu.map((item) => {
-            if (item.name === "Settings") {
+            if (item.path === "/settings") {
               return (
                 <div key={item.name} className="relative overflow-visible">
                   <button
@@ -152,11 +154,11 @@ export default function Sidebar() {
 
                       <div className="px-5 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
                         <h2 className="text-lg font-bold">
-                          ⚙️ Settings
+                          ⚙️ {t("Settings")}
                         </h2>
 
                         <p className="text-sm text-blue-100">
-                          Customize your travel experience
+                          {t("ChooseYourLanguage") /* small reuse as helper text */}
                         </p>
                       </div>
 
@@ -167,7 +169,7 @@ export default function Sidebar() {
                           className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200"
                         >
                           <FaUser className="text-blue-600" />
-                          Profile
+                          {t("Profile")}
                         </button>
 
                         <button
@@ -175,7 +177,7 @@ export default function Sidebar() {
                           className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200"
                         >
                           <FaPalette className="text-purple-600" />
-                          Appearance
+                          {t("Theme")}
                         </button>
 
                         <button
@@ -183,7 +185,7 @@ export default function Sidebar() {
                           className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200"
                         >
                           <FaBell className="text-yellow-500" />
-                          Notifications
+                          {t("TripAlerts")}
                         </button>
 
                         <button
@@ -191,7 +193,7 @@ export default function Sidebar() {
                           className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200"
                         >
                           <FaShieldAlt className="text-green-600" />
-                          Security
+                          {t("Security")}
                         </button>
 
                         <button
@@ -199,7 +201,7 @@ export default function Sidebar() {
                           className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200"
                         >
                           <FaGlobe className="text-cyan-600" />
-                          Travel Style
+                          {t("TravelStyle")}
                         </button>
 
                         <button
@@ -207,7 +209,7 @@ export default function Sidebar() {
                           className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200"
                         >
                           <FaMapMarkerAlt className="text-red-500" />
-                          Home Location
+                          {t("HomeLocation")}
                         </button>
 
                         <button className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200">
@@ -217,7 +219,7 @@ export default function Sidebar() {
 
                         <button className="w-full px-5 py-3 flex items-center gap-4 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition duration-200">
                           <FaLanguage className="text-pink-500" />
-                          Language
+                          {t("Language")}
                         </button>
 
                         <button
