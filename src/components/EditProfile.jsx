@@ -75,9 +75,9 @@ export default function EditProfile({
     return (
         <div className="fixed inset-0 bg-black/50 flex justify-center items-center">
 
-            <div className="bg-white rounded-3xl w-[500px] p-8">
+            <div className="bg-white dark:bg-gray-800 rounded-3xl w-[500px] p-8">
 
-                <h1 className="text-3xl font-bold mb-6">
+                <h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-gray-100">
                     Edit Profile
                 </h1>
 

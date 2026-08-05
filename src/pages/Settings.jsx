@@ -258,7 +258,7 @@ export default function Settings() {
 
           <div
             ref={profileRef}
-            className="bg-white p-10 rounded-3xl shadow-lg mt-14 flex items-center justify-between"
+            className="bg-white dark:bg-gray-800 p-10 rounded-3xl shadow-lg dark:shadow-md mt-14 flex items-center justify-between"
           >
             <div className="flex items-center gap-8">
 
@@ -408,7 +408,7 @@ export default function Settings() {
 
             <div
               ref={notificationsRef}
-              className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow"
+              className="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow"
             >
               <h2 className="font-bold text-2xl font-poppins">{t("TripAlerts")}</h2>
               <p className="text-gray-500 text-base mt-2">
@@ -435,7 +435,7 @@ export default function Settings() {
               </div>
             </div>
 
-            <div className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow">
+            <div className="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow">
               <h2 className="font-bold text-2xl font-poppins">{t("EmailAlerts")}</h2>
               <p className="text-gray-500 text-base mt-2">
                 Receive deals & offers
@@ -464,7 +464,7 @@ export default function Settings() {
 
             <div
               ref={securityRef}
-              className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow"
+              className="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow"
             >
               <h2 className="font-bold text-2xl font-poppins">{t("Security")}</h2>
               <p className="text-gray-500 text-base mt-2">
@@ -494,7 +494,7 @@ export default function Settings() {
 
             <div
               ref={travelStyleRef}
-              className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow"
+              className="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow"
             >
               <h2 className="font-bold text-2xl font-poppins">{t("TravelStyle")}</h2>
               <p className="text-gray-500 text-base mt-2">
@@ -537,7 +537,7 @@ export default function Settings() {
 
             <div
               ref={locationRef}
-              className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow"
+              className="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow"
             >
               <h2 className="font-bold text-2xl font-poppins">{t("HomeLocation")}</h2>
               <p className="text-gray-500 text-base mt-2">
@@ -562,7 +562,7 @@ export default function Settings() {
               </p>
             </div>
 
-            <div className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow">
+            <div className="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow">
 
               <h2 className="font-bold text-2xl font-poppins">
                 💳 Payment Methods
@@ -603,7 +603,7 @@ export default function Settings() {
 
             </div>
 
-            <div className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow">
+            <div className="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow">
 
               <h2 className="font-bold text-2xl font-poppins">🌐 {t("Language")}</h2>
 
@@ -649,7 +649,7 @@ export default function Settings() {
 
             </div>
 
-            <div className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-xl transition">
+            <div className="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-lg hover:shadow-xl transition">
 
               <h2 className="text-2xl font-bold">
                 � Your Travel Hub
@@ -699,7 +699,7 @@ export default function Settings() {
       {showEditProfile && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
 
-          <div className="bg-white w-[600px] rounded-3xl p-8 shadow-2xl">
+          <div className="bg-white dark:bg-gray-800 w-[600px] rounded-3xl p-8 shadow-2xl">
 
             <h2 className="text-3xl font-bold mb-8">
               Edit Profile
