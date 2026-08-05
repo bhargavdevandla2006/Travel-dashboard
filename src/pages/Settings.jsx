@@ -159,7 +159,7 @@ export default function Settings() {
                 <div className="flex items-center gap-3">
 
                   <h2 className="text-3xl font-bold">
-                    Bhargav Devandla
+                    {profile.name}
                   </h2>
 
                   <span className="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm font-semibold">
@@ -169,7 +169,18 @@ export default function Settings() {
                 </div>
 
                 <p className="text-gray-500 mt-2">
-                  Traveler • Explorer • Dreamer
+                  {profile.bio}
+                </p>
+                <p className="text-sm text-gray-400 mt-1">
+                  📧 {profile.email}
+                </p>
+
+                <p className="text-sm text-gray-400">
+                  📱 {profile.phone}
+                </p>
+
+                <p className="text-sm text-gray-400">
+                  🌍 {profile.country}
                 </p>
 
                 <div className="flex gap-8 mt-6">
@@ -601,8 +612,8 @@ export default function Settings() {
               </button>
 
               <button
-                onClick={() => setShowEditProfile(false)}
-                className="px-6 py-3 rounded-xl bg-blue-600 text-white"
+                onClick={handleSaveProfile}
+                className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white transition"
               >
                 Save Changes
               </button>
