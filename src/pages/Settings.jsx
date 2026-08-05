@@ -3,12 +3,13 @@ import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import { useMap } from "../context/MapContext";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useTheme } from "../context/ThemeContext";
+
 
 export default function Settings() {
   const SETTINGS_STORAGE_KEY = "travelhub-settings";
   const PROFILE_STORAGE_KEY = "travelhub-profile";
 
-  const [darkMode, setDarkMode] = useState(false);
   const [notifications, setNotifications] = useState(true);
   const [emailAlerts, setEmailAlerts] = useState(false);
   const [travelStyle, setTravelStyle] = useState('Adventure');
@@ -85,6 +86,7 @@ export default function Settings() {
   const { setLocation } = useMap();
   const navigate = useNavigate()
   const location = useLocation();
+const { darkMode, toggleTheme } = useTheme();
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -370,7 +372,7 @@ export default function Settings() {
                 </span>
 
                 <button
-                  onClick={() => setDarkMode(!darkMode)}
+                  onClick={toggleTheme}
                   className={`relative w-16 h-8 rounded-full transition-all duration-300 ${darkMode ? "bg-blue-600" : "bg-gray-300"
                     }`}
                 >
