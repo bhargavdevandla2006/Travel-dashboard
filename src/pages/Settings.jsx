@@ -12,8 +12,8 @@ export default function Settings() {
   const [city, setCity] = useState('')
   const [twoFA, setTwoFA] = useState(false);
   const [language, setLanguage] = useState("English");
-
   const [showEditProfile, setShowEditProfile] = useState(false);
+  const [showToast, setShowToast] = useState(false);
 
   const [profile, setProfile] = useState({
     name: "Bhargav Devandla",
@@ -125,6 +125,15 @@ export default function Settings() {
         break;
     }
   }, [location]);
+
+  const handleSaveProfile = () => {
+    setShowEditProfile(false);
+    setShowToast(true);
+
+    setTimeout(() => {
+      setShowToast(false);
+    }, 3000);
+  };
 
   return (
     <div className="bg-[#020B2D] min-h-screen p-6">
@@ -619,6 +628,23 @@ export default function Settings() {
               </button>
 
             </div>
+
+          </div>
+
+        </div>
+      )}
+      {showToast && (
+        <div className="fixed top-6 right-6 z-[9999] animate-bounce">
+
+          <div className="bg-green-600 text-white px-6 py-4 rounded-2xl shadow-2xl">
+
+            <h3 className="font-bold">
+              ✅ Profile Updated
+            </h3>
+
+            <p className="text-sm text-green-100">
+              Your changes have been saved successfully.
+            </p>
 
           </div>
 
