@@ -126,14 +126,16 @@ export default function Settings() {
     }
   }, [location]);
 
-  const handleSaveProfile = () => {
-    setShowEditProfile(false);
-    setShowToast(true);
+const handleSaveProfile = () => {
+  setShowEditProfile(false);
+  setShowToast(true);
 
-    setTimeout(() => {
-      setShowToast(false);
-    }, 3000);
-  };
+  const timer = setTimeout(() => {
+    setShowToast(false);
+  }, 3000);
+
+  return () => clearTimeout(timer);
+};
 
   return (
     <div className="bg-[#020B2D] min-h-screen p-6">
