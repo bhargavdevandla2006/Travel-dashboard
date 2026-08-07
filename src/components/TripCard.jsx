@@ -95,7 +95,7 @@ export default function TripCard({ id, image, title, location, price, }) {
         setLiked(true);
 
         await loadLikes();
-        // add to local favorites so Favorites page shows this item
+
         try {
           const existing = JSON.parse(localStorage.getItem("favorites")) || [];
           const place = { name: title, country: location, image };
@@ -137,7 +137,7 @@ export default function TripCard({ id, image, title, location, price, }) {
         setLiked(false);
 
         await loadLikes();
-        // remove from local favorites
+
         try {
           const existing = JSON.parse(localStorage.getItem("favorites")) || [];
           const filtered = existing.filter((p) => !(p.name === title && p.country === location));
@@ -159,8 +159,30 @@ export default function TripCard({ id, image, title, location, price, }) {
   return (
     <div className="group bg-white rounded-3xl overflow-hidden border border-gray-200 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
 
-      {/* Image */}
-      <div className="relative overflow-hidden">
+
+      <div
+        className="
+group
+
+bg-white
+dark:bg-gray-900
+
+border
+border-gray-200
+dark:border-gray-700
+
+rounded-3xl
+
+overflow-hidden
+
+shadow-md
+hover:shadow-xl
+
+transition-all
+duration-300
+"
+      >
+
 
         <img
           src={image}
@@ -168,13 +190,37 @@ export default function TripCard({ id, image, title, location, price, }) {
           className="w-full h-56 object-cover group-hover:scale-110 transition duration-700"
         />
 
-        <div className="absolute top-4 left-4 bg-white rounded-full px-3 py-1 flex items-center gap-2 shadow-lg">
+        <div className="
+absolute 
+top-4 
+left-4
+
+bg-white
+dark:bg-gray-800
+
+rounded-full
+
+px-3
+py-1
+
+flex
+items-center
+gap-2
+
+shadow-lg
+">
 
           <span className="text-yellow-500">⭐</span>
 
-          <span className="font-semibold text-sm">
-            4.8
-          </span>
+          <span className="
+font-semibold 
+text-sm
+
+text-gray-800
+dark:text-white
+">
+4.8
+</span>
 
         </div>
 
@@ -195,11 +241,17 @@ export default function TripCard({ id, image, title, location, price, }) {
 
       <div className="p-6">
 
-        <h2 className="text-2xl font-bold text-gray-900">
+        <h2 className="
+text-2xl 
+font-bold
+
+text-gray-900
+dark:text-white
+">
           {title}
         </h2>
 
-        <p className="flex items-center gap-2 text-gray-500 mt-3">
+        <p className="flex items-center gap-2 text-gray-500 dark:text-gray-300 mt-3">
 
           📍 {location}
 
@@ -209,7 +261,7 @@ export default function TripCard({ id, image, title, location, price, }) {
 
           <div>
 
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-gray-400 dark:text-gray-500">
               Starting From
             </p>
 
@@ -225,7 +277,7 @@ export default function TripCard({ id, image, title, location, price, }) {
               ❤️ {likes}
             </p>
 
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-gray-500 dark:text-gray-400">
               Total Likes
             </p>
 
@@ -233,20 +285,39 @@ export default function TripCard({ id, image, title, location, price, }) {
 
         </div>
 
-        {/* Buttons */}
+       
 
         <div className="grid grid-cols-2 gap-3 mt-6">
 
           <button
             onClick={() => navigate(`/hotels/${location}`)}
-            className="bg-green-100 text-green-700 py-3 rounded-xl font-semibold hover:bg-green-600 hover:text-white transition"
+            className="
+bg-green-100
+dark:bg-green-900/40
+
+text-green-700
+dark:text-green-300
+
+py-3
+rounded-xl
+font-semibold
+
+hover:bg-green-600
+hover:text-white
+
+transition
+"
           >
             🏨 Hotels
           </button>
 
           <button
             onClick={() => navigate(`/transport/${location}`)}
-            className="bg-orange-100 text-orange-700 py-3 rounded-xl font-semibold hover:bg-orange-600 hover:text-white transition"
+            className="bg-orange-100
+dark:bg-orange-900/40
+
+text-orange-700
+dark:text-orange-300 py-3 rounded-xl font-semibold hover:bg-orange-600 hover:text-white transition"
           >
             🚖 Transport
           </button>
@@ -270,7 +341,14 @@ export default function TripCard({ id, image, title, location, price, }) {
           Book Now →
         </button>
 
-        <div className="mt-6 border-t pt-5">
+        <div className="
+mt-6
+
+border-t
+dark:border-gray-700
+
+pt-5
+">
 
           <Comments tripId={id} />
 

@@ -27,6 +27,16 @@ export default function App() {
 
     <MapProvider>
 
+       <div
+    className="
+    min-h-screen
+    bg-gray-50
+    dark:bg-gray-950
+    transition-all
+    duration-300
+    "
+  >
+
       <BrowserRouter>
 
         <Routes>
@@ -140,6 +150,8 @@ export default function App() {
         </Routes>
 
       </BrowserRouter>
+
+       </div>
 
     </MapProvider>
 

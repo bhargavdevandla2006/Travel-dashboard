@@ -238,7 +238,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen p-6 bg-white dark:bg-gray-800">
+    <div className="min-h-screen p-6 bg-white">
      <div className="bg-transparent rounded-[40px] overflow-hidden flex">
         <Sidebar />
 
@@ -246,23 +246,23 @@ export default function Settings() {
           <Navbar />
 
           
-          <div className="mt-6 mb-10 rounded-3xl overflow-hidden shadow-lg">
+          <div className="mt-6 mb-10 rounded-3xl overflow-hidden shadow-xl">
             <div className="p-8 bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500 rounded-3xl text-white flex items-center justify-between">
               <div>
                 <p className="uppercase tracking-wide text-sm opacity-90">Welcome back</p>
                 <h2 className="text-2xl md:text-3xl font-bold mt-2">Good Morning, Bhargav 👋</h2>
                 <p className="mt-2 opacity-90 max-w-xl">Explore new destinations, manage trips, book hotels, track expenses and enjoy your travel experience in one beautiful dashboard.</p>
-                <button className="mt-4 bg-white dark:bg-gray-800 text-blue-600 px-4 py-2 rounded-full font-semibold shadow">Start New Trip</button>
+                <button className="mt-4 bg-white text-blue-600 px-4 py-2 rounded-full font-semibold shadow">Start New Trip</button>
               </div>
               <div className="hidden md:block">
-                <div className="w-40 h-40 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center">
+                <div className="w-40 h-40 rounded-full bg-white flex items-center justify-center">
                   <img src="/assets/plane.png" alt="plane" className="w-28 h-28" />
                 </div>
               </div>
             </div>
           </div>
 
-          <h1 className="text-3xl font-playfair font-bold dark:text-gray-300 mt-2 tracking-tight">
+          <h1 className="text-3xl font-playfair font-bold text-gray-900 mt-2 tracking-tight">
             {t("Settings")}
           </h1>
           <p className="text-gray-600 mt-3 text-lg font-medium">
@@ -272,11 +272,11 @@ export default function Settings() {
 
           <div
             ref={profileRef}
-            className="bg-white dark:bg-gray-800 p-10 rounded-3xl shadow-lg mt-14 flex items-center justify-between"
+            className="bg-white p-10 rounded-3xl shadow-xl mt-14 flex items-center justify-between"
           >
             <div className="flex items-center gap-8">
 
-              <div className="w-24 h-24 rounded-full overflow-hidden shadow-lg">
+              <div className="w-24 h-24 rounded-full overflow-hidden shadow-xl">
 
                 {profileImage ? (
 
@@ -395,7 +395,7 @@ export default function Settings() {
 
             <div
               ref={notificationsRef}
-              className="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow"
+              className="bg-white p-8 rounded-3xl shadow-xl hover:shadow-xl transition-shadow"
             >
               <h2 className="font-bold text-2xl font-poppins">{t("TripAlerts")}</h2>
               <p className="text-gray-500 text-base mt-2">
@@ -404,9 +404,7 @@ export default function Settings() {
 
               <div className="mt-6 flex items-center justify-between">
 
-                <span className="font-semibold text-gray-700">
-                  Trip Alerts
-                </span>
+                <span className="font-semibold text-gray-700">Trip Alerts</span>
 
                 <button
                   onClick={() => setNotifications(!notifications)}
@@ -414,7 +412,7 @@ export default function Settings() {
                     }`}
                 >
                   <div
-                    className={`absolute top-1 w-6 h-6 bg-white dark:bg-gray-800rounded-full transition-all duration-300 ${notifications ? "left-9" : "left-1"
+                    className={`absolute top-1 w-6 h-6 bg-white rounded-full transition-all duration-300 ${notifications ? "left-9" : "left-1"
                       }`}
                   />
                 </button>
@@ -422,7 +420,7 @@ export default function Settings() {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow">
+            <div className="bg-white p-8 rounded-3xl shadow-xl hover:shadow-xl transition-shadow">
               <h2 className="font-bold text-2xl font-poppins">{t("EmailAlerts")}</h2>
               <p className="text-gray-500 text-base mt-2">
                 Receive deals & offers
@@ -430,18 +428,14 @@ export default function Settings() {
 
               <div className="mt-6 flex items-center justify-between">
 
-                <span className="font-semibold text-gray-700">
-                  Receive Offers
-                </span>
+                <span className="font-semibold text-gray-700">Receive Offers</span>
 
                 <button
                   onClick={() => setEmailAlerts(!emailAlerts)}
                   className={`relative w-16 h-8 rounded-full transition-all duration-300 ${emailAlerts ? "bg-green-600" : "bg-gray-300"
                     }`}
                 >
-                  <div
-                    className={`absolute top-1 w-6 h-6 bg-white dark:bg-gray-800 rounded-full transition-all duration-300 ${emailAlerts ? "left-9" : "left-1"
-                      }`}
+                  <div className={`absolute top-1 w-6 h-6 bg-white rounded-full transition-all duration-300 ${emailAlerts ? "left-9" : "left-1" }`}
                   />
                 </button>
 
@@ -449,10 +443,7 @@ export default function Settings() {
             </div>
 
 
-            <div
-              ref={securityRef}
-              className="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow"
-            >
+            <div ref={securityRef} className="bg-white p-8 rounded-3xl shadow-xl hover:shadow-xl transition-shadow">
               <h2 className="font-bold text-2xl font-poppins">{t("Security")}</h2>
               <p className="text-gray-500 text-base mt-2">
                 Protect your account
@@ -460,18 +451,14 @@ export default function Settings() {
 
               <div className="mt-6 flex items-center justify-between">
 
-                <span className="font-semibold text-gray-700">
-                  {t("TwoFactorAuth")}
-                </span>
+                <span className="font-semibold text-gray-700">{t("TwoFactorAuth")}</span>
 
                 <button
                   onClick={() => setTwoFA(!twoFA)}
                   className={`relative w-16 h-8 rounded-full transition-all duration-300 ${twoFA ? "bg-purple-600" : "bg-gray-300"
                     }`}
                 >
-                  <div
-                    className={`absolute top-1 w-6 h-6 bg-white dark:bg-gray-800 rounded-full transition-all duration-300 ${twoFA ? "left-9" : "left-1"
-                      }`}
+                  <div className={`absolute top-1 w-6 h-6 bg-white rounded-full transition-all duration-300 ${twoFA ? "left-9" : "left-1" }`}
                   />
                 </button>
 
@@ -479,10 +466,7 @@ export default function Settings() {
             </div>
 
 
-            <div
-              ref={travelStyleRef}
-              className="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow"
-            >
+            <div ref={travelStyleRef} className="bg-white p-8 rounded-3xl shadow-xl hover:shadow-xl transition-shadow">
               <h2 className="font-bold text-2xl font-poppins">{t("TravelStyle")}</h2>
               <p className="text-gray-500 text-base mt-2">
                 Adventure / Luxury / Budget
@@ -524,7 +508,7 @@ export default function Settings() {
 
             <div
               ref={locationRef}
-              className="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow"
+              className="bg-white p-8 rounded-3xl shadow-xl hover:shadow-xl transition-shadow"
             >
               <h2 className="font-bold text-2xl font-poppins">{t("HomeLocation")}</h2>
               <p className="text-gray-500 text-base mt-2">
@@ -549,15 +533,13 @@ export default function Settings() {
               </p>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow">
+            <div className="bg-white p-8 rounded-3xl shadow-xl hover:shadow-xl transition-shadow">
 
               <h2 className="font-bold text-2xl font-poppins">
                 💳 Payment Methods
               </h2>
 
-              <p className="text-gray-500 text-base mt-2">
-                Manage your saved payment methods
-              </p>
+              <p className="text-gray-500 text-base mt-2">Manage your saved payment methods</p>
 
               <div className="mt-6 space-y-3">
 
@@ -590,13 +572,11 @@ export default function Settings() {
 
             </div>
 
-            <div className="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-lg hover:shadow-xl transition-shadow">
+            <div className="bg-white p-8 rounded-3xl shadow-xl hover:shadow-xl transition-shadow">
 
               <h2 className="font-bold text-2xl font-poppins">🌐 {t("Language")}</h2>
 
-              <p className="text-gray-500 text-base mt-2">
-                {t("ChooseYourLanguage")}
-              </p>
+              <p className="text-gray-500 text-base mt-2">{t("ChooseYourLanguage")}</p>
 
               <div className="mt-6 flex flex-wrap gap-3">
 
@@ -616,7 +596,7 @@ export default function Settings() {
                     }}
                     className={`px-5 py-3 rounded-2xl font-semibold transition
                     ${language === l.label
-                        ? "bg-blue-600 text-white shadow-lg"
+                        ? "bg-blue-600 text-white shadow-xl"
                         : "bg-gray-100 hover:bg-blue-100"
                       }`}
                   >
@@ -636,7 +616,7 @@ export default function Settings() {
 
             </div>
 
-            <div className="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-lg hover:shadow-xl transition">
+            <div className="bg-white p-8 rounded-3xl shadow-xl hover:shadow-xl transition">
 
               <h2 className="text-2xl font-bold">
                 � Your Travel Hub
@@ -660,10 +640,7 @@ export default function Settings() {
 
             </div>
 
-            <div
-              ref={dangerRef}
-              className="bg-red-50 p-8 rounded-3xl shadow-lg col-span-3 border-2 border-red-200"
-            >
+            <div ref={dangerRef} className="bg-red-50 p-8 rounded-3xl shadow-xl col-span-3 border-2 border-red-200">
               <h2 className="font-bold text-2xl text-red-600 font-poppins">
                 Danger Zone
               </h2>
@@ -686,11 +663,12 @@ export default function Settings() {
       {showEditProfile && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
 
-          <div className="bg-white dark:bg-gray-800 w-[600px] rounded-3xl p-8 shadow-2xl">
+          <div className="bg-white w-[600px] rounded-3xl p-8 shadow-2xl">
 
             <h2 className="text-3xl font-bold mb-8">
               Edit Profile
             </h2>
+
 
             <div className="space-y-5">
 
