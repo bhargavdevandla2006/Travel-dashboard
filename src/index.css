@@ -2,8 +2,20 @@
 
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   font-size: 14px;
+  --accent-1: #7c3aed;
+  /* purple */
+  --accent-2: #06b6d4;
+  /* cyan */
+  --accent-3: #f97316;
+  /* orange */
+  --accent-4: #10b981;
+  /* green */
+  --accent-5: #ef476f;
+  /* pink */
 }
 
 html {
@@ -15,12 +27,12 @@ body {
   line-height: 1.5;
   font-size: 0.95rem;
   color: #0f172a;
+  background-color: #ffffff;
 }
 
-/* Minimal dark-mode base — component-level dark: classes preferred */
 .dark body {
-  background-color: #07111a;
-  color: #e6eef8;
+  color: #ffffff;
+  background-color: #020617;
 }
 
 
@@ -47,4 +59,3 @@ textarea,
 select {
   font: inherit;
 }
-
