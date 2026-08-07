@@ -17,17 +17,17 @@ export default function Navbar({ search, setSearch }) {
 
   return (
 
-    <div className="bg-white/60 dark:bg-[#071827]/40 backdrop-blur-md rounded-3xl shadow-lg dark:shadow-xl border border-white/10 dark:border-white/5 px-8 py-5 flex items-center justify-between">
+    <div className="bg-white/60 backdrop-blur-md rounded-3xl shadow-lg border border-gray-100 px-8 py-5 flex items-center justify-between">
 
      
 
       <div>
 
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
+        <h1 className="text-3xl font-bold text-slate-900">
           {t("Dashboard")}
         </h1>
 
-        <p className="text-gray-500 dark:text-gray-300 mt-1 text-sm">
+        <p className="text-gray-500 mt-1 text-sm">
           {t("WelcomeBack")}
         </p>
 
@@ -46,7 +46,7 @@ export default function Navbar({ search, setSearch }) {
           onChange={(e)=>setSearch(e.target.value)}
           type="text"
           placeholder={t("SearchPlaceholder")}
-          className="w-full bg-white/20 dark:bg-white/5 dark:text-gray-200 pl-14 pr-5 py-3 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 transition"
+          className="w-full bg-white/20 pl-14 pr-5 py-3 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 transition text-slate-900"
         />
 
       </div>
@@ -57,7 +57,7 @@ export default function Navbar({ search, setSearch }) {
 
        
 
-        <button className="relative w-12 h-12 rounded-2xl bg-white/30 dark:bg-slate-800/40 hover:bg-blue-600 hover:text-white transition flex items-center justify-center">
+        <button className="relative w-12 h-12 rounded-2xl bg-white/30 hover:bg-blue-600 hover:text-white transition flex items-center justify-center">
 
           <FaBell className="text-lg"/>
 
@@ -69,7 +69,7 @@ export default function Navbar({ search, setSearch }) {
 
         
 
-        <button className="relative w-12 h-12 rounded-2xl bg-white/30 dark:bg-slate-800/40 hover:bg-green-600 hover:text-white transition flex items-center justify-center">
+        <button className="relative w-12 h-12 rounded-2xl bg-white/30 hover:bg-green-600 hover:text-white transition flex items-center justify-center">
 
           <FaEnvelope className="text-lg"/>
 
@@ -81,11 +81,7 @@ export default function Navbar({ search, setSearch }) {
 
       
 
-        <button className="w-12 h-12 rounded-2xl bg-white/30 dark:bg-slate-800/40 hover:bg-slate-900 hover:text-white transition flex items-center justify-center">
-
-          <FaMoon className="text-lg"/>
-
-        </button>
+        {/* Theme toggle removed - app uses light theme */}
 
         
 
@@ -93,7 +89,7 @@ export default function Navbar({ search, setSearch }) {
 
             <button
             onClick={() => setOpen(!open)}
-            className="flex items-center gap-3 bg-white/30 dark:bg-slate-800/40 hover:bg-gray-200/50 dark:hover:bg-slate-700/40 rounded-2xl px-3 py-2 transition"
+            className="flex items-center gap-3 bg-white/30 hover:bg-gray-200/50 rounded-2xl px-3 py-2 transition"
           >
 
             <img
@@ -104,11 +100,11 @@ export default function Navbar({ search, setSearch }) {
 
             <div className="hidden xl:block text-left">
 
-              <h2 className="font-bold text-slate-800 dark:text-gray-100">
+              <h2 className="font-bold text-slate-800">
                 Bhargav
               </h2>
 
-              <p className="text-xs text-gray-500 dark:text-gray-400">
+              <p className="text-xs text-gray-500">
                 Premium Traveler
               </p>
 
@@ -121,8 +117,7 @@ export default function Navbar({ search, setSearch }) {
           {
             open && (
 
-              <div className="absolute right-0 mt-3 w-56 bg-white/95 dark:bg-gray-900/90 rounded-2xl shadow-2xl dark:shadow-lg border dark:border-gray-800 overflow-hidden z-50 backdrop-blur-sm">
-
+              <div className="absolute right-0 mt-3 w-56 bg-white/95 rounded-2xl shadow-2xl border-gray-100 overflow-hidden z-50 backdrop-blur-sm">
                 <button className="w-full flex items-center gap-3 px-5 py-4 hover:bg-gray-100">
 
                   <FaUserCircle/>
@@ -131,7 +126,7 @@ export default function Navbar({ search, setSearch }) {
 
                 </button>
 
-                <button className="w-full flex items-center gap-3 px-5 py-4 hover:bg-gray-100 dark:hover:bg-gray-800">
+                <button className="w-full flex items-center gap-3 px-5 py-4 hover:bg-gray-100">
 
                   <FaCog/>
 
@@ -141,7 +136,7 @@ export default function Navbar({ search, setSearch }) {
 
                 <hr/>
 
-                <button className="w-full text-red-600 font-semibold px-5 py-4 hover:bg-red-50 dark:hover:bg-red-900/30 text-left">
+                <button className="w-full text-red-600 font-semibold px-5 py-4 hover:bg-red-50 text-left">
 
                   Logout
 

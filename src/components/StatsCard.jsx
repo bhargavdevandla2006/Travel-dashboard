@@ -5,17 +5,17 @@ export default function StatsCard({
   color,
 }) {
   return (
-    <div className="group bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer border border-gray-100 dark:border-gray-700">
+    <div className="group bg-white rounded-3xl p-6 shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer border border-gray-100">
 
       <div className="flex items-center justify-between">
 
         <div>
 
-          <p className="text-gray-500 dark:text-gray-300 text-sm font-medium">
+          <p className="text-gray-500 text-sm font-medium">
             {title}
           </p>
 
-          <h2 className="text-3xl font-extrabold mt-3 text-gray-900 dark:text-gray-100">
+          <h2 className="text-3xl font-extrabold mt-3 text-gray-900">
             {value}
           </h2>
 
@@ -25,7 +25,7 @@ export default function StatsCard({
               ↑ 12%
             </span>
 
-            <span className="text-gray-400 dark:text-gray-300 text-sm">
+            <span className="text-gray-400 text-sm">
               this month
             </span>
 
