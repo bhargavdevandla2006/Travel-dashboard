@@ -3,7 +3,6 @@ import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import { useMap } from "../context/MapContext";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useTheme } from "../context/ThemeContext";
 import { useLanguage } from "../context/LanguageContext";
 
 
@@ -30,7 +29,7 @@ export default function Settings() {
   });
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [showToast, setShowToast] = useState(false);
- const { darkMode, toggleTheme, setDarkMode } = useTheme();
+// theme is fixed to light; theme toggle removed
 
   const defaultProfile = {
     name: "Bhargav Devandla",
@@ -73,7 +72,6 @@ export default function Settings() {
     localStorage.setItem(
       SETTINGS_STORAGE_KEY,
       JSON.stringify({
-        darkMode,
         notifications,
         emailAlerts,
         travelStyle,
@@ -83,7 +81,7 @@ export default function Settings() {
         profileImage,
       })
     );
-  }, [darkMode, notifications, emailAlerts, travelStyle, city, twoFA, language, profileImage]);
+  }, [notifications, emailAlerts, travelStyle, city, twoFA, language, profileImage]);
 
   useEffect(() => {
     localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
@@ -240,25 +238,41 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen p-6 bg-gray-100 dark:bg-gray-900">
-     <div className="bg-white dark:bg-gray-800 rounded-[40px] overflow-hidden flex">
+    <div className="min-h-screen p-6 bg-white dark:bg-gray-800">
+     <div className="bg-transparent rounded-[40px] overflow-hidden flex">
         <Sidebar />
 
         <div className="flex-1 p-12">
           <Navbar />
 
+          
+          <div className="mt-6 mb-10 rounded-3xl overflow-hidden shadow-lg">
+            <div className="p-8 bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500 rounded-3xl text-white flex items-center justify-between">
+              <div>
+                <p className="uppercase tracking-wide text-sm opacity-90">Welcome back</p>
+                <h2 className="text-2xl md:text-3xl font-bold mt-2">Good Morning, Bhargav 👋</h2>
+                <p className="mt-2 opacity-90 max-w-xl">Explore new destinations, manage trips, book hotels, track expenses and enjoy your travel experience in one beautiful dashboard.</p>
+                <button className="mt-4 bg-white dark:bg-gray-800 text-blue-600 px-4 py-2 rounded-full font-semibold shadow">Start New Trip</button>
+              </div>
+              <div className="hidden md:block">
+                <div className="w-40 h-40 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center">
+                  <img src="/assets/plane.png" alt="plane" className="w-28 h-28" />
+                </div>
+              </div>
+            </div>
+          </div>
 
-          <h1 className="text-3xl font-playfair font-bold text-gray-900 dark:text-white mt-12 tracking-tight">
+          <h1 className="text-3xl font-playfair font-bold dark:text-gray-300 mt-2 tracking-tight">
             {t("Settings")}
           </h1>
-          <p className="text-gray-500 mt-3 text-lg font-medium">
+          <p className="text-gray-600 mt-3 text-lg font-medium">
             Customize your travel experience like your own universe
           </p>
 
 
           <div
             ref={profileRef}
-            className="bg-white dark:bg-gray-800 p-10 rounded-3xl shadow-lg dark:shadow-md mt-14 flex items-center justify-between"
+            className="bg-white dark:bg-gray-800 p-10 rounded-3xl shadow-lg mt-14 flex items-center justify-between"
           >
             <div className="flex items-center gap-8">
 
@@ -376,34 +390,7 @@ export default function Settings() {
           <div className="grid grid-cols-3 gap-10 mt-16">
 
 
-            <div
-              ref={themeRef}
-              className="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-lg hover:shadow-xl"
-            >
-              <h2 className="font-bold text-2xl font-poppins">{t("Theme")}</h2>
-              <p className="text-gray-500 text-base mt-2">
-                {t("SwitchYourTravelUI")}
-              </p>
-
-              <div className="mt-6 flex items-center justify-between">
-
-                <span className="font-semibold text-gray-700">
-                  {darkMode ? t("DarkMode") : t("LightMode")}
-                </span>
-
-                <button
-                  onClick={toggleTheme}
-                  className={`relative w-16 h-8 rounded-full transition-all duration-300 ${darkMode ? "bg-blue-600" : "bg-gray-300"
-                    }`}
-                >
-                  <div
-                    className={`absolute top-1 w-6 h-6 bg-white rounded-full transition-all duration-300 ${darkMode ? "left-9" : "left-1"
-                      }`}
-                  />
-                </button>
-
-              </div>
-            </div>
+            {/* Theme control removed - app defaults to light theme */}
 
 
             <div
@@ -427,7 +414,7 @@ export default function Settings() {
                     }`}
                 >
                   <div
-                    className={`absolute top-1 w-6 h-6 bg-white rounded-full transition-all duration-300 ${notifications ? "left-9" : "left-1"
+                    className={`absolute top-1 w-6 h-6 bg-white dark:bg-gray-800rounded-full transition-all duration-300 ${notifications ? "left-9" : "left-1"
                       }`}
                   />
                 </button>
@@ -453,7 +440,7 @@ export default function Settings() {
                     }`}
                 >
                   <div
-                    className={`absolute top-1 w-6 h-6 bg-white rounded-full transition-all duration-300 ${emailAlerts ? "left-9" : "left-1"
+                    className={`absolute top-1 w-6 h-6 bg-white dark:bg-gray-800 rounded-full transition-all duration-300 ${emailAlerts ? "left-9" : "left-1"
                       }`}
                   />
                 </button>
@@ -483,7 +470,7 @@ export default function Settings() {
                     }`}
                 >
                   <div
-                    className={`absolute top-1 w-6 h-6 bg-white rounded-full transition-all duration-300 ${twoFA ? "left-9" : "left-1"
+                    className={`absolute top-1 w-6 h-6 bg-white dark:bg-gray-800 rounded-full transition-all duration-300 ${twoFA ? "left-9" : "left-1"
                       }`}
                   />
                 </button>

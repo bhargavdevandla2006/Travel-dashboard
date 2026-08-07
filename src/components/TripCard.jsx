@@ -157,7 +157,7 @@ export default function TripCard({ id, image, title, location, price, }) {
   }
 
   return (
-    <div className="group bg-white dark:bg-gray-800 rounded-3xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+    <div className="group bg-white rounded-3xl overflow-hidden border border-gray-200 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
 
       {/* Image */}
       <div className="relative overflow-hidden">
@@ -168,7 +168,7 @@ export default function TripCard({ id, image, title, location, price, }) {
           className="w-full h-56 object-cover group-hover:scale-110 transition duration-700"
         />
 
-        <div className="absolute top-4 left-4 bg-white dark:bg-gray-700 rounded-full px-3 py-1 flex items-center gap-2 shadow-lg">
+        <div className="absolute top-4 left-4 bg-white rounded-full px-3 py-1 flex items-center gap-2 shadow-lg">
 
           <span className="text-yellow-500">⭐</span>
 
@@ -183,7 +183,7 @@ export default function TripCard({ id, image, title, location, price, }) {
           className={`absolute top-4 right-4 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition
         ${liked
               ? "bg-red-500 text-white"
-              : "bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 hover:bg-red-500 hover:text-white"
+              : "bg-white text-gray-700 hover:bg-red-500 hover:text-white"
             }`}
         >
           ❤️
@@ -195,11 +195,11 @@ export default function TripCard({ id, image, title, location, price, }) {
 
       <div className="p-6">
 
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+        <h2 className="text-2xl font-bold text-gray-900">
           {title}
         </h2>
 
-        <p className="flex items-center gap-2 text-gray-500 dark:text-gray-300 mt-3">
+        <p className="flex items-center gap-2 text-gray-500 mt-3">
 
           📍 {location}
 
@@ -209,7 +209,7 @@ export default function TripCard({ id, image, title, location, price, }) {
 
           <div>
 
-            <p className="text-sm text-gray-400 dark:text-gray-300">
+            <p className="text-sm text-gray-400">
               Starting From
             </p>
 
