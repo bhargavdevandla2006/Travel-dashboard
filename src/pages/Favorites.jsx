@@ -4,6 +4,8 @@ import { useTheme } from "../context/ThemeContext";
 
 export default function Favorites() {
   const { darkMode } = useTheme();
+  console.log("Favorites darkMode:", darkMode);
+  
   const favorites =
     JSON.parse(localStorage.getItem("favorites")) || [];
 

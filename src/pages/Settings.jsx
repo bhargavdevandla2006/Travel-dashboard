@@ -7,6 +7,9 @@ import { useLanguage } from "../context/LanguageContext";
 import { useTheme } from "../context/ThemeContext";
 
 export default function Settings() {
+
+  const { darkMode, toggleTheme } = useTheme();
+
   const SETTINGS_STORAGE_KEY = "travelhub-settings";
   const PROFILE_STORAGE_KEY = "travelhub-profile";
 
@@ -54,7 +57,8 @@ export default function Settings() {
     if (savedSettings.twoFA !== undefined) setTwoFA(savedSettings.twoFA);
     if (savedSettings.language) {
       setLanguage(savedSettings.language);
-      // sync language code in LanguageContext if possible
+      
+
       const code = Object.keys(labelMap).find((k) => labelMap[k] === savedSettings.language);
       if (code) setLang(code);
     }
@@ -388,10 +392,6 @@ export default function Settings() {
 
 
           <div className="grid grid-cols-3 gap-10 mt-16">
-
-
-            {/* Theme control removed - app defaults to light theme */}
-
 
             <div
               ref={notificationsRef}
