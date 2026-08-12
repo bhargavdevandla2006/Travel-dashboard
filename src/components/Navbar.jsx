@@ -9,23 +9,13 @@
 
 import { useState } from "react";
 import { useLanguage } from "../context/LanguageContext";
+import { useTheme } from "../context/ThemeContext";
 
 export default function Navbar({ search, setSearch }) {
 
   const [open, setOpen] = useState(false);
 
-
-  const [darkMode, setDarkMode] = useState(false);
-
-
-  const toggleTheme = () => {
-
-    setDarkMode(!darkMode);
-
-    document.documentElement.classList.toggle("dark");
-
-  };
-
+  const { darkMode, toggleTheme } = useTheme();
 
   const { t } = useLanguage();
 
@@ -118,37 +108,26 @@ duration-300
 
         </button>
 
-        <button
-
-          onClick={toggleTheme}
-
-          className="
-w-12
-h-12
-
-rounded-full
-
-bg-blue-100
-dark:bg-gray-700
-
-text-blue-600
-dark:text-yellow-300
-
-hover:scale-110
-
-transition-all
-duration-300
-
-flex
-items-center
-justify-center
-"
-
-        >
-
-          <FaMoon className="text-lg" />
-
-        </button>
+       <button
+  onClick={toggleTheme}
+  className="
+    w-12
+    h-12
+    rounded-full
+    bg-blue-100
+    dark:bg-gray-700
+    text-blue-600
+    dark:text-yellow-300
+    hover:scale-110
+    transition-all
+    duration-300
+    flex
+    items-center
+    justify-center
+  "
+>
+  {darkMode ? "☀️" : <FaMoon className="text-lg" />}
+</button>
 
 
 
