@@ -28,13 +28,13 @@ export default function App() {
 
     <MapProvider>
 
-  <div
-  className={`min-h-screen transition-colors duration-300 ${
-    darkMode
-      ? "bg-[#020617] text-white"
-      : "bg-[#F5F5F5] text-gray-900"
-  }`}
->
+      <div
+        className={`min-h-screen transition-colors duration-300 ${
+          darkMode
+            ? "bg-[#0f172a] text-white"
+            : "bg-white text-gray-900"
+        }`}
+      >
 
       <BrowserRouter>
 

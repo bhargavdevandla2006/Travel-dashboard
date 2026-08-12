@@ -237,9 +237,9 @@ export default function TravelerProfile() {
 
   return (
 
-    <div className="bg-[#020B2D] min-h-screen p-6">
+    <div className="min-h-screen p-6 bg-white text-gray-900 dark:bg-[#0f172a] dark:text-white">
 
-      <div className="bg-[#F5F5F5] rounded-[40px] overflow-hidden flex">
+      <div className="bg-white dark:bg-[#1e293b] rounded-[40px] overflow-hidden flex">
 
         <Sidebar />
 
@@ -304,7 +304,7 @@ export default function TravelerProfile() {
 
           <div className="grid grid-cols-4 gap-6 mt-10">
 
-            <div className="bg-white rounded-3xl p-8 shadow-lg text-center">
+            <div className="bg-white dark:bg-[#111827] rounded-3xl p-8 shadow-lg text-center">
 
               <FaPlane className="text-blue-600 text-4xl mx-auto" />
 
@@ -318,7 +318,7 @@ export default function TravelerProfile() {
 
             </div>
 
-            <div className="bg-white rounded-3xl p-8 shadow-lg text-center">
+            <div className="bg-white dark:bg-[#111827] rounded-3xl p-8 shadow-lg text-center">
 
               <FaHeart className="text-red-500 text-4xl mx-auto" />
 
@@ -404,7 +404,7 @@ export default function TravelerProfile() {
 
                   <div
                     key={trip.id}
-                    className="bg-white rounded-3xl shadow-lg overflow-hidden"
+                    className="bg-white dark:bg-[#111827] rounded-3xl shadow-lg overflow-hidden"
                   >
 
                     <img
@@ -419,7 +419,7 @@ export default function TravelerProfile() {
                         {trip.title}
                       </h2>
 
-                      <p className="text-gray-500 mt-2">
+                      <p className="text-gray-600 dark:text-gray-300 mt-2">
                         📍 {trip.location}
                       </p>
 

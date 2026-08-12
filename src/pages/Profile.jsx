@@ -68,7 +68,7 @@ export default function Profile() {
   }
   if (!user) {
     return (
-      <div className="min-h-screen flex justify-center items-center text-2xl">
+      <div className="min-h-screen flex justify-center items-center text-2xl text-gray-900 dark:text-white bg-white dark:bg-[#0f172a]">
         Loading...
       </div>
     );
@@ -76,9 +76,9 @@ export default function Profile() {
 
   return (
 
-    <div className="bg-[#020B2D] min-h-screen p-6">
+    <div className="min-h-screen p-6 bg-white text-gray-900 dark:bg-[#0f172a] dark:text-white">
 
-      <div className="bg-[#F5F5F5] rounded-[40px] overflow-hidden flex">
+      <div className="bg-white/90 dark:bg-[#111827] border border-gray-200 dark:border-gray-800 rounded-[40px] overflow-hidden flex shadow-lg shadow-slate-200/70 dark:shadow-black/40">
 
         <Sidebar />
 
@@ -86,7 +86,7 @@ export default function Profile() {
 
           <Navbar />
 
-          <div className="mt-10 bg-white rounded-3xl p-10 shadow-lg">
+          <div className="mt-10 bg-white dark:bg-[#111827] rounded-3xl p-10 shadow-xl shadow-slate-200/60 dark:shadow-black/40">
 
             <div className="flex items-center gap-8">
 
@@ -99,16 +99,16 @@ export default function Profile() {
 
               <div>
 
-                <h1 className="text-2xl font-bold text-gray-900">
+                <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
                   {user.name}
                 </h1>
 
-                <p className="text-gray-500 mt-2 flex items-center gap-2">
+                <p className="text-slate-600 dark:text-slate-300 mt-2 flex items-center gap-2">
                   <FaEnvelope />
                   {user.email}
                 </p>
 
-                <p className="text-gray-500 mt-2 flex items-center gap-2">
+                <p className="text-slate-600 dark:text-slate-300 mt-2 flex items-center gap-2">
                   <FaMapMarkerAlt />
                   {user.city},  {user.state},  {user.country}
                 </p>
@@ -118,32 +118,32 @@ export default function Profile() {
 
             <div className="grid grid-cols-3 gap-6 mt-12">
 
-              <div className="bg-blue-50 p-6 rounded-3xl">
-                <h1 className="text-gray-500 text-sm">
+              <div className="bg-blue-50 dark:bg-[#0f172a] p-6 rounded-3xl border border-transparent dark:border-white/10 shadow-sm shadow-slate-200/40 dark:shadow-black/30">
+                <h1 className="text-slate-700 dark:text-slate-300 text-sm font-medium">
                   Trips
                 </h1>
 
-                <h2 className="text-xl font-bold text-blue-600 mt-3">
+                <h2 className="text-xl font-bold text-blue-600 dark:text-blue-300 mt-3">
                   {trips}
                 </h2>
               </div>
 
-              <div className="bg-purple-50 p-6 rounded-3xl">
-                <h1 className="text-gray-500 text-sm">
+              <div className="bg-purple-50 dark:bg-[#0f172a] p-6 rounded-3xl border border-transparent dark:border-white/10 shadow-sm shadow-slate-200/40 dark:shadow-black/30">
+                <h1 className="text-slate-700 dark:text-slate-300 text-sm font-medium">
                   Followers
                 </h1>
 
-                <h2 className="text-xl font-bold text-purple-600 mt-3">
+                <h2 className="text-xl font-bold text-purple-600 dark:text-purple-300 mt-3">
                   {followers}
                 </h2>
               </div>
 
-              <div className="bg-green-50 p-6 rounded-3xl">
-                <h1 className="text-gray-500 text-sm">
+              <div className="bg-green-50 dark:bg-[#0f172a] p-6 rounded-3xl border border-transparent dark:border-white/10 shadow-sm shadow-slate-200/40 dark:shadow-black/30">
+                <h1 className="text-slate-700 dark:text-slate-300 text-sm font-medium">
                   Following
                 </h1>
 
-                <h2 className="text-xl font-bold text-green-600 mt-3">
+                <h2 className="text-xl font-bold text-green-600 dark:text-green-300 mt-3">
                   {following}
                 </h2>
               </div>
@@ -152,21 +152,21 @@ export default function Profile() {
 
             <div className="mt-12">
 
-              <h1 className="text-2xl font-bold text-gray-900 mb-6">
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">
                 Recent Activity
               </h1>
 
               <div className="space-y-4">
 
-                <div className="bg-gray-100 p-5 rounded-2xl">
+                <div className="bg-gray-100 dark:bg-[#111827] text-slate-900 dark:text-slate-200 p-5 rounded-2xl border border-gray-200 dark:border-gray-800">
                   Booked a trip to Bali
                 </div>
 
-                <div className="bg-gray-100 p-5 rounded-2xl">
+                <div className="bg-gray-100 dark:bg-[#111827] text-slate-900 dark:text-slate-200 p-5 rounded-2xl border border-gray-200 dark:border-gray-800">
                   Reserved hotel in Paris
                 </div>
 
-                <div className="bg-gray-100 p-5 rounded-2xl">
+                <div className="bg-gray-100 dark:bg-[#111827] text-slate-900 dark:text-slate-200 p-5 rounded-2xl border border-gray-200 dark:border-gray-800">
                   Added Switzerland to wishlist
                 </div>
 

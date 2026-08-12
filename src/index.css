@@ -35,6 +35,19 @@ body {
   background-color: #020617;
 }
 
+.dark .bg-black,
+.dark .bg-gray-900,
+.dark .bg-slate-900,
+.dark .bg-gray-800,
+.dark .bg-[#020B2D],
+.dark .bg-black *,
+.dark .bg-gray-900 *,
+.dark .bg-slate-900 *,
+.dark .bg-gray-800 *,
+.dark .bg-[#020B2D] * {
+  color: #f8fafc !important;
+}
+
 
 h1 {
   font-size: 1.4rem;
