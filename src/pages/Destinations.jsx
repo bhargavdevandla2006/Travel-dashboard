@@ -27,9 +27,9 @@ export default function Destinations() {
 
   return (
 
-    <div className="bg-[#020B2D] min-h-screen p-6">
+    <div className="min-h-screen p-6 bg-white text-gray-900 dark:bg-[#0f172a] dark:text-white">
 
-      <div className="bg-[#F5F5F5] rounded-[40px] overflow-hidden flex">
+      <div className="bg-white dark:bg-[#1e293b] rounded-[40px] overflow-hidden flex">
 
         <Sidebar />
 
@@ -41,11 +41,11 @@ export default function Destinations() {
 
             <div>
 
-              <h1 className="text-3xl font-playfair font-bold text-gray-900 tracking-tight">
+              <h1 className="text-3xl font-playfair font-bold text-gray-900 dark:text-white tracking-tight">
                 Explore Destinations
               </h1>
 
-              <p className="text-gray-600 mt-3 text-lg font-medium">
+              <p className="text-gray-600 dark:text-gray-300 mt-3 text-lg font-medium">
                 Discover your dream vacation spots
               </p>
 
@@ -66,7 +66,7 @@ export default function Destinations() {
 
                 <div
                   key={place.id}
-                  className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition hover:scale-105"
+                  className="bg-white dark:bg-[#111827] rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition hover:scale-105"
                 >
 
                   <img
@@ -81,7 +81,7 @@ export default function Destinations() {
                       {place.name}
                     </h1>
 
-                    <p className="text-gray-500 mt-2">
+                    <p className="text-gray-600 dark:text-gray-300 mt-2">
                       {place.country}
                     </p>
 

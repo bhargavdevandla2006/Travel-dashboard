@@ -93,8 +93,8 @@ const handlePayment = async () => {
 
 };
   return (
-    <div className="bg-[#020B2D] min-h-screen p-6">
-      <div className="bg-[#F5F5F5] rounded-[40px] overflow-hidden flex">
+    <div className="min-h-screen p-6 bg-white text-gray-900 dark:bg-[#0f172a] dark:text-white">
+      <div className="bg-white dark:bg-[#1e293b] rounded-[40px] overflow-hidden flex">
 
         <Sidebar />
 
@@ -139,19 +139,19 @@ const handlePayment = async () => {
 
           <div className="grid grid-cols-3 gap-6 mt-10">
 
-            <div className="bg-white p-6 rounded-3xl shadow-md">
+            <div className="bg-white dark:bg-[#111827] p-6 rounded-3xl shadow-md">
               <FaStar className="text-yellow-400 text-2xl" />
               <h1 className="font-bold mt-2">Rating</h1>
               <p>4.9 / 5</p>
             </div>
 
-            <div className="bg-white p-6 rounded-3xl shadow-md">
+            <div className="bg-white dark:bg-[#111827] p-6 rounded-3xl shadow-md">
               <FaPlane className="text-blue-600 text-2xl" />
               <h1 className="font-bold mt-2">Flights</h1>
               <p>Direct available</p>
             </div>
 
-            <div className="bg-white p-6 rounded-3xl shadow-md">
+            <div className="bg-white dark:bg-[#111827] p-6 rounded-3xl shadow-md">
               <h1 className="font-bold">Best Season</h1>
               <p>Nov - April</p>
             </div>

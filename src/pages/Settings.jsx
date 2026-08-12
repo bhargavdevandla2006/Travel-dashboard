@@ -242,8 +242,8 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen p-6 bg-white">
-     <div className="bg-transparent rounded-[40px] overflow-hidden flex">
+    <div className="min-h-screen p-6 bg-white text-gray-900 dark:bg-[#0f172a] dark:text-white">
+     <div className="bg-transparent dark:bg-transparent rounded-[40px] overflow-hidden flex">
         <Sidebar />
 
         <div className="flex-1 p-12">
@@ -276,7 +276,7 @@ export default function Settings() {
 
           <div
             ref={profileRef}
-            className="bg-white p-10 rounded-3xl shadow-xl mt-14 flex items-center justify-between"
+            className="bg-white dark:bg-[#1e293b] p-10 rounded-3xl shadow-xl mt-14 flex items-center justify-between"
           >
             <div className="flex items-center gap-8">
 
@@ -314,10 +314,10 @@ export default function Settings() {
 
                 </div>
 
-                <p className="text-gray-500 mt-2">
+                <p className="text-gray-600 dark:text-gray-300 mt-2">
                   {profile.bio}
                 </p>
-                <p className="text-sm text-gray-400 mt-1">
+                <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
                   📧 {profile.email}
                 </p>
 
@@ -395,7 +395,7 @@ export default function Settings() {
 
             <div
               ref={notificationsRef}
-              className="bg-white p-8 rounded-3xl shadow-xl hover:shadow-xl transition-shadow"
+              className="bg-white dark:bg-[#1e293b] p-8 rounded-3xl shadow-xl hover:shadow-xl transition-shadow"
             >
               <h2 className="font-bold text-2xl font-poppins">{t("TripAlerts")}</h2>
               <p className="text-gray-500 text-base mt-2">
@@ -443,7 +443,7 @@ export default function Settings() {
             </div>
 
 
-            <div ref={securityRef} className="bg-white p-8 rounded-3xl shadow-xl hover:shadow-xl transition-shadow">
+            <div ref={securityRef} className="bg-white dark:bg-[#1e293b] p-8 rounded-3xl shadow-xl hover:shadow-xl transition-shadow">
               <h2 className="font-bold text-2xl font-poppins">{t("Security")}</h2>
               <p className="text-gray-500 text-base mt-2">
                 Protect your account
@@ -466,7 +466,7 @@ export default function Settings() {
             </div>
 
 
-            <div ref={travelStyleRef} className="bg-white p-8 rounded-3xl shadow-xl hover:shadow-xl transition-shadow">
+            <div ref={travelStyleRef} className="bg-white dark:bg-[#1e293b] p-8 rounded-3xl shadow-xl hover:shadow-xl transition-shadow">
               <h2 className="font-bold text-2xl font-poppins">{t("TravelStyle")}</h2>
               <p className="text-gray-500 text-base mt-2">
                 Adventure / Luxury / Budget
@@ -508,7 +508,7 @@ export default function Settings() {
 
             <div
               ref={locationRef}
-              className="bg-white p-8 rounded-3xl shadow-xl hover:shadow-xl transition-shadow"
+              className="bg-white dark:bg-[#1e293b] p-8 rounded-3xl shadow-xl hover:shadow-xl transition-shadow"
             >
               <h2 className="font-bold text-2xl font-poppins">{t("HomeLocation")}</h2>
               <p className="text-gray-500 text-base mt-2">
@@ -616,7 +616,7 @@ export default function Settings() {
 
             </div>
 
-            <div className="bg-white p-8 rounded-3xl shadow-xl hover:shadow-xl transition">
+            <div className="bg-white dark:bg-[#1e293b] p-8 rounded-3xl shadow-xl hover:shadow-xl transition">
 
               <h2 className="text-2xl font-bold">
                 � Your Travel Hub
@@ -663,7 +663,7 @@ export default function Settings() {
       {showEditProfile && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
 
-          <div className="bg-white w-[600px] rounded-3xl p-8 shadow-2xl">
+          <div className="bg-white dark:bg-[#1e293b] w-[600px] rounded-3xl p-8 shadow-2xl">
 
             <h2 className="text-3xl font-bold mb-8">
               Edit Profile
@@ -714,7 +714,7 @@ export default function Settings() {
                   setProfile({ ...profile, name: e.target.value })
                 }
                 placeholder="Full Name"
-                className="w-full border rounded-xl p-4"
+                className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#0f172a] text-gray-900 dark:text-white rounded-xl p-4"
               />
 
               <input
@@ -723,7 +723,7 @@ export default function Settings() {
                   setProfile({ ...profile, email: e.target.value })
                 }
                 placeholder="Email"
-                className="w-full border rounded-xl p-4"
+                className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#0f172a] text-gray-900 dark:text-white rounded-xl p-4"
               />
 
               <input
@@ -751,7 +751,7 @@ export default function Settings() {
                   setProfile({ ...profile, bio: e.target.value })
                 }
                 placeholder="Bio"
-                className="w-full border rounded-xl p-4"
+                className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#0f172a] text-gray-900 dark:text-white rounded-xl p-4"
               />
 
             </div>

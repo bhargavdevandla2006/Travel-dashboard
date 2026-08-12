@@ -61,8 +61,8 @@ export default function Trips() {
 
     <div
       className="
-bg-[#020B2D]
-dark:bg-black
+bg-white
+dark:bg-[#0f172a]
 
 min-h-screen
 
@@ -75,8 +75,8 @@ duration-300
 
       <div
         className="
-bg-[#F5F5F5]
-dark:bg-gray-900
+bg-white
+dark:bg-[#1e293b]
 
 rounded-[40px]
 

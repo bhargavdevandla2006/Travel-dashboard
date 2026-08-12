@@ -45,8 +45,8 @@ export default function Travelers() {
   }
 
   return (
-    <div className="bg-[#020B2D] min-h-screen p-6">
-      <div className="bg-[#F5F5F5] rounded-[40px] overflow-hidden flex">
+    <div className="min-h-screen p-6 bg-white text-gray-900 dark:bg-[#0f172a] dark:text-white">
+      <div className="bg-white dark:bg-[#1e293b] rounded-[40px] overflow-hidden flex">
 
         <Sidebar />
 
@@ -58,7 +58,7 @@ export default function Travelers() {
                         Travel Community
                     </h1>
 
-                    <p className="text-gray-500 mt-2 text-xs">
+                    <p className="text-gray-600 dark:text-gray-300 mt-2 text-xs">
                         Discover amazing travelers around the world.
                     </p>
                     
@@ -67,7 +67,7 @@ export default function Travelers() {
                         placeholder="Search Travelers..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="mt-8 w-full border p-4 rounded-2xl"
+                        className="mt-8 w-full border border-gray-300 bg-white text-gray-900 dark:border-gray-600 dark:bg-[#0f172a] dark:text-white p-4 rounded-2xl"
                     />
 
                     <div className="grid grid-cols-3 gap-6 mt-8">
@@ -78,7 +78,7 @@ export default function Travelers() {
                                 <div
                                     key={user.id}
                                     onClick={() => navigate(`/traveler/${user.id}`)}
-                                    className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition cursor-pointer overflow-hidden hover:scale-105"
+                                    className="bg-white dark:bg-[#111827] dark:border dark:border-gray-700 rounded-2xl shadow-lg hover:shadow-2xl transition cursor-pointer overflow-hidden hover:scale-105"
                                 >
 
                                     <img
@@ -93,7 +93,7 @@ export default function Travelers() {
                                             {user.name}
                                         </h2>
 
-                                        <p className="text-gray-500 mt-1 text-xs">
+                                        <p className="text-gray-600 dark:text-gray-300 mt-1 text-xs">
                                             {user.city}, {user.country}
                                         </p>
 
