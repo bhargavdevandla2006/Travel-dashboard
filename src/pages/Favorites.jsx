@@ -1,14 +1,24 @@
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
+import { useTheme } from "../context/ThemeContext";
 
 export default function Favorites() {
+  const { darkMode } = useTheme();
   const favorites =
     JSON.parse(localStorage.getItem("favorites")) || [];
 
   return (
-    <div className="min-h-screen p-6 bg-white">
+   <div
+  className={`min-h-screen p-6 transition-colors duration-300 ${
+    darkMode ? "bg-[#020617]" : "bg-[#F5F5F5]"
+  }`}
+>
 
-      <div className="bg-white rounded-[40px] overflow-hidden flex">
+      <div
+          className={`rounded-[40px] overflow-hidden flex transition-colors duration-300 ${
+            darkMode ? "bg-[#0F172A]" : "bg-white"
+          }`}
+        >
 
         <Sidebar />
 
@@ -16,7 +26,11 @@ export default function Favorites() {
 
           <Navbar />
 
-          <h1 className="text-4xl font-bold mt-10 text-gray-900">
+                  <h1
+                  className={`text-4xl font-bold mt-10 ${
+            darkMode ? "text-white" : "text-gray-900"
+          }`}
+         >
             ❤️ Favorite Destinations
           </h1>
 
@@ -24,13 +38,24 @@ export default function Favorites() {
 
             {favorites.length === 0 ? (
 
-              <h2 className="text-gray-600">No Favorite Destinations Yet ❤️</h2>
+              <h2
+                  className={darkMode ? "text-gray-300" : "text-gray-600"}
+                >
+                  No Favorite Destinations Yet ❤️
+                </h2>
 
             ) : (
 
               favorites.map((place) => (
 
-                <div key={place.name} className="bg-white rounded-3xl shadow-lg p-6">
+                <div
+                    key={place.name}
+                    className={`rounded-3xl shadow-lg p-6 transition-colors duration-300 ${
+                      darkMode
+                        ? "bg-[#1E293B] shadow-black/30"
+                        : "bg-white"
+                    }`}
+                  >
 
                   <img
                     src={place.image}
@@ -38,11 +63,15 @@ export default function Favorites() {
                     alt={place.name}
                   />
 
-                  <h2 className="text-xl font-bold mt-4 text-gray-900">
+                  <h2
+                      className={`text-xl font-bold mt-4 ${
+                        darkMode ? "text-white" : "text-gray-900"
+                      }`}
+                    >
                     {place.name}
                   </h2>
 
-                  <p className="text-gray-500">{place.country}</p>
+                  <p className={darkMode ? "text-gray-300" : "text-gray-500"}>{place.country}</p>
 
                 </div>
 
