@@ -24,7 +24,7 @@ export default function Navbar({ search, setSearch }) {
     <div
       className="
 bg-white/60
-dark:bg-gray-900/70
+dark:bg-[#0f172a]/80
 
 backdrop-blur-md
 
@@ -34,7 +34,7 @@ shadow-lg
 
 border
 border-gray-100
-dark:border-gray-700
+dark:border-gray-800
 
 px-8
 py-5
@@ -75,7 +75,7 @@ duration-300
           onChange={(e) => setSearch(e.target.value)}
           type="text"
           placeholder={t("SearchPlaceholder")}
-          className="w-full bg-white/20 pl-14 pr-5 py-3 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 transition text-slate-900"
+          className="w-full bg-white/10 dark:bg-[#0f172a]/40 pl-14 pr-5 py-3 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 transition text-slate-900 dark:text-white"
         />
 
       </div>
