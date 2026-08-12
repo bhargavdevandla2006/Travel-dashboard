@@ -4,7 +4,7 @@ import Navbar from "../components/Navbar";
 import { useMap } from "../context/MapContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useLanguage } from "../context/LanguageContext";
-
+import { useTheme } from "../context/ThemeContext";
 
 export default function Settings() {
   const SETTINGS_STORAGE_KEY = "travelhub-settings";
@@ -29,7 +29,7 @@ export default function Settings() {
   });
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [showToast, setShowToast] = useState(false);
-// theme is fixed to light; theme toggle removed
+
 
   const defaultProfile = {
     name: "Bhargav Devandla",

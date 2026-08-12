@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
-import apiUrl from "../services/api";
+import apiUrl, { getProfile } from "../services/api";
 
 
 export default function Travelers() {
@@ -18,34 +18,37 @@ export default function Travelers() {
 
     async function loadUsers() {
 
-        try {
-            const endpoint = search.trim()
-                ? `${apiUrl}/search-users?search=${encodeURIComponent(search)}`
-                : `${apiUrl}/users`;
+    try {
+      const endpoint = search.trim()
+        ? `${apiUrl}/search-users?search=${encodeURIComponent(search)}`
+        : `${apiUrl}/users`;
 
-            const response = await fetch(endpoint, {
-                credentials: "include",
-            });
+      const response = await fetch(endpoint, {
+        credentials: "include",
+      });
 
-            const data = await response.json();
+      const data = await response.json();
+      const currentUser = await getProfile();
 
-            setUsers(data);
+      const sortedUsers = data.sort((a, b) => {
+        if (a.id === currentUser.id) return -1;
+        if (b.id === currentUser.id) return 1;
+        return 0;
+      });
 
-        } catch (err) {
+      setUsers(sortedUsers);
 
-            console.log(err);
-
-        }
-
+    } catch (err) {
+      console.log(err);
     }
 
-    return (
+  }
 
-        <div className="bg-[#020B2D] min-h-screen p-6">
+  return (
+    <div className="bg-[#020B2D] min-h-screen p-6">
+      <div className="bg-[#F5F5F5] rounded-[40px] overflow-hidden flex">
 
-            <div className="bg-[#F5F5F5] rounded-[40px] overflow-hidden flex">
-
-                <Sidebar />
+        <Sidebar />
 
                 <div className="flex-1 p-10">
 

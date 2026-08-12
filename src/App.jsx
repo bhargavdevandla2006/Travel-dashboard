@@ -19,23 +19,22 @@ import Booking from "./pages/Booking";
 import DestinationDetails from "./pages/DestinationDetails";
 import TravelerProfile from "./pages/TravelerProfile";
 import Favorites from "./pages/Favorites";
-
+import { useTheme } from "./context/ThemeContext";
 
 export default function App() {
+  const { darkMode } = useTheme();
 
   return (
 
     <MapProvider>
 
-       <div
-    className="
-    min-h-screen
-    bg-gray-50
-    dark:bg-gray-950
-    transition-all
-    duration-300
-    "
-  >
+  <div
+  className={`min-h-screen transition-colors duration-300 ${
+    darkMode
+      ? "bg-[#020617] text-white"
+      : "bg-[#F5F5F5] text-gray-900"
+  }`}
+>
 
       <BrowserRouter>
 

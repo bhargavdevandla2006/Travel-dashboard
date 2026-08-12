@@ -164,6 +164,7 @@ export default function TripCard({ id, image, title, location, price, }) {
         className="
 group
 
+relative
 bg-white
 dark:bg-gray-900
 
