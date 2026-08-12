@@ -42,10 +42,10 @@ export default function Sidebar() {
     };
 
     return (
-        <div className={`${collapsed ? "w-20" : "w-[290px]"} min-h-screen bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 text-slate-900 dark:text-white flex flex-col justify-between transition-all duration-300 ease-in-out overflow-visible`}>
+        <div className={`${collapsed ? "w-20" : "w-[290px]"} min-h-screen bg-white dark:bg-[#0f172a] border-r border-gray-200 dark:border-gray-800 text-slate-900 dark:text-white flex flex-col justify-between transition-all duration-300 ease-in-out overflow-visible`}>
             <div>
                 <div
-                    className={`border-b border-gray-200 dark:border-gray-700 py-6 px-4 flex items-center ${collapsed ? "justify-center flex-col gap-4" : "justify-between"}`}
+                    className={`border-b border-gray-200 dark:border-gray-800 py-6 px-4 flex items-center ${collapsed ? "justify-center flex-col gap-4" : "justify-between"}`}
                 >
                     <div className="flex items-center gap-3">
                         <div className="h-12 w-12 rounded-2xl flex items-center justify-center shadow-lg" style={{ background: 'linear-gradient(135deg, var(--accent-1), var(--accent-2))' }}>
@@ -89,7 +89,7 @@ transition
                                     </button>
 
                                     {showSettingsMenu && !collapsed && (
-                                        <div className="absolute left-full top-0 ml-4 w-72 bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white z-[9999] overflow-hidden">
+                                        <div className="absolute left-full top-0 ml-4 w-72 bg-white dark:bg-[#1e293b] rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white z-[9999] overflow-hidden">
                                             <div className="px-5 py-4" style={{ background: 'linear-gradient(90deg, var(--accent-1), var(--accent-2))', color: '#fff' }}>
                                                 <h2 className="text-lg font-bold">⚙️ {t("Settings")}</h2>
                                                 <p className="text-sm text-blue-100">{t("ChooseYourLanguage")}</p>
@@ -169,22 +169,22 @@ transition
 
                 {!collapsed && (
                     <div className="px-5 mt-8">
-                        <h2 className="text-xs uppercase tracking-[3px] text-slate-400 dark:text-gray-400 mb-4">Recent Trips</h2>
+                        <h2 className="text-xs uppercase tracking-[3px] text-slate-400 dark:text-slate-300 mb-4">Recent Trips</h2>
 
                         <div className="space-y-3">
-                            <div className="bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-2xl p-4 transition cursor-pointer">
+                            <div className="bg-gray-100 dark:bg-[#111827] hover:bg-gray-200 dark:hover:bg-[#111827] rounded-2xl p-4 transition cursor-pointer">
                                 <p className="font-semibold">🏝 Bali</p>
-                                <p className="text-xs text-slate-400 dark:text-gray-400">Indonesia</p>
+                                <p className="text-xs text-slate-400 dark:text-slate-300">Indonesia</p>
                             </div>
 
-                            <div className="bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-2xl p-4 transition cursor-pointer">
+                            <div className="bg-gray-100 dark:bg-[#111827] hover:bg-gray-200 dark:hover:bg-[#111827] rounded-2xl p-4 transition cursor-pointer">
                                 <p className="font-semibold">🗼 Paris</p>
-                                <p className="text-xs text-slate-400 dark:text-gray-400">France</p>
+                                <p className="text-xs text-slate-400 dark:text-slate-300">France</p>
                             </div>
 
-                            <div className="bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-2xl p-4 transition cursor-pointer">
+                            <div className="bg-gray-100 dark:bg-[#111827] hover:bg-gray-200 dark:hover:bg-[#111827] rounded-2xl p-4 transition cursor-pointer">
                                 <p className="font-semibold">🗻 Tokyo</p>
-                                <p className="text-xs text-slate-400 dark:text-gray-400">Japan</p>
+                                <p className="text-xs text-slate-400 dark:text-slate-300">Japan</p>
                             </div>
 
                         </div>
