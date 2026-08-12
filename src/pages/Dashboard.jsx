@@ -16,6 +16,9 @@ import StatsCard from "../components/StatsCard";
 import TripCard from "../components/TripCard";
 import MapView from "../components/MapView";
 import { useState } from "react";
+import { useTheme } from "../context/ThemeContext";
+
+
 const stats = [
   { title: "Total Trips", value: "12", color: "bg-blue-600", icon: <FaSuitcase /> },
   { title: "Upcoming Flights", value: "5", color: "bg-green-500", icon: <FaPlane /> },
@@ -75,6 +78,8 @@ const quickStart = [
 ];
 
 export default function Index() {
+    const { darkMode } = useTheme();
+    
   const [search, setSearch] = useState('')
 
   const filteredTrips = trips.filter((items) => {
@@ -84,23 +89,25 @@ export default function Index() {
 
   })
   return (
-    <div className="bg-[#020B2D] min-h-screen p-6">
-      <div className="bg-[#F5F5F5] rounded-[40px] overflow-hidden flex flex-col lg:flex-row min-h-[calc(100vh-3rem)] shadow-xl">
+<div
+  className={`min-h-screen p-6 transition-colors duration-300 ${
+    darkMode ? "bg-[#020617]" : "bg-[#020B2D]"
+  }`}
+
+>      <div
+  className={`rounded-[40px] overflow-hidden flex flex-col lg:flex-row min-h-[calc(100vh-3rem)] shadow-xl transition-colors duration-300 ${
+    darkMode ? "bg-[#0F172A]" : "bg-[#F5F5F5]"
+  }`}
+>
         <Sidebar />
 
-        <div
-          className="
-flex-1 
-p-5 
-lg:p-7
-
-bg-gray-50
-dark:bg-gray-950
-
-transition-all
-duration-300
-"
-        >
+<div
+  className={`flex-1 p-5 lg:p-7 transition-colors duration-300 ${
+    darkMode
+      ? "bg-[#020617]"
+      : "bg-gray-50"
+  }`}
+>
           <Navbar search={search} setSearch={setSearch} />
 
           <div className="mt-8 relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-700 via-indigo-600 to-purple-600 p-8 shadow-2xl">
