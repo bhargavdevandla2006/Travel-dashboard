@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import apiUrl from "../services/api";
@@ -18,22 +19,160 @@ import {
   FaLinkedin,
   FaYoutube,
   FaTiktok,
+  FaWhatsapp,
   FaGlobe,
   FaShareAlt,
   FaCopy,
   FaCheck,
   FaArrowLeft,
   FaPaperPlane,
+  FaLink,
 } from "react-icons/fa";
+
+/* =========================================================
+   SOCIAL URL BUILDER
+========================================================= */
+
+function getSocialUrl(platform, value) {
+  if (!value) return null;
+
+  let username = String(value).trim();
+
+  if (!username) return null;
+
+  // Already a complete URL
+  if (
+    username.startsWith("http://") ||
+    username.startsWith("https://")
+  ) {
+    return username;
+  }
+
+  // Remove @ if entered
+  username = username.replace(/^@/, "");
+
+  switch (platform) {
+    case "instagram":
+      return `https://www.instagram.com/${username}/`;
+
+    case "facebook":
+      return `https://www.facebook.com/${username}`;
+
+    case "twitter":
+      return `https://x.com/${username}`;
+
+    case "linkedin":
+      return `https://www.linkedin.com/in/${username}`;
+
+    case "youtube":
+      return `https://www.youtube.com/@${username}`;
+
+    case "tiktok":
+      return `https://www.tiktok.com/@${username}`;
+
+    case "whatsapp":
+      // If only a phone number is stored
+      return `https://wa.me/${username.replace(/[^\d]/g, "")}`;
+
+    case "website":
+      return `https://${username}`;
+
+    default:
+      return null;
+  }
+}
+
+/* =========================================================
+   SOCIAL BUTTON
+========================================================= */
+
+function SocialButton({
+  platform,
+  value,
+  icon,
+  label,
+  className = "",
+}) {
+  if (!value) return null;
+
+  function handleClick() {
+    const url = getSocialUrl(platform, value);
+
+    if (!url) return;
+
+    window.open(
+      url,
+      "_blank",
+      "noopener,noreferrer"
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={handleClick}
+      title={`Open ${label}`}
+      aria-label={`Open ${label}`}
+      className={`
+        group
+        relative
+        w-10
+        h-10
+        rounded-xl
+        flex
+        items-center
+        justify-center
+        text-white
+        text-lg
+        shadow-lg
+        hover:scale-110
+        hover:-translate-y-1
+        active:scale-95
+        transition-all
+        duration-200
+        ${className}
+      `}
+    >
+      {icon}
+
+      <span
+        className="
+          pointer-events-none
+          absolute
+          -bottom-8
+          left-1/2
+          -translate-x-1/2
+          whitespace-nowrap
+          rounded-md
+          bg-black
+          px-2
+          py-1
+          text-[10px]
+          text-white
+          opacity-0
+          group-hover:opacity-100
+          transition
+          z-50
+        "
+      >
+        {label}
+      </span>
+    </button>
+  );
+}
+
+/* =========================================================
+   MAIN COMPONENT
+========================================================= */
 
 export default function TravelerProfile() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [user, setUser] = useState(null);
 
   const [following, setFollowing] = useState(false);
 
-  const [loading, setLoading] = useState(true);
   const [profileLoading, setProfileLoading] = useState(true);
   const [followLoading, setFollowLoading] = useState(false);
 
@@ -44,21 +183,20 @@ export default function TravelerProfile() {
 
   const [trips, setTrips] = useState([]);
   const [tripsLoading, setTripsLoading] = useState(false);
-  const [tripsError, setTripsError] = useState("");
 
   const [copied, setCopied] = useState(false);
 
   const [error, setError] = useState("");
+
+  /* =========================================================
+     LOAD
+  ========================================================= */
 
   useEffect(() => {
     if (!id) return;
 
     loadEverything();
   }, [id]);
-
-  // =========================================================
-  // LOAD EVERYTHING
-  // =========================================================
 
   async function loadEverything() {
     setProfileLoading(true);
@@ -75,13 +213,15 @@ export default function TravelerProfile() {
     setProfileLoading(false);
   }
 
-  // =========================================================
-  // LOAD USER
-  // =========================================================
+  /* =========================================================
+     LOAD USER
+  ========================================================= */
 
   async function loadUser() {
     try {
-      const response = await fetch(`${apiUrl}/users/${id}`);
+      const response = await fetch(
+        `${apiUrl}/users/${id}`
+      );
 
       if (!response.ok) {
         throw new Error("Failed to load traveler");
@@ -93,47 +233,52 @@ export default function TravelerProfile() {
     } catch (err) {
       console.error("Load user error:", err);
 
-      setError("Unable to load this traveler.");
+      setError(
+        "Unable to load this traveler."
+      );
     }
   }
 
-  // =========================================================
-  // LOAD CURRENT LOGGED-IN USER
-  // =========================================================
+  /* =========================================================
+     CURRENT USER
+  ========================================================= */
 
   async function loadCurrentUser() {
     try {
-      const response = await fetch(`${apiUrl}/profile`, {
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${apiUrl}/profile`,
+        {
+          credentials: "include",
+        }
+      );
 
       if (!response.ok) {
-        setLoading(false);
         return;
       }
 
-      const currentUser = await response.json();
+      const currentUser =
+        await response.json();
 
       const self =
-        String(currentUser.id) === String(id);
+        String(currentUser.id) ===
+        String(id);
 
       setIsOwnProfile(self);
 
       if (!self) {
         await checkStatus();
-      } else {
-        setLoading(false);
       }
     } catch (err) {
-      console.error("Current user error:", err);
-
-      setLoading(false);
+      console.error(
+        "Current user error:",
+        err
+      );
     }
   }
 
-  // =========================================================
-  // CHECK FOLLOW STATUS
-  // =========================================================
+  /* =========================================================
+     FOLLOW STATUS
+  ========================================================= */
 
   async function checkStatus() {
     try {
@@ -144,23 +289,25 @@ export default function TravelerProfile() {
         }
       );
 
-      if (!response.ok) {
-        throw new Error("Failed to check follow status");
-      }
+      if (!response.ok) return;
 
-      const data = await response.json();
+      const data =
+        await response.json();
 
-      setFollowing(Boolean(data.following));
+      setFollowing(
+        Boolean(data.following)
+      );
     } catch (err) {
-      console.error("Follow status error:", err);
-    } finally {
-      setLoading(false);
+      console.error(
+        "Follow status error:",
+        err
+      );
     }
   }
 
-  // =========================================================
-  // LOAD FOLLOWERS
-  // =========================================================
+  /* =========================================================
+     FOLLOWERS
+  ========================================================= */
 
   async function loadFollowers() {
     try {
@@ -168,21 +315,25 @@ export default function TravelerProfile() {
         `${apiUrl}/followers-count/${id}`
       );
 
-      if (!response.ok) {
-        return;
-      }
+      if (!response.ok) return;
 
-      const data = await response.json();
+      const data =
+        await response.json();
 
-      setFollowers(Number(data.count) || 0);
+      setFollowers(
+        Number(data.count) || 0
+      );
     } catch (err) {
-      console.error("Followers error:", err);
+      console.error(
+        "Followers error:",
+        err
+      );
     }
   }
 
-  // =========================================================
-  // LOAD FOLLOWING
-  // =========================================================
+  /* =========================================================
+     FOLLOWING
+  ========================================================= */
 
   async function loadFollowing() {
     try {
@@ -190,25 +341,28 @@ export default function TravelerProfile() {
         `${apiUrl}/following-count/${id}`
       );
 
-      if (!response.ok) {
-        return;
-      }
+      if (!response.ok) return;
 
-      const data = await response.json();
+      const data =
+        await response.json();
 
-      setFollowingCount(Number(data.count) || 0);
+      setFollowingCount(
+        Number(data.count) || 0
+      );
     } catch (err) {
-      console.error("Following error:", err);
+      console.error(
+        "Following error:",
+        err
+      );
     }
   }
 
-  // =========================================================
-  // LOAD TRIPS
-  // =========================================================
+  /* =========================================================
+     TRIPS
+  ========================================================= */
 
   async function loadTrips() {
     setTripsLoading(true);
-    setTripsError("");
 
     try {
       const response = await fetch(
@@ -216,36 +370,39 @@ export default function TravelerProfile() {
       );
 
       if (!response.ok) {
-        // Do not attempt to parse JSON from a 500 HTML response
         setTrips([]);
-        setTripsError(`Unable to load trips (status ${response.status})`);
         return;
       }
 
-      const data = await response.json();
+      const data =
+        await response.json();
 
       if (Array.isArray(data)) {
         setTrips(data);
       } else {
         setTrips([]);
-        setTripsError("Unexpected trips response");
       }
     } catch (err) {
-      console.error("Trips error:", err);
+      console.error(
+        "Trips error:",
+        err
+      );
 
       setTrips([]);
-      setTripsError("Network error loading trips");
     } finally {
       setTripsLoading(false);
     }
   }
 
-  // =========================================================
-  // FOLLOW
-  // =========================================================
+  /* =========================================================
+     FOLLOW
+  ========================================================= */
 
   async function handleFollow() {
-    if (isOwnProfile || followLoading) {
+    if (
+      isOwnProfile ||
+      followLoading
+    ) {
       return;
     }
 
@@ -260,36 +417,48 @@ export default function TravelerProfile() {
         }
       );
 
-      const data = await response.json();
+      const data =
+        await response.json();
 
       if (!response.ok) {
         throw new Error(
-          data.message || "Unable to follow user"
+          data.message ||
+            "Unable to follow user"
         );
       }
 
       setFollowing(true);
 
-      // Immediately update UI
-      setFollowers((prev) => prev + 1);
+      setFollowers(
+        (prev) => prev + 1
+      );
 
       await loadFollowers();
       await loadFollowing();
     } catch (err) {
-      console.error("Follow error:", err);
+      console.error(
+        "Follow error:",
+        err
+      );
 
-      alert(err.message || "Unable to follow this traveler.");
+      alert(
+        err.message ||
+          "Unable to follow this traveler."
+      );
     } finally {
       setFollowLoading(false);
     }
   }
 
-  // =========================================================
-  // UNFOLLOW
-  // =========================================================
+  /* =========================================================
+     UNFOLLOW
+  ========================================================= */
 
   async function handleUnfollow() {
-    if (isOwnProfile || followLoading) {
+    if (
+      isOwnProfile ||
+      followLoading
+    ) {
       return;
     }
 
@@ -304,24 +473,30 @@ export default function TravelerProfile() {
         }
       );
 
-      const data = await response.json();
+      const data =
+        await response.json();
 
       if (!response.ok) {
         throw new Error(
-          data.message || "Unable to unfollow user"
+          data.message ||
+            "Unable to unfollow user"
         );
       }
 
       setFollowing(false);
 
-      setFollowers((prev) =>
-        Math.max(0, prev - 1)
+      setFollowers(
+        (prev) =>
+          Math.max(0, prev - 1)
       );
 
       await loadFollowers();
       await loadFollowing();
     } catch (err) {
-      console.error("Unfollow error:", err);
+      console.error(
+        "Unfollow error:",
+        err
+      );
 
       alert(
         err.message ||
@@ -332,208 +507,111 @@ export default function TravelerProfile() {
     }
   }
 
-  // =========================================================
-  // SHARE PROFILE
-  // =========================================================
+  /* =========================================================
+     PROFILE URL
+  ========================================================= */
+
+  function getProfileUrl() {
+    if (!user?.id) return "";
+
+    return `${window.location.origin}/traveler/${user.id}`;
+  }
+
+  /* =========================================================
+     SHARE PROFILE
+  ========================================================= */
 
   async function handleShare() {
-    const profileUrl = window.location.href;
+    const profileUrl =
+      getProfileUrl();
+
+    if (!profileUrl) return;
 
     try {
-      if (navigator.share) {
+      if (
+        navigator.share
+      ) {
         await navigator.share({
-          title: `${user?.name || "Traveler"} | TravelHub`,
-          text: `Check out ${user?.name}'s TravelHub profile.`,
+          title: `${user.name} | TravelHub`,
+          text: `Check out ${user.name}'s TravelHub profile.`,
           url: profileUrl,
         });
 
         return;
       }
 
-      await navigator.clipboard.writeText(profileUrl);
-
-      setCopied(true);
-
-      setTimeout(() => {
-        setCopied(false);
-      }, 2000);
-    } catch (err) {
-      console.error("Share error:", err);
-    }
-  }
-
-  // =========================================================
-  // COPY PROFILE LINK
-  // =========================================================
-
-  async function handleCopyLink() {
-    try {
       await navigator.clipboard.writeText(
-        window.location.href
+        profileUrl
       );
 
       setCopied(true);
 
       setTimeout(() => {
         setCopied(false);
-      }, 2000);
+      }, 2500);
     } catch (err) {
-      console.error("Copy error:", err);
+      console.error(
+        "Share error:",
+        err
+      );
     }
   }
 
-  // =========================================================
-  // SOCIAL URL BUILDER
-  // =========================================================
+  /* =========================================================
+     COPY PROFILE LINK
+  ========================================================= */
 
-  function getSocialUrl(platform, value) {
-    if (!value) {
-      return null;
+  async function handleCopyLink() {
+    const profileUrl =
+      getProfileUrl();
+
+    if (!profileUrl) return;
+
+    try {
+      await navigator.clipboard.writeText(
+        profileUrl
+      );
+
+      setCopied(true);
+
+      setTimeout(() => {
+        setCopied(false);
+      }, 2500);
+    } catch (err) {
+      console.error(
+        "Copy error:",
+        err
+      );
     }
+  }
 
-    let username = String(value).trim();
+  /* =========================================================
+     MESSAGE
+  ========================================================= */
 
-    if (!username) {
-      return null;
-    }
-
-    // Already a full URL
+  function handleMessage() {
     if (
-      username.startsWith("http://") ||
-      username.startsWith("https://")
+      !id ||
+      isOwnProfile
     ) {
-      return username;
-    }
-
-    // Remove @ if user saved @username
-    username = username.replace(/^@/, "");
-
-    switch (platform) {
-      case "instagram":
-        return `https://instagram.com/${username}`;
-
-      case "facebook":
-        return `https://facebook.com/${username}`;
-
-      case "twitter":
-        return `https://x.com/${username}`;
-
-      case "linkedin":
-        return `https://linkedin.com/in/${username}`;
-
-      case "youtube":
-        return `https://youtube.com/@${username}`;
-
-      case "tiktok":
-        return `https://tiktok.com/@${username}`;
-
-      case "website":
-        return `https://${username}`;
-
-      default:
-        return username;
-    }
-  }
-
-  // =========================================================
-  // OPEN SOCIAL
-  // =========================================================
-
-  function openSocial(platform, value) {
-    const url = getSocialUrl(platform, value);
-
-    if (!url) {
       return;
     }
 
-    window.open(
-      url,
-      "_blank",
-      "noopener,noreferrer"
-    );
+    // If you already have an internal
+    // Messages page, this will open it.
+    navigate(`/messages/${id}`);
   }
 
-  // =========================================================
-  // SOCIAL BUTTON
-  // =========================================================
+  /* =========================================================
+     LOADING
+  ========================================================= */
 
-  function SocialButton({
-    platform,
-    value,
-    icon,
-    label,
-    className,
-  }) {
-    if (!value) {
-      return null;
-    }
-
-    return (
-      <button
-        type="button"
-        onClick={() =>
-          openSocial(platform, value)
-        }
-        title={`Open ${label}`}
-        aria-label={`Open ${label}`}
-        className={`
-          ${className}
-          group
-          relative
-          w-11
-          h-11
-          rounded-full
-          flex
-          items-center
-          justify-center
-          text-white
-          text-lg
-          shadow-lg
-          hover:scale-110
-          hover:-translate-y-1
-          active:scale-95
-          transition-all
-          duration-200
-        `}
-      >
-        {icon}
-
-        <span
-          className="
-            pointer-events-none
-            absolute
-            -bottom-9
-            left-1/2
-            -translate-x-1/2
-            whitespace-nowrap
-            rounded-lg
-            bg-black
-            px-2
-            py-1
-            text-[10px]
-            text-white
-            opacity-0
-            group-hover:opacity-100
-            transition
-            z-50
-          "
-        >
-          {label}
-        </span>
-      </button>
-    );
-  }
-
-  // =========================================================
-  // LOADING
-  // =========================================================
-
-  if (profileLoading || !user) {
+  if (profileLoading) {
     return (
       <div
         className="
           min-h-screen
-          bg-[#f8fafc]
+          bg-[#f6f8fc]
           dark:bg-[#020617]
           flex
           items-center
@@ -541,10 +619,11 @@ export default function TravelerProfile() {
         "
       >
         <div className="text-center">
+
           <div
             className="
-              w-16
-              h-16
+              w-14
+              h-14
               rounded-full
               border-4
               border-blue-200
@@ -557,28 +636,29 @@ export default function TravelerProfile() {
           <p
             className="
               mt-5
+              font-semibold
               text-gray-600
               dark:text-gray-300
-              font-medium
             "
           >
             Loading traveler profile...
           </p>
+
         </div>
       </div>
     );
   }
 
-  // =========================================================
-  // ERROR
-  // =========================================================
+  /* =========================================================
+     ERROR
+  ========================================================= */
 
   if (error && !user) {
     return (
       <div
         className="
           min-h-screen
-          bg-[#f8fafc]
+          bg-[#f6f8fc]
           dark:bg-[#020617]
           flex
           items-center
@@ -598,25 +678,55 @@ export default function TravelerProfile() {
             text-center
           "
         >
-          <div className="text-5xl mb-5">
+          <div className="text-5xl">
             😕
           </div>
 
-          <h1 className="text-2xl font-bold">
+          <h1
+            className="
+              text-2xl
+              font-black
+              mt-5
+            "
+          >
             Traveler not found
           </h1>
 
-          <p className="text-gray-500 mt-3">
-            We couldn't load this traveler's profile.
+          <p
+            className="
+              text-gray-500
+              mt-3
+            "
+          >
+            We couldn't load this
+            traveler's profile.
           </p>
+
+          <button
+            onClick={() =>
+              navigate(-1)
+            }
+            className="
+              mt-6
+              px-5
+              py-3
+              rounded-xl
+              bg-blue-600
+              text-white
+              font-bold
+              hover:bg-blue-700
+            "
+          >
+            Go Back
+          </button>
         </div>
       </div>
     );
   }
 
-  // =========================================================
-  // DATA
-  // =========================================================
+  /* =========================================================
+     DATA
+  ========================================================= */
 
   const displayPhoto =
     user.photo ||
@@ -635,9 +745,9 @@ export default function TravelerProfile() {
     .filter(Boolean)
     .join(", ");
 
-  // =========================================================
-  // RETURN
-  // =========================================================
+  /* =========================================================
+     RETURN
+  ========================================================= */
 
   return (
     <div
@@ -667,22 +777,21 @@ export default function TravelerProfile() {
 
             <Navbar />
 
-            {/* =================================================
-                BACK BUTTON
-            ================================================== */}
+            {/* BACK */}
 
             <div className="mt-5">
+
               <button
                 type="button"
                 onClick={() =>
-                  window.history.back()
+                  navigate(-1)
                 }
                 className="
                   inline-flex
                   items-center
                   gap-2
                   text-sm
-                  font-semibold
+                  font-bold
                   text-gray-500
                   hover:text-blue-600
                   dark:text-gray-400
@@ -691,28 +800,30 @@ export default function TravelerProfile() {
                 "
               >
                 <FaArrowLeft />
-
                 Back
               </button>
+
             </div>
 
             {/* =================================================
-                HERO PROFILE
+                HERO
             ================================================== */}
 
             <section
               className="
                 relative
+                mt-5
                 overflow-hidden
                 rounded-[32px]
-                mt-5
-                min-h-[330px]
+                min-h-[360px]
                 shadow-2xl
+                border
+                border-white/10
                 group
               "
             >
 
-              {/* COVER IMAGE */}
+              {/* COVER */}
 
               <img
                 src={coverPhoto}
@@ -729,7 +840,7 @@ export default function TravelerProfile() {
                 "
               />
 
-              {/* DARK GRADIENT */}
+              {/* OVERLAY */}
 
               <div
                 className="
@@ -737,20 +848,20 @@ export default function TravelerProfile() {
                   inset-0
                   bg-gradient-to-r
                   from-[#020617]/95
-                  via-[#1e1b4b]/75
-                  to-[#7c3aed]/30
+                  via-[#111827]/80
+                  to-purple-900/40
                 "
               />
 
-              {/* COLOR GLOW */}
+              {/* GLOW */}
 
               <div
                 className="
                   absolute
-                  -right-20
-                  -top-20
-                  w-72
-                  h-72
+                  -right-24
+                  -top-24
+                  w-80
+                  h-80
                   rounded-full
                   bg-purple-500/30
                   blur-3xl
@@ -760,23 +871,23 @@ export default function TravelerProfile() {
               <div
                 className="
                   absolute
-                  -left-20
-                  -bottom-20
-                  w-72
-                  h-72
+                  -left-24
+                  -bottom-24
+                  w-80
+                  h-80
                   rounded-full
-                  bg-blue-500/30
+                  bg-blue-500/20
                   blur-3xl
                 "
               />
 
-              {/* CONTENT */}
+              {/* HERO CONTENT */}
 
               <div
                 className="
                   relative
                   z-10
-                  min-h-[330px]
+                  min-h-[360px]
                   p-6
                   lg:p-10
                   flex
@@ -784,11 +895,11 @@ export default function TravelerProfile() {
                   lg:flex-row
                   lg:items-center
                   justify-between
-                  gap-8
+                  gap-10
                 "
               >
 
-                {/* PROFILE INFO */}
+                {/* PROFILE */}
 
                 <div
                   className="
@@ -797,18 +908,18 @@ export default function TravelerProfile() {
                     sm:flex-row
                     items-start
                     sm:items-center
-                    gap-6
+                    gap-7
                   "
                 >
 
-                  {/* PROFILE PHOTO */}
+                  {/* PHOTO */}
 
                   <div className="relative shrink-0">
 
                     <div
                       className="
                         absolute
-                        -inset-1
+                        -inset-1.5
                         rounded-full
                         bg-gradient-to-r
                         from-cyan-400
@@ -820,7 +931,10 @@ export default function TravelerProfile() {
 
                     <img
                       src={displayPhoto}
-                      alt={user.name || "Traveler"}
+                      alt={
+                        user.name ||
+                        "Traveler"
+                      }
                       className="
                         relative
                         w-32
@@ -835,34 +949,42 @@ export default function TravelerProfile() {
                       "
                     />
 
-                    {/* ONLINE DOT */}
+                    {/* ONLINE */}
 
                     <span
                       className="
                         absolute
-                        right-3
-                        bottom-3
-                        w-5
-                        h-5
+                        right-2
+                        bottom-2
+                        w-6
+                        h-6
                         rounded-full
                         bg-emerald-500
                         border-4
                         border-white
+                        shadow-lg
                       "
                     />
 
                   </div>
 
-                  {/* INFORMATION */}
+                  {/* INFO */}
 
                   <div className="text-white">
 
-                    <div className="flex items-center gap-3">
+                    <div
+                      className="
+                        flex
+                        items-center
+                        gap-3
+                        flex-wrap
+                      "
+                    >
 
                       <h1
                         className="
                           text-3xl
-                          lg:text-4xl
+                          lg:text-5xl
                           font-black
                           tracking-tight
                         "
@@ -872,15 +994,15 @@ export default function TravelerProfile() {
 
                       <span
                         className="
-                          w-6
-                          h-6
+                          w-7
+                          h-7
                           rounded-full
                           bg-blue-500
                           flex
                           items-center
                           justify-center
-                          text-xs
-                          font-bold
+                          text-sm
+                          font-black
                           shadow-lg
                         "
                         title="Verified traveler"
@@ -893,8 +1015,8 @@ export default function TravelerProfile() {
                     <p
                       className="
                         mt-2
-                        text-white/80
-                        font-medium
+                        text-white/75
+                        font-semibold
                       "
                     >
                       Explorer • Traveler •
@@ -914,7 +1036,6 @@ export default function TravelerProfile() {
                       "
                     >
                       <FaEnvelope />
-
                       {user.email}
                     </p>
 
@@ -932,12 +1053,11 @@ export default function TravelerProfile() {
                         "
                       >
                         <FaMapMarkerAlt />
-
                         {location}
                       </p>
                     )}
 
-                    {/* SOCIAL MEDIA */}
+                    {/* SOCIALS */}
 
                     <div
                       className="
@@ -945,15 +1065,19 @@ export default function TravelerProfile() {
                         flex
                         flex-wrap
                         items-center
-                        gap-3
+                        gap-2
                       "
                     >
 
                       <SocialButton
                         platform="instagram"
-                        value={user.instagram}
+                        value={
+                          user.instagram
+                        }
                         label="Instagram"
-                        icon={<FaInstagram />}
+                        icon={
+                          <FaInstagram />
+                        }
                         className="
                           bg-gradient-to-tr
                           from-yellow-400
@@ -964,10 +1088,16 @@ export default function TravelerProfile() {
 
                       <SocialButton
                         platform="facebook"
-                        value={user.facebook}
+                        value={
+                          user.facebook
+                        }
                         label="Facebook"
-                        icon={<FaFacebook />}
-                        className="bg-[#1877F2]"
+                        icon={
+                          <FaFacebook />
+                        }
+                        className="
+                          bg-[#1877F2]
+                        "
                       />
 
                       <SocialButton
@@ -978,32 +1108,70 @@ export default function TravelerProfile() {
                           user.twitter_url
                         }
                         label="X / Twitter"
-                        icon={<FaTwitter />}
-                        className="bg-black"
+                        icon={
+                          <FaTwitter />
+                        }
+                        className="
+                          bg-black
+                        "
                       />
 
                       <SocialButton
                         platform="linkedin"
-                        value={user.linkedin}
+                        value={
+                          user.linkedin
+                        }
                         label="LinkedIn"
-                        icon={<FaLinkedin />}
-                        className="bg-[#0A66C2]"
+                        icon={
+                          <FaLinkedin />
+                        }
+                        className="
+                          bg-[#0A66C2]
+                        "
                       />
 
                       <SocialButton
                         platform="youtube"
-                        value={user.youtube}
+                        value={
+                          user.youtube
+                        }
                         label="YouTube"
-                        icon={<FaYoutube />}
-                        className="bg-[#FF0000]"
+                        icon={
+                          <FaYoutube />
+                        }
+                        className="
+                          bg-[#FF0000]
+                        "
                       />
 
                       <SocialButton
                         platform="tiktok"
-                        value={user.tiktok}
+                        value={
+                          user.tiktok
+                        }
                         label="TikTok"
-                        icon={<FaTiktok />}
-                        className="bg-black"
+                        icon={
+                          <FaTiktok />
+                        }
+                        className="
+                          bg-black
+                        "
+                      />
+
+                      <SocialButton
+                        platform="whatsapp"
+                        value={
+                          user.whatsapp ||
+                          user.phone ||
+                          user.whatsapp_number
+                        }
+                        label="WhatsApp"
+                        icon={
+                          <FaWhatsapp />
+                        }
+                        className="
+                          bg-[#25D366]
+                        "
                       />
 
                       <SocialButton
@@ -1013,16 +1181,23 @@ export default function TravelerProfile() {
                           user.website_url
                         }
                         label="Website"
-                        icon={<FaGlobe />}
-                        className="bg-indigo-600"
+                        icon={
+                          <FaGlobe />
+                        }
+                        className="
+                          bg-indigo-600
+                        "
                       />
 
                     </div>
 
                   </div>
+
                 </div>
 
-                {/* ACTIONS */}
+                {/* =================================================
+                    ACTIONS
+                ================================================== */}
 
                 <div
                   className="
@@ -1047,30 +1222,40 @@ export default function TravelerProfile() {
                       border
                       border-white/20
                       text-white
-                      font-semibold
+                      font-bold
                       flex
                       items-center
                       gap-2
                       hover:bg-white/25
-                      transition
+                      hover:-translate-y-0.5
+                      transition-all
+                      shadow-xl
                     "
                   >
+
                     {copied ? (
-                      <FaCheck />
+                      <FaCheck
+                        className="
+                          text-emerald-300
+                        "
+                      />
                     ) : (
                       <FaShareAlt />
                     )}
 
                     {copied
-                      ? "Copied!"
-                      : "Share"}
+                      ? "Link Copied!"
+                      : "Share Profile"}
+
                   </button>
 
                   {/* COPY */}
 
                   <button
                     type="button"
-                    onClick={handleCopyLink}
+                    onClick={
+                      handleCopyLink
+                    }
                     className="
                       w-12
                       h-12
@@ -1084,12 +1269,48 @@ export default function TravelerProfile() {
                       items-center
                       justify-center
                       hover:bg-white/25
-                      transition
+                      hover:-translate-y-0.5
+                      transition-all
+                      shadow-xl
                     "
                     title="Copy profile link"
                   >
-                    <FaCopy />
+                    {copied ? (
+                      <FaCheck />
+                    ) : (
+                      <FaLink />
+                    )}
                   </button>
+
+                  {/* MESSAGE */}
+
+                  {!isOwnProfile && (
+                    <button
+                      type="button"
+                      onClick={
+                        handleMessage
+                      }
+                      className="
+                        h-12
+                        px-6
+                        rounded-2xl
+                        bg-white
+                        text-blue-700
+                        font-black
+                        flex
+                        items-center
+                        gap-2
+                        hover:bg-blue-50
+                        hover:scale-105
+                        transition-all
+                        shadow-xl
+                      "
+                    >
+                      <FaPaperPlane />
+
+                      Message
+                    </button>
+                  )}
 
                   {/* FOLLOW */}
 
@@ -1101,18 +1322,19 @@ export default function TravelerProfile() {
                           ? handleUnfollow
                           : handleFollow
                       }
-                      disabled={followLoading}
+                      disabled={
+                        followLoading
+                      }
                       className={`
                         h-12
                         px-6
                         rounded-2xl
-                        font-bold
+                        font-black
                         flex
                         items-center
                         gap-2
                         shadow-xl
                         transition-all
-                        duration-200
 
                         ${
                           following
@@ -1132,7 +1354,10 @@ export default function TravelerProfile() {
 
                         ${
                           followLoading
-                            ? "opacity-60 cursor-not-allowed"
+                            ? `
+                              opacity-60
+                              cursor-not-allowed
+                            `
                             : ""
                         }
                       `}
@@ -1147,8 +1372,8 @@ export default function TravelerProfile() {
                       {followLoading
                         ? "Please wait..."
                         : following
-                          ? "Following"
-                          : "Follow"}
+                        ? "Following"
+                        : "Follow"}
 
                     </button>
                   )}
@@ -1166,7 +1391,7 @@ export default function TravelerProfile() {
                         border
                         border-white/20
                         text-white
-                        font-semibold
+                        font-bold
                         flex
                         items-center
                         gap-2
@@ -1203,6 +1428,7 @@ export default function TravelerProfile() {
 
               <div
                 className="
+                  group
                   bg-white
                   dark:bg-[#0f172a]
                   rounded-3xl
@@ -1212,9 +1438,10 @@ export default function TravelerProfile() {
                   border-gray-100
                   dark:border-gray-800
                   hover:-translate-y-1
-                  transition
+                  transition-all
                 "
               >
+
                 <div
                   className="
                     w-12
@@ -1242,15 +1469,22 @@ export default function TravelerProfile() {
                   {followers}
                 </h2>
 
-                <p className="text-gray-500 mt-1">
+                <p
+                  className="
+                    text-gray-500
+                    mt-1
+                  "
+                >
                   Followers
                 </p>
+
               </div>
 
               {/* FOLLOWING */}
 
               <div
                 className="
+                  group
                   bg-white
                   dark:bg-[#0f172a]
                   rounded-3xl
@@ -1260,9 +1494,10 @@ export default function TravelerProfile() {
                   border-gray-100
                   dark:border-gray-800
                   hover:-translate-y-1
-                  transition
+                  transition-all
                 "
               >
+
                 <div
                   className="
                     w-12
@@ -1290,15 +1525,22 @@ export default function TravelerProfile() {
                   {followingCount}
                 </h2>
 
-                <p className="text-gray-500 mt-1">
+                <p
+                  className="
+                    text-gray-500
+                    mt-1
+                  "
+                >
                   Following
                 </p>
+
               </div>
 
               {/* SPENDING */}
 
               <div
                 className="
+                  group
                   bg-white
                   dark:bg-[#0f172a]
                   rounded-3xl
@@ -1308,9 +1550,10 @@ export default function TravelerProfile() {
                   border-gray-100
                   dark:border-gray-800
                   hover:-translate-y-1
-                  transition
+                  transition-all
                 "
               >
+
                 <div
                   className="
                     w-12
@@ -1340,15 +1583,22 @@ export default function TravelerProfile() {
                     "₹52K"}
                 </h2>
 
-                <p className="text-gray-500 mt-1">
+                <p
+                  className="
+                    text-gray-500
+                    mt-1
+                  "
+                >
                   Travel Spending
                 </p>
+
               </div>
 
               {/* COUNTRIES */}
 
               <div
                 className="
+                  group
                   bg-white
                   dark:bg-[#0f172a]
                   rounded-3xl
@@ -1358,9 +1608,10 @@ export default function TravelerProfile() {
                   border-gray-100
                   dark:border-gray-800
                   hover:-translate-y-1
-                  transition
+                  transition-all
                 "
               >
+
                 <div
                   className="
                     w-12
@@ -1389,9 +1640,15 @@ export default function TravelerProfile() {
                     7}
                 </h2>
 
-                <p className="text-gray-500 mt-1">
+                <p
+                  className="
+                    text-gray-500
+                    mt-1
+                  "
+                >
                   Countries
                 </p>
+
               </div>
 
             </section>
@@ -1415,7 +1672,13 @@ export default function TravelerProfile() {
               "
             >
 
-              <div className="flex items-center gap-3">
+              <div
+                className="
+                  flex
+                  items-center
+                  gap-3
+                "
+              >
 
                 <div
                   className="
@@ -1429,20 +1692,35 @@ export default function TravelerProfile() {
                     items-center
                     justify-center
                     text-white
-                    font-bold
                   "
                 >
                   ✨
                 </div>
 
-                <h2
-                  className="
-                    text-2xl
-                    font-black
-                  "
-                >
-                  About Traveler
-                </h2>
+                <div>
+
+                  <p
+                    className="
+                      text-xs
+                      text-blue-600
+                      font-black
+                      uppercase
+                      tracking-widest
+                    "
+                  >
+                    About
+                  </p>
+
+                  <h2
+                    className="
+                      text-2xl
+                      font-black
+                    "
+                  >
+                    About Traveler
+                  </h2>
+
+                </div>
 
               </div>
 
@@ -1462,71 +1740,126 @@ export default function TravelerProfile() {
             </section>
 
             {/* =================================================
-                CONTACT / MESSAGE
+                CONNECT
             ================================================== */}
 
-            <section
-              className="
-                mt-6
-                rounded-3xl
-                p-6
-                bg-gradient-to-r
-                from-blue-600
-                to-purple-600
-                text-white
-                shadow-xl
-                flex
-                flex-col
-                md:flex-row
-                md:items-center
-                justify-between
-                gap-5
-              "
-            >
-
-              <div>
-
-                <h2 className="text-xl font-bold">
-                  Want to connect with {user.name}?
-                </h2>
-
-                <p className="text-white/75 mt-1">
-                  Start a conversation and plan
-                  your next adventure.
-                </p>
-
-              </div>
-
-              <a
-                href={`mailto:${user.email}?subject=TravelHub%20Connection`}
+            {!isOwnProfile && (
+              <section
                 className="
-                  inline-flex
-                  items-center
-                  justify-center
-                  gap-2
-                  px-6
-                  py-3
-                  rounded-2xl
-                  bg-white
-                  text-blue-700
-                  font-bold
-                  hover:scale-105
-                  transition
-                  shadow-lg
+                  mt-6
+                  relative
+                  overflow-hidden
+                  rounded-3xl
+                  p-7
+                  bg-gradient-to-r
+                  from-blue-600
+                  via-indigo-600
+                  to-purple-600
+                  text-white
+                  shadow-xl
                 "
               >
-                <FaPaperPlane />
 
-                Message
-              </a>
+                <div
+                  className="
+                    absolute
+                    -right-20
+                    -top-20
+                    w-56
+                    h-56
+                    rounded-full
+                    bg-white/10
+                    blur-3xl
+                  "
+                />
 
-            </section>
+                <div
+                  className="
+                    relative
+                    z-10
+                    flex
+                    flex-col
+                    md:flex-row
+                    md:items-center
+                    justify-between
+                    gap-6
+                  "
+                >
+
+                  <div>
+
+                    <p
+                      className="
+                        text-xs
+                        uppercase
+                        tracking-widest
+                        text-white/60
+                        font-bold
+                      "
+                    >
+                      Connect
+                    </p>
+
+                    <h2
+                      className="
+                        text-2xl
+                        font-black
+                        mt-1
+                      "
+                    >
+                      Want to connect with{" "}
+                      {user.name}?
+                    </h2>
+
+                    <p
+                      className="
+                        text-white/75
+                        mt-2
+                      "
+                    >
+                      Start a conversation and
+                      plan your next adventure.
+                    </p>
+
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={
+                      handleMessage
+                    }
+                    className="
+                      shrink-0
+                      inline-flex
+                      items-center
+                      justify-center
+                      gap-2
+                      px-7
+                      py-3.5
+                      rounded-2xl
+                      bg-white
+                      text-blue-700
+                      font-black
+                      hover:scale-105
+                      transition
+                      shadow-xl
+                    "
+                  >
+                    <FaPaperPlane />
+
+                    Message {user.name}
+                  </button>
+
+                </div>
+
+              </section>
+            )}
 
             {/* =================================================
                 TRIPS
             ================================================== */}
 
-            <section className="mt-8">
+            <section className="mt-10">
 
               <div
                 className="
@@ -1534,7 +1867,7 @@ export default function TravelerProfile() {
                   items-end
                   justify-between
                   gap-4
-                  mb-5
+                  mb-6
                 "
               >
 
@@ -1542,11 +1875,11 @@ export default function TravelerProfile() {
 
                   <p
                     className="
-                      text-sm
+                      text-xs
                       text-blue-600
-                      font-bold
+                      font-black
                       uppercase
-                      tracking-widest
+                      tracking-[0.2em]
                     "
                   >
                     Travel Journal
@@ -1580,7 +1913,48 @@ export default function TravelerProfile() {
 
               </div>
 
-              {trips.length === 0 ? (
+              {/* LOADING */}
+
+              {tripsLoading ? (
+
+                <div
+                  className="
+                    bg-white
+                    dark:bg-[#0f172a]
+                    rounded-3xl
+                    p-12
+                    text-center
+                    shadow-lg
+                  "
+                >
+
+                  <div
+                    className="
+                      w-10
+                      h-10
+                      border-4
+                      border-blue-200
+                      border-t-blue-600
+                      rounded-full
+                      animate-spin
+                      mx-auto
+                    "
+                  />
+
+                  <p
+                    className="
+                      mt-4
+                      text-gray-500
+                    "
+                  >
+                    Loading trips...
+                  </p>
+
+                </div>
+
+              ) : trips.length === 0 ? (
+
+                /* EMPTY */
 
                 <div
                   className="
@@ -1591,20 +1965,33 @@ export default function TravelerProfile() {
                     border-dashed
                     border-gray-300
                     dark:border-gray-700
-                    p-12
+                    p-14
                     text-center
                   "
                 >
 
-                  <div className="text-6xl">
+                  <div
+                    className="
+                      w-20
+                      h-20
+                      mx-auto
+                      rounded-3xl
+                      bg-blue-50
+                      dark:bg-blue-500/10
+                      flex
+                      items-center
+                      justify-center
+                      text-4xl
+                    "
+                  >
                     🧳
                   </div>
 
                   <h3
                     className="
                       text-xl
-                      font-bold
-                      mt-4
+                      font-black
+                      mt-5
                     "
                   >
                     No trips yet
@@ -1625,6 +2012,8 @@ export default function TravelerProfile() {
 
               ) : (
 
+                /* TRIPS */
+
                 <div
                   className="
                     grid
@@ -1635,164 +2024,173 @@ export default function TravelerProfile() {
                   "
                 >
 
-                  {trips.map((trip) => (
-
-                    <article
-                      key={trip.id}
-                      className="
-                        group
-                        bg-white
-                        dark:bg-[#0f172a]
-                        rounded-3xl
-                        overflow-hidden
-                        shadow-lg
-                        border
-                        border-gray-100
-                        dark:border-gray-800
-                        hover:-translate-y-2
-                        transition-all
-                        duration-300
-                      "
-                    >
-
-                      {/* TRIP IMAGE */}
-
-                      <div
+                  {trips.map(
+                    (trip) => (
+                      <article
+                        key={trip.id}
                         className="
-                          relative
-                          h-56
+                          group
+                          bg-white
+                          dark:bg-[#0f172a]
+                          rounded-3xl
                           overflow-hidden
+                          shadow-lg
+                          border
+                          border-gray-100
+                          dark:border-gray-800
+                          hover:-translate-y-2
+                          transition-all
+                          duration-300
                         "
                       >
 
-                        <img
-                          src={
-                            trip.image ||
-                            "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80"
-                          }
-                          alt={trip.title || "Trip"}
-                          className="
-                            w-full
-                            h-full
-                            object-cover
-                            group-hover:scale-110
-                            transition-transform
-                            duration-700
-                          "
-                        />
+                        {/* IMAGE */}
 
                         <div
                           className="
-                            absolute
-                            inset-0
-                            bg-gradient-to-t
-                            from-black/60
-                            to-transparent
-                          "
-                        />
-
-                        <div
-                          className="
-                            absolute
-                            bottom-4
-                            left-4
-                            right-4
-                            text-white
+                            relative
+                            h-56
+                            overflow-hidden
                           "
                         >
 
-                          <p
+                          <img
+                            src={
+                              trip.image ||
+                              "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80"
+                            }
+                            alt={
+                              trip.title ||
+                              "Trip"
+                            }
                             className="
-                              text-xs
-                              uppercase
-                              tracking-widest
-                              text-white/70
+                              w-full
+                              h-full
+                              object-cover
+                              group-hover:scale-110
+                              transition-transform
+                              duration-700
                             "
-                          >
-                            Adventure
-                          </p>
-
-                          <h3
-                            className="
-                              text-xl
-                              font-black
-                              mt-1
-                            "
-                          >
-                            {trip.title}
-                          </h3>
-
-                        </div>
-
-                      </div>
-
-                      {/* TRIP DETAILS */}
-
-                      <div className="p-5">
-
-                        <p
-                          className="
-                            text-gray-600
-                            dark:text-gray-300
-                            flex
-                            items-center
-                            gap-2
-                          "
-                        >
-                          <FaMapMarkerAlt
-                            className="text-blue-500"
                           />
 
-                          {trip.location ||
-                            "Unknown location"}
-                        </p>
-
-                        {trip.price && (
                           <div
                             className="
-                              mt-4
-                              flex
-                              items-center
-                              justify-between
+                              absolute
+                              inset-0
+                              bg-gradient-to-t
+                              from-black/70
+                              via-black/10
+                              to-transparent
+                            "
+                          />
+
+                          <div
+                            className="
+                              absolute
+                              bottom-4
+                              left-5
+                              right-5
+                              text-white
                             "
                           >
 
-                            <span
+                            <p
                               className="
                                 text-xs
                                 uppercase
-                                tracking-wider
-                                text-gray-400
+                                tracking-widest
+                                text-white/70
                               "
                             >
-                              Trip Cost
-                            </span>
+                              Adventure
+                            </p>
 
-                            <span
+                            <h3
                               className="
-                                text-lg
+                                text-xl
                                 font-black
-                                text-blue-600
+                                mt-1
                               "
                             >
-                              ₹ {trip.price}
-                            </span>
+                              {trip.title}
+                            </h3>
 
                           </div>
-                        )}
 
-                      </div>
+                        </div>
 
-                    </article>
+                        {/* DETAILS */}
 
-                  ))}
+                        <div className="p-5">
+
+                          <p
+                            className="
+                              text-gray-600
+                              dark:text-gray-300
+                              flex
+                              items-center
+                              gap-2
+                            "
+                          >
+                            <FaMapMarkerAlt
+                              className="
+                                text-blue-500
+                              "
+                            />
+
+                            {trip.location ||
+                              "Unknown location"}
+                          </p>
+
+                          {trip.price && (
+                            <div
+                              className="
+                                mt-4
+                                flex
+                                items-center
+                                justify-between
+                                pt-4
+                                border-t
+                                border-gray-100
+                                dark:border-gray-800
+                              "
+                            >
+
+                              <span
+                                className="
+                                  text-xs
+                                  uppercase
+                                  tracking-wider
+                                  text-gray-400
+                                "
+                              >
+                                Trip Cost
+                              </span>
+
+                              <span
+                                className="
+                                  text-lg
+                                  font-black
+                                  text-blue-600
+                                "
+                              >
+                                ₹ {trip.price}
+                              </span>
+
+                            </div>
+                          )}
+
+                        </div>
+
+                      </article>
+                    )
+                  )}
 
                 </div>
 
               )}
 
             </section>
-
 
             <div className="h-10" />
 
