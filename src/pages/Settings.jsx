@@ -255,7 +255,6 @@ export default function Settings() {
               <div>
                 <p className="uppercase tracking-wide text-sm opacity-90">Welcome back</p>
                 <h2 className="text-2xl md:text-3xl font-bold mt-2">Good Morning, Bhargav 👋</h2>
-                <p className="mt-2 opacity-90 max-w-xl">Explore new destinations, manage trips, book hotels, track expenses and enjoy your travel experience in one beautiful dashboard.</p>
                 <button className="mt-4 bg-white text-blue-600 px-4 py-2 rounded-full font-semibold shadow">Start New Trip</button>
               </div>
               <div className="hidden md:block">
@@ -391,20 +390,20 @@ export default function Settings() {
           </div>
 
 
-          <div className="grid grid-cols-3 gap-10 mt-16">
+          <div className=" grid grid-cols-3 gap-10 mt-16">
 
             <div
               ref={notificationsRef}
-              className="bg-white dark:bg-[#1e293b] p-8 rounded-3xl shadow-xl hover:shadow-xl transition-shadow"
+              className=" dark:bg-[#1e293b] p-8 rounded-3xl shadow-xl hover:shadow-xl transition-shadow"
             >
               <h2 className="font-bold text-2xl font-poppins">{t("TripAlerts")}</h2>
-              <p className="text-gray-500 text-base mt-2">
+              <p className="text-black-500 text-base mt-2">
                 Trip alerts & updates
               </p>
 
-              <div className="mt-6 flex items-center justify-between">
+              <div className=" mt-6 flex items-center justify-between">
 
-                <span className="font-semibold text-gray-700">Trip Alerts</span>
+                <span className="font-semibold text-black-500">Trip Alerts</span>
 
                 <button
                   onClick={() => setNotifications(!notifications)}
@@ -420,15 +419,15 @@ export default function Settings() {
               </div>
             </div>
 
-            <div className="bg-white p-8 rounded-3xl shadow-xl hover:shadow-xl transition-shadow">
+            <div className="dark:bg-[#1e293b] p-8 rounded-3xl shadow-xl hover:shadow-xl transition-shadow">
               <h2 className="font-bold text-2xl font-poppins">{t("EmailAlerts")}</h2>
-              <p className="text-gray-500 text-base mt-2">
+              <p className="text-black-500 text-base mt-2">
                 Receive deals & offers
               </p>
 
               <div className="mt-6 flex items-center justify-between">
 
-                <span className="font-semibold text-gray-700">Receive Offers</span>
+                <span className="font-semibold text-black-500">Receive Offers</span>
 
                 <button
                   onClick={() => setEmailAlerts(!emailAlerts)}
@@ -445,13 +444,13 @@ export default function Settings() {
 
             <div ref={securityRef} className="bg-white dark:bg-[#1e293b] p-8 rounded-3xl shadow-xl hover:shadow-xl transition-shadow">
               <h2 className="font-bold text-2xl font-poppins">{t("Security")}</h2>
-              <p className="text-gray-500 text-base mt-2">
+              <p className="text-black-500 text-base mt-2">
                 Protect your account
               </p>
 
               <div className="mt-6 flex items-center justify-between">
 
-                <span className="font-semibold text-gray-700">{t("TwoFactorAuth")}</span>
+                <span className="font-semibold text-black-500">{t("TwoFactorAuth")}</span>
 
                 <button
                   onClick={() => setTwoFA(!twoFA)}
@@ -468,7 +467,7 @@ export default function Settings() {
 
             <div ref={travelStyleRef} className="bg-white dark:bg-[#1e293b] p-8 rounded-3xl shadow-xl hover:shadow-xl transition-shadow">
               <h2 className="font-bold text-2xl font-poppins">{t("TravelStyle")}</h2>
-              <p className="text-gray-500 text-base mt-2">
+              <p className="text-black-500 text-base mt-2">
                 Adventure / Luxury / Budget
               </p>
 
@@ -485,7 +484,7 @@ export default function Settings() {
 
                 <button
                   onClick={() => setTravelStyle("Luxury")}
-                  className={`px-5 py-2 rounded-2xl text-sm font-semibold ${travelStyle === "Luxury"
+                  className={`text-black px-5 py-2 rounded-2xl text-sm font-semibold ${travelStyle === "Luxury"
                     ? "bg-pink-500 text-white"
                     : "bg-pink-100 hover:bg-pink-200"
                     }`}
@@ -495,7 +494,7 @@ export default function Settings() {
 
                 <button
                   onClick={() => setTravelStyle("Budget")}
-                  className={`px-5 py-2 rounded-2xl text-sm font-semibold ${travelStyle === "Budget"
+                  className={`text-black px-5 py-2 rounded-2xl text-sm font-semibold ${travelStyle === "Budget"
                     ? "bg-green-500 text-white"
                     : "bg-green-100 hover:bg-green-200"
                     }`}
@@ -511,14 +510,14 @@ export default function Settings() {
               className="bg-white dark:bg-[#1e293b] p-8 rounded-3xl shadow-xl hover:shadow-xl transition-shadow"
             >
               <h2 className="font-bold text-2xl font-poppins">{t("HomeLocation")}</h2>
-              <p className="text-gray-500 text-base mt-2">
+              <p className="text-black-500 text-base mt-2">
                 {t("SetYourBaseCity")}
               </p>
 
               <input
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
-                className="mt-5 w-full border border-gray-300 p-3 rounded-2xl text-base focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                className=" mt-5 w-full border text-black-500 p-3 rounded-2xl text-base focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
                 placeholder="Enter city..."
               />
 
@@ -528,57 +527,21 @@ export default function Settings() {
 
               </button>
 
-              <p className="mt-4 text-gray-600 font-medium">
+              <p className="mt-4 text-black-500 font-medium">
                 {t("CurrentCity")}: {city || "Not Set"}
               </p>
             </div>
 
-            <div className="bg-white p-8 rounded-3xl shadow-xl hover:shadow-xl transition-shadow">
+           
 
-              <h2 className="font-bold text-2xl font-poppins">
-                💳 Payment Methods
-              </h2>
-
-              <p className="text-gray-500 text-base mt-2">Manage your saved payment methods</p>
-
-              <div className="mt-6 space-y-3">
-
-                <div className="flex justify-between items-center bg-gray-100 rounded-2xl p-4">
-                  <span>💳 Visa •••• 4821</span>
-                  <span className="text-green-600 font-semibold">Default</span>
-                </div>
-
-                <div className="flex justify-between items-center bg-gray-100 rounded-2xl p-4">
-                  <span>💳 MasterCard •••• 7812</span>
-                  <button className="text-blue-600 font-semibold">
-                    Edit
-                  </button>
-                </div>
-
-                <div className="flex justify-between items-center bg-gray-100 rounded-2xl p-4">
-                  <span>📱 bhargav@upi</span>
-                  <button className="text-blue-600 font-semibold">
-                    Edit
-                  </button>
-                </div>
-
-              </div>
-
-              <button
-                className="mt-6 w-full bg-blue-600 text-white py-3 rounded-2xl font-semibold hover:bg-blue-700 transition"
-              >
-                + Add Payment Method
-              </button>
-
-            </div>
-
-            <div className="bg-white p-8 rounded-3xl shadow-xl hover:shadow-xl transition-shadow">
+            <div className="dark:bg-[#1e293b] p-8 rounded-3xl shadow-xl hover:shadow-xl transition-shadow">
 
               <h2 className="font-bold text-2xl font-poppins">🌐 {t("Language")}</h2>
 
-              <p className="text-gray-500 text-base mt-2">{t("ChooseYourLanguage")}</p>
+              <p className="text-black-500 text-base mt-2">{t("ChooseYourLanguage")}</p>
 
-              <div className="mt-6 flex flex-wrap gap-3">
+
+              <div className="mt-6 flex flex-wrap gap-3 ">
 
                 {[
                   { code: "en", label: "English" },
@@ -594,9 +557,9 @@ export default function Settings() {
                       setLanguage(l.label);
                       setLang(l.code);
                     }}
-                    className={`px-5 py-3 rounded-2xl font-semibold transition
+                    className={`text-black px-5 py-3 rounded-2xl font-semibold transition
                     ${language === l.label
-                        ? "bg-blue-600 text-white shadow-xl"
+                        ? "bg-blue-600 text-black-500 shadow-xl"
                         : "bg-gray-100 hover:bg-blue-100"
                       }`}
                   >
@@ -607,7 +570,7 @@ export default function Settings() {
 
               </div>
 
-              <p className="mt-6 text-gray-600 font-medium">
+              <p className="mt-6 text-black-500 font-medium">
                 {t("SelectedLanguage")}:
                 <span className="font-bold text-blue-600 ml-2">
                   {language}
@@ -622,30 +585,30 @@ export default function Settings() {
                 � Your Travel Hub
               </h2>
 
-              <p className="text-gray-500 mt-2">
+              <p className="text-black-500 mt-2">
                 Use this section to personalize your app without leaving the dashboard.
               </p>
 
-              <ul className="mt-6 space-y-3 text-gray-700">
+              <ul className="mt-6 space-y-3 text-black-500">
                 <li className="flex items-center gap-3">
-                  <span className="text-blue-600">•</span> Keep your travel preferences synced.
+                  <span className="text-black-500">•</span> Keep your travel preferences synced.
                 </li>
                 <li className="flex items-center gap-3">
-                  <span className="text-blue-600">•</span> Switch themes, languages, and alerts on the fly.
+                  <span className="text-black-500">•</span> Switch themes, languages, and alerts on the fly.
                 </li>
                 <li className="flex items-center gap-3">
-                  <span className="text-blue-600">•</span> Control your home location and payment settings.
+                  <span className="text-black-500">•</span> Control your home location and payment settings.
                 </li>
               </ul>
 
             </div>
 
-            <div ref={dangerRef} className="bg-red-50 p-8 rounded-3xl shadow-xl col-span-3 border-2 border-red-200">
+            <div ref={dangerRef} className="dark:bg-[#1e293b] p-8 rounded-3xl shadow-xl col-span-3 border-2 border-red-200">
               <h2 className="font-bold text-2xl text-red-600 font-poppins">
                 Danger Zone
               </h2>
 
-              <p className="text-gray-600 text-base mt-2 font-medium">
+              <p className="text-black-500 text-base mt-2 font-medium">
                 Logout from all devices and reset session
               </p>
 
@@ -760,7 +723,7 @@ export default function Settings() {
 
               <button
                 onClick={() => setShowEditProfile(false)}
-                className="px-6 py-3 rounded-xl bg-gray-200"
+                className="px-6 py-3 rounded-xl text-black-500"
               >
                 Cancel
               </button>
