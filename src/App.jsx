@@ -31,22 +31,19 @@ export default function App() {
 
   return (
     <MapProvider>
-
       <div
         className={`min-h-screen transition-colors duration-300 ${
           darkMode
-            ? "bg-[#0f172a] text-white"
+            ? "bg-[#020617] text-white"
             : "bg-white text-gray-900"
         }`}
       >
-
         <BrowserRouter>
-
           <Routes>
 
-            {/* =================================================
-                PUBLIC / GENERAL
-            ================================================= */}
+            {/* =====================================================
+                AUTH
+            ===================================================== */}
 
             <Route
               path="/login"
@@ -58,57 +55,33 @@ export default function App() {
               element={<Register />}
             />
 
-            <Route
-              path="/traveler/:id"
-              element={<TravelerProfile />}
-            />
+
+            {/* =====================================================
+                TRAVELERS
+            ===================================================== */}
 
             <Route
               path="/travelers"
-              element={<Travelers />}
-            />
-
-            <Route
-              path="/destinations/:id"
-              element={<DestinationDetails />}
-            />
-
-            <Route
-              path="/hotel-details"
-              element={<HotelDetails />}
-            />
-
-            <Route
-              path="/booking"
-              element={<Booking />}
-            />
-
-            <Route
-              path="/hotels/:location?"
-              element={<Hotels />}
-            />
-
-            <Route
-              path="/transport/:location?"
-              element={<Transport />}
-            />
-
-            {/* =================================================
-                FAVORITES
-            ================================================= */}
-
-            <Route
-              path="/favorites"
               element={
                 <ProtectedRoute>
-                  <Favorites />
+                  <Travelers />
                 </ProtectedRoute>
               }
             />
 
-            {/* =================================================
+            <Route
+              path="/traveler/:id"
+              element={
+                <ProtectedRoute>
+                  <TravelerProfile />
+                </ProtectedRoute>
+              }
+            />
+
+
+            {/* =====================================================
                 MESSAGES
-            ================================================= */}
+            ===================================================== */}
 
             <Route
               path="/messages/:id"
@@ -119,22 +92,10 @@ export default function App() {
               }
             />
 
-            {/* =================================================
-                ADD TRIP
-            ================================================= */}
 
-            <Route
-              path="/add-trip"
-              element={
-                <ProtectedRoute>
-                  <AddTrip />
-                </ProtectedRoute>
-              }
-            />
-
-            {/* =================================================
+            {/* =====================================================
                 DASHBOARD
-            ================================================= */}
+            ===================================================== */}
 
             <Route
               path="/"
@@ -145,9 +106,10 @@ export default function App() {
               }
             />
 
-            {/* =================================================
+
+            {/* =====================================================
                 DESTINATIONS
-            ================================================= */}
+            ===================================================== */}
 
             <Route
               path="/destinations"
@@ -158,22 +120,19 @@ export default function App() {
               }
             />
 
-            {/* =================================================
-                SETTINGS
-            ================================================= */}
-
             <Route
-              path="/settings"
+              path="/destinations/:id"
               element={
                 <ProtectedRoute>
-                  <Settings />
+                  <DestinationDetails />
                 </ProtectedRoute>
               }
             />
 
-            {/* =================================================
+
+            {/* =====================================================
                 TRIPS
-            ================================================= */}
+            ===================================================== */}
 
             <Route
               path="/trips"
@@ -184,22 +143,14 @@ export default function App() {
               }
             />
 
-            {/* =================================================
-                PROFILE
-            ================================================= */}
-
             <Route
-              path="/profile"
+              path="/add-trip"
               element={
                 <ProtectedRoute>
-                  <Profile />
+                  <AddTrip />
                 </ProtectedRoute>
               }
             />
-
-            {/* =================================================
-                TRIP DETAILS
-            ================================================= */}
 
             <Route
               path="/trip/:id"
@@ -210,12 +161,116 @@ export default function App() {
               }
             />
 
+
+            {/* =====================================================
+                PROFILE
+            ===================================================== */}
+
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
+
+
+            {/* =====================================================
+                FAVORITES
+            ===================================================== */}
+
+            <Route
+              path="/favorites"
+              element={
+                <ProtectedRoute>
+                  <Favorites />
+                </ProtectedRoute>
+              }
+            />
+
+
+            {/* =====================================================
+                HOTELS
+            ===================================================== */}
+
+            <Route
+              path="/hotels/:location?"
+              element={
+                <ProtectedRoute>
+                  <Hotels />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/hotel-details"
+              element={
+                <ProtectedRoute>
+                  <HotelDetails />
+                </ProtectedRoute>
+              }
+            />
+
+
+            {/* =====================================================
+                TRANSPORT
+            ===================================================== */}
+
+            <Route
+              path="/transport/:location?"
+              element={
+                <ProtectedRoute>
+                  <Transport />
+                </ProtectedRoute>
+              }
+            />
+
+
+            {/* =====================================================
+                BOOKING
+            ===================================================== */}
+
+            <Route
+              path="/booking"
+              element={
+                <ProtectedRoute>
+                  <Booking />
+                </ProtectedRoute>
+              }
+            />
+
+
+            {/* =====================================================
+                SETTINGS
+            ===================================================== */}
+
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <Settings />
+                </ProtectedRoute>
+              }
+            />
+
+
+            {/* =====================================================
+                FALLBACK
+            ===================================================== */}
+
+            <Route
+              path="*"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+
           </Routes>
-
         </BrowserRouter>
-
       </div>
-
     </MapProvider>
   );
 }
