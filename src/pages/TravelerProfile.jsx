@@ -24,6 +24,10 @@ import {
   FaArrowLeft,
   FaPaperPlane,
   FaExternalLinkAlt,
+  FaPlus,
+  FaSignInAlt,
+  FaCompass,
+  FaTimes,
 } from "react-icons/fa";
 
 export default function TravelerProfile() {
@@ -50,15 +54,21 @@ export default function TravelerProfile() {
 
   const [error, setError] = useState("");
 
+  // =========================================================
+  // SOCIAL CHOICE
+  // =========================================================
+
+  const [socialChoice, setSocialChoice] = useState(null);
+
+  // =========================================================
+  // LOAD EVERYTHING
+  // =========================================================
+
   useEffect(() => {
     if (!id) return;
 
     loadEverything();
   }, [id]);
-
-  // =========================================================
-  // LOAD EVERYTHING
-  // =========================================================
 
   async function loadEverything() {
     setProfileLoading(true);
@@ -115,7 +125,8 @@ export default function TravelerProfile() {
 
       const currentUser = await response.json();
 
-      const self = String(currentUser.id) === String(id);
+      const self =
+        String(currentUser.id) === String(id);
 
       setIsOwnProfile(self);
 
@@ -136,9 +147,12 @@ export default function TravelerProfile() {
 
   async function checkStatus() {
     try {
-      const response = await fetch(`${apiUrl}/follow-status/${id}`, {
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${apiUrl}/follow-status/${id}`,
+        {
+          credentials: "include",
+        }
+      );
 
       if (!response.ok) return;
 
@@ -158,7 +172,9 @@ export default function TravelerProfile() {
 
   async function loadFollowers() {
     try {
-      const response = await fetch(`${apiUrl}/followers-count/${id}`);
+      const response = await fetch(
+        `${apiUrl}/followers-count/${id}`
+      );
 
       if (!response.ok) return;
 
@@ -176,7 +192,9 @@ export default function TravelerProfile() {
 
   async function loadFollowing() {
     try {
-      const response = await fetch(`${apiUrl}/following-count/${id}`);
+      const response = await fetch(
+        `${apiUrl}/following-count/${id}`
+      );
 
       if (!response.ok) return;
 
@@ -196,7 +214,9 @@ export default function TravelerProfile() {
     setTripsLoading(true);
 
     try {
-      const response = await fetch(`${apiUrl}/users/${id}/trips`);
+      const response = await fetch(
+        `${apiUrl}/users/${id}/trips`
+      );
 
       if (!response.ok) {
         setTrips([]);
@@ -224,15 +244,20 @@ export default function TravelerProfile() {
     try {
       setFollowLoading(true);
 
-      const response = await fetch(`${apiUrl}/follow/${id}`, {
-        method: "POST",
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${apiUrl}/follow/${id}`,
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      );
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Unable to follow user");
+        throw new Error(
+          data.message || "Unable to follow user"
+        );
       }
 
       setFollowing(true);
@@ -241,7 +266,10 @@ export default function TravelerProfile() {
     } catch (err) {
       console.error("Follow error:", err);
 
-      alert(err.message || "Unable to follow this traveler.");
+      alert(
+        err.message ||
+          "Unable to follow this traveler."
+      );
     } finally {
       setFollowLoading(false);
     }
@@ -257,15 +285,20 @@ export default function TravelerProfile() {
     try {
       setFollowLoading(true);
 
-      const response = await fetch(`${apiUrl}/unfollow/${id}`, {
-        method: "DELETE",
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${apiUrl}/unfollow/${id}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Unable to unfollow user");
+        throw new Error(
+          data.message || "Unable to unfollow user"
+        );
       }
 
       setFollowing(false);
@@ -274,7 +307,10 @@ export default function TravelerProfile() {
     } catch (err) {
       console.error("Unfollow error:", err);
 
-      alert(err.message || "Unable to unfollow this traveler.");
+      alert(
+        err.message ||
+          "Unable to unfollow this traveler."
+      );
     } finally {
       setFollowLoading(false);
     }
@@ -287,7 +323,8 @@ export default function TravelerProfile() {
   async function handleShare() {
     if (!user?.id) return;
 
-    const profileUrl = `${window.location.origin}/traveler/${user.id}`;
+    const profileUrl =
+      `${window.location.origin}/traveler/${user.id}`;
 
     try {
       if (navigator.share) {
@@ -319,7 +356,8 @@ export default function TravelerProfile() {
   async function handleCopyLink() {
     if (!user?.id) return;
 
-    const profileUrl = `${window.location.origin}/traveler/${user.id}`;
+    const profileUrl =
+      `${window.location.origin}/traveler/${user.id}`;
 
     try {
       await navigator.clipboard.writeText(profileUrl);
@@ -335,96 +373,156 @@ export default function TravelerProfile() {
   }
 
   // =========================================================
-  // SOCIAL URL BUILDER
-  //
-  // CONNECTED ACCOUNT:
-  //     Open exact traveler account.
-  //
-  // NO CONNECTED ACCOUNT:
-  //     Open official signup page.
-  //
-  // NO RANDOM PROFILE URL.
-  // NO RANDOM ACCOUNT.
-  // NO POPUP.
+  // SOCIAL PLATFORM DATA
   // =========================================================
 
-  function getSocialUrl(platform, value) {
+  const socialPlatforms = {
+    instagram: {
+      name: "Instagram",
+      icon: <FaInstagram />,
+      className:
+        "bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600",
+
+      signup:
+        "https://www.instagram.com/accounts/emailsignup/",
+
+      login:
+        "https://www.instagram.com/accounts/login/",
+
+      explore:
+        "https://www.instagram.com/",
+    },
+
+    facebook: {
+      name: "Facebook",
+      icon: <FaFacebook />,
+      className: "bg-[#1877F2]",
+
+      signup:
+        "https://www.facebook.com/r.php",
+
+      login:
+        "https://www.facebook.com/login/",
+
+      explore:
+        "https://www.facebook.com/",
+    },
+
+    twitter: {
+      name: "X",
+      icon: <FaTwitter />,
+      className: "bg-black",
+
+      signup:
+        "https://x.com/i/flow/signup",
+
+      login:
+        "https://x.com/i/flow/login",
+
+      explore:
+        "https://x.com/",
+    },
+
+    linkedin: {
+      name: "LinkedIn",
+      icon: <FaLinkedin />,
+      className: "bg-[#0A66C2]",
+
+      signup:
+        "https://www.linkedin.com/signup",
+
+      login:
+        "https://www.linkedin.com/login",
+
+      explore:
+        "https://www.linkedin.com/",
+    },
+
+    youtube: {
+      name: "YouTube",
+      icon: <FaYoutube />,
+      className: "bg-[#FF0000]",
+
+      signup:
+        "https://accounts.google.com/signup",
+
+      login:
+        "https://accounts.google.com/ServiceLogin",
+
+      explore:
+        "https://www.youtube.com/",
+    },
+
+    tiktok: {
+      name: "TikTok",
+      icon: <FaTiktok />,
+      className: "bg-black",
+
+      signup:
+        "https://www.tiktok.com/signup",
+
+      login:
+        "https://www.tiktok.com/login",
+
+      explore:
+        "https://www.tiktok.com/",
+    },
+
+    website: {
+      name: "Website",
+      icon: <FaGlobe />,
+      className: "bg-indigo-600",
+
+      signup: null,
+      login: null,
+      explore: null,
+    },
+  };
+
+  // =========================================================
+  // GET EXACT SOCIAL PROFILE URL
+  // =========================================================
+
+  function getConnectedSocialUrl(platform, value) {
     const username = String(value || "").trim();
 
-    // =======================================================
-    // TRAVELER HAS CONNECTED ACCOUNT
-    // =======================================================
-
-    if (username) {
-      // If database already contains complete URL
-      if (
-        username.startsWith("http://") ||
-        username.startsWith("https://")
-      ) {
-        return username;
-      }
-
-      const cleanUsername = username.replace(/^@/, "");
-
-      switch (platform) {
-        case "instagram":
-          return `https://www.instagram.com/${cleanUsername}/`;
-
-        case "facebook":
-          return `https://www.facebook.com/${cleanUsername}`;
-
-        case "twitter":
-          return `https://x.com/${cleanUsername}`;
-
-        case "linkedin":
-          return `https://www.linkedin.com/in/${cleanUsername}`;
-
-        case "youtube":
-          return `https://www.youtube.com/@${cleanUsername}`;
-
-        case "tiktok":
-          return `https://www.tiktok.com/@${cleanUsername}`;
-
-        case "website":
-          return cleanUsername.startsWith("www.")
-            ? `https://${cleanUsername}`
-            : `https://${cleanUsername}`;
-
-        default:
-          return null;
-      }
+    if (!username) {
+      return null;
     }
 
-    // =======================================================
-    // TRAVELER DOES NOT HAVE ACCOUNT
-    //
-    // DIRECTLY GO TO SIGNUP.
-    //
-    // NO CONFIRM POPUP.
-    // NO RANDOM ACCOUNT.
-    // =======================================================
+    if (
+      username.startsWith("http://") ||
+      username.startsWith("https://")
+    ) {
+      return username;
+    }
+
+    const cleanUsername =
+      username.replace(/^@/, "");
 
     switch (platform) {
       case "instagram":
-        return "https://www.instagram.com/accounts/emailsignup/";
+        return `https://www.instagram.com/${cleanUsername}/`;
 
       case "facebook":
-        return "https://www.facebook.com/r.php";
+        return `https://www.facebook.com/${cleanUsername}`;
 
       case "twitter":
-        return "https://x.com/i/flow/signup";
+        return `https://x.com/${cleanUsername}`;
 
       case "linkedin":
-        return "https://www.linkedin.com/signup";
+        return `https://www.linkedin.com/in/${cleanUsername}`;
 
       case "youtube":
-        return "https://accounts.google.com/signup";
+        return `https://www.youtube.com/@${cleanUsername}`;
 
       case "tiktok":
-        return "https://www.tiktok.com/signup";
+        return `https://www.tiktok.com/@${cleanUsername}`;
 
       case "website":
-        return null;
+        return cleanUsername.startsWith("www.")
+          ? `https://${cleanUsername}`
+          : `https://${cleanUsername}`;
 
       default:
         return null;
@@ -432,17 +530,91 @@ export default function TravelerProfile() {
   }
 
   // =========================================================
-  // OPEN SOCIAL
+  // OPEN SOCIAL CHOICE
   // =========================================================
 
   function openSocial(platform, value) {
-    const url = getSocialUrl(platform, value);
+    const connected =
+      Boolean(value && String(value).trim());
 
-    if (!url) {
+    // =======================================================
+    // ACCOUNT IS CONNECTED
+    // OPEN EXACT PROFILE
+    // =======================================================
+
+    if (connected) {
+      const url =
+        getConnectedSocialUrl(
+          platform,
+          value
+        );
+
+      if (!url) return;
+
+      window.open(
+        url,
+        "_blank",
+        "noopener,noreferrer"
+      );
+
       return;
     }
 
-    window.open(url, "_blank", "noopener,noreferrer");
+    // =======================================================
+    // NO ACCOUNT CONNECTED
+    // SHOW OUR TRAVELHUB CHOICE SCREEN
+    // =======================================================
+
+    if (platform === "website") {
+      return;
+    }
+
+    setSocialChoice(platform);
+  }
+
+  // =========================================================
+  // CLOSE SOCIAL CHOICE
+  // =========================================================
+
+  function closeSocialChoice() {
+    setSocialChoice(null);
+  }
+
+  // =========================================================
+  // SOCIAL ACTION
+  // =========================================================
+
+  function handleSocialAction(action) {
+    if (!socialChoice) return;
+
+    const platform =
+      socialPlatforms[socialChoice];
+
+    if (!platform) return;
+
+    let url = null;
+
+    if (action === "create") {
+      url = platform.signup;
+    }
+
+    if (action === "login") {
+      url = platform.login;
+    }
+
+    if (action === "explore") {
+      url = platform.explore;
+    }
+
+    if (!url) return;
+
+    window.open(
+      url,
+      "_blank",
+      "noopener,noreferrer"
+    );
+
+    setSocialChoice(null);
   }
 
   // =========================================================
@@ -456,16 +628,19 @@ export default function TravelerProfile() {
     icon,
     className,
   }) {
-    const connected = Boolean(value && String(value).trim());
+    const connected =
+      Boolean(value && String(value).trim());
 
     return (
       <button
         type="button"
-        onClick={() => openSocial(platform, value)}
+        onClick={() =>
+          openSocial(platform, value)
+        }
         title={
           connected
             ? `Open ${user.name}'s ${label}`
-            : `${user.name} has no ${label} account — create one`
+            : `${user.name} has not connected ${label}`
         }
         className={`
           group
@@ -498,8 +673,16 @@ export default function TravelerProfile() {
         </span>
 
         {!connected && (
-          <span className="text-[10px] opacity-80">
-            Create
+          <span
+            className="
+              text-[10px]
+              opacity-80
+              flex
+              items-center
+              gap-1
+            "
+          >
+            <FaPlus />
           </span>
         )}
 
@@ -544,6 +727,7 @@ export default function TravelerProfile() {
         "
       >
         <div className="text-center">
+
           <div
             className="
               w-16
@@ -567,6 +751,7 @@ export default function TravelerProfile() {
           >
             Loading traveler profile...
           </p>
+
         </div>
       </div>
     );
@@ -601,6 +786,7 @@ export default function TravelerProfile() {
             text-center
           "
         >
+
           <div className="text-5xl mb-5">
             😕
           </div>
@@ -612,6 +798,7 @@ export default function TravelerProfile() {
           <p className="text-gray-500 mt-3">
             We couldn't load this traveler's profile.
           </p>
+
         </div>
       </div>
     );
@@ -638,6 +825,11 @@ export default function TravelerProfile() {
     .filter(Boolean)
     .join(", ");
 
+  const selectedPlatform =
+    socialChoice
+      ? socialPlatforms[socialChoice]
+      : null;
+
   return (
     <div
       className="
@@ -648,17 +840,18 @@ export default function TravelerProfile() {
         dark:text-white
       "
     >
+
       <div className="flex min-h-screen">
 
-        {/* =================================================
+        {/* =====================================================
             SIDEBAR
-        ================================================= */}
+        ===================================================== */}
 
         <Sidebar />
 
-        {/* =================================================
+        {/* =====================================================
             MAIN
-        ================================================= */}
+        ===================================================== */}
 
         <main className="flex-1 min-w-0">
 
@@ -671,6 +864,7 @@ export default function TravelerProfile() {
             ================================================= */}
 
             <div className="mt-5">
+
               <button
                 type="button"
                 onClick={() => navigate(-1)}
@@ -690,6 +884,7 @@ export default function TravelerProfile() {
                 <FaArrowLeft />
                 Back
               </button>
+
             </div>
 
             {/* =================================================
@@ -707,6 +902,7 @@ export default function TravelerProfile() {
                 group
               "
             >
+
               <img
                 src={coverPhoto}
                 alt="Travel cover"
@@ -844,7 +1040,14 @@ export default function TravelerProfile() {
 
                   <div className="text-white">
 
-                    <div className="flex items-center gap-3 flex-wrap">
+                    <div
+                      className="
+                        flex
+                        items-center
+                        gap-3
+                        flex-wrap
+                      "
+                    >
 
                       <h1
                         className="
@@ -938,8 +1141,6 @@ export default function TravelerProfile() {
 
                       <div className="flex flex-wrap gap-2">
 
-                        {/* INSTAGRAM */}
-
                         <SocialButton
                           platform="instagram"
                           value={user.instagram}
@@ -953,8 +1154,6 @@ export default function TravelerProfile() {
                           "
                         />
 
-                        {/* FACEBOOK */}
-
                         <SocialButton
                           platform="facebook"
                           value={user.facebook}
@@ -962,8 +1161,6 @@ export default function TravelerProfile() {
                           icon={<FaFacebook />}
                           className="bg-[#1877F2]"
                         />
-
-                        {/* X */}
 
                         <SocialButton
                           platform="twitter"
@@ -977,8 +1174,6 @@ export default function TravelerProfile() {
                           className="bg-black"
                         />
 
-                        {/* LINKEDIN */}
-
                         <SocialButton
                           platform="linkedin"
                           value={user.linkedin}
@@ -986,8 +1181,6 @@ export default function TravelerProfile() {
                           icon={<FaLinkedin />}
                           className="bg-[#0A66C2]"
                         />
-
-                        {/* YOUTUBE */}
 
                         <SocialButton
                           platform="youtube"
@@ -997,8 +1190,6 @@ export default function TravelerProfile() {
                           className="bg-[#FF0000]"
                         />
 
-                        {/* TIKTOK */}
-
                         <SocialButton
                           platform="tiktok"
                           value={user.tiktok}
@@ -1006,8 +1197,6 @@ export default function TravelerProfile() {
                           icon={<FaTiktok />}
                           className="bg-black"
                         />
-
-                        {/* WEBSITE */}
 
                         <SocialButton
                           platform="website"
@@ -1023,9 +1212,10 @@ export default function TravelerProfile() {
                       </div>
 
                       <p className="mt-3 text-xs text-white/45">
-                        Connected accounts open the traveler's
-                        exact profile. Missing accounts open
-                        the official signup page.
+                        Connected accounts open the
+                        traveler's exact profile.
+                        Unconnected accounts let you
+                        create, sign in, or explore.
                       </p>
 
                     </div>
@@ -1038,9 +1228,14 @@ export default function TravelerProfile() {
                     ACTIONS
                 ================================================= */}
 
-                <div className="flex flex-wrap items-center gap-3">
-
-                  {/* FOLLOW */}
+                <div
+                  className="
+                    flex
+                    flex-wrap
+                    items-center
+                    gap-3
+                  "
+                >
 
                   {!isOwnProfile && (
                     <button
@@ -1077,8 +1272,6 @@ export default function TravelerProfile() {
                     </button>
                   )}
 
-                  {/* SHARE */}
-
                   <button
                     type="button"
                     onClick={handleShare}
@@ -1112,8 +1305,6 @@ export default function TravelerProfile() {
                       : "Share"}
                   </button>
 
-                  {/* COPY */}
-
                   <button
                     type="button"
                     onClick={handleCopyLink}
@@ -1139,8 +1330,6 @@ export default function TravelerProfile() {
                     <FaCopy />
                   </button>
 
-                  {/* MESSAGE */}
-
                   {!isOwnProfile && (
                     <button
                       type="button"
@@ -1165,8 +1354,6 @@ export default function TravelerProfile() {
                       Message
                     </button>
                   )}
-
-                  {/* OWN PROFILE */}
 
                   {isOwnProfile && (
                     <div
@@ -1227,6 +1414,7 @@ export default function TravelerProfile() {
                   transition
                 "
               >
+
                 <div
                   className="
                     w-12
@@ -1251,6 +1439,7 @@ export default function TravelerProfile() {
                 <p className="text-gray-500 mt-1">
                   Followers
                 </p>
+
               </div>
 
               {/* FOLLOWING */}
@@ -1269,6 +1458,7 @@ export default function TravelerProfile() {
                   transition
                 "
               >
+
                 <div
                   className="
                     w-12
@@ -1293,6 +1483,7 @@ export default function TravelerProfile() {
                 <p className="text-gray-500 mt-1">
                   Following
                 </p>
+
               </div>
 
               {/* SPENDING */}
@@ -1311,6 +1502,7 @@ export default function TravelerProfile() {
                   transition
                 "
               >
+
                 <div
                   className="
                     w-12
@@ -1337,6 +1529,7 @@ export default function TravelerProfile() {
                 <p className="text-gray-500 mt-1">
                   Travel Spending
                 </p>
+
               </div>
 
               {/* COUNTRIES */}
@@ -1355,6 +1548,7 @@ export default function TravelerProfile() {
                   transition
                 "
               >
+
                 <div
                   className="
                     w-12
@@ -1380,6 +1574,7 @@ export default function TravelerProfile() {
                 <p className="text-gray-500 mt-1">
                   Countries
                 </p>
+
               </div>
 
             </section>
@@ -1475,7 +1670,8 @@ export default function TravelerProfile() {
                   </h2>
 
                   <p className="text-white/75 mt-1">
-                    Start a conversation and plan your next adventure.
+                    Start a conversation and plan your
+                    next adventure.
                   </p>
 
                 </div>
@@ -1576,6 +1772,7 @@ export default function TravelerProfile() {
                     shadow-lg
                   "
                 >
+
                   <div
                     className="
                       w-10
@@ -1592,6 +1789,7 @@ export default function TravelerProfile() {
                   <p className="mt-4 text-gray-500">
                     Loading trips...
                   </p>
+
                 </div>
 
               ) : trips.length === 0 ? (
@@ -1749,12 +1947,14 @@ export default function TravelerProfile() {
                             gap-2
                           "
                         >
+
                           <FaMapMarkerAlt
                             className="text-blue-500"
                           />
 
                           {trip.location ||
                             "Unknown location"}
+
                         </p>
 
                         {trip.price && (
@@ -1810,6 +2010,345 @@ export default function TravelerProfile() {
         </main>
 
       </div>
+
+      {/* =======================================================
+          SOCIAL ACCOUNT CHOICE
+      ======================================================= */}
+
+      {socialChoice && selectedPlatform && (
+        <div
+          className="
+            fixed
+            inset-0
+            z-[9999]
+            flex
+            items-center
+            justify-center
+            p-4
+            bg-black/70
+            backdrop-blur-md
+          "
+        >
+
+          <div
+            className="
+              w-full
+              max-w-md
+              rounded-[30px]
+              overflow-hidden
+              bg-white
+              dark:bg-[#0f172a]
+              shadow-2xl
+              border
+              border-gray-200
+              dark:border-white/10
+            "
+          >
+
+            {/* HEADER */}
+
+            <div
+              className={`
+                p-7
+                text-white
+                ${selectedPlatform.className}
+              `}
+            >
+
+              <div className="flex items-start justify-between">
+
+                <div>
+
+                  <div
+                    className="
+                      w-16
+                      h-16
+                      rounded-2xl
+                      bg-white/20
+                      backdrop-blur-xl
+                      flex
+                      items-center
+                      justify-center
+                      text-3xl
+                      shadow-xl
+                    "
+                  >
+                    {selectedPlatform.icon}
+                  </div>
+
+                  <h2 className="text-2xl font-black mt-5">
+                    Connect with{" "}
+                    {selectedPlatform.name}
+                  </h2>
+
+                  <p className="text-white/75 mt-2 text-sm">
+                    {user.name} hasn't connected a{" "}
+                    {selectedPlatform.name} account
+                    yet.
+                  </p>
+
+                </div>
+
+                <button
+                  type="button"
+                  onClick={closeSocialChoice}
+                  className="
+                    w-10
+                    h-10
+                    rounded-xl
+                    bg-white/15
+                    hover:bg-white/25
+                    flex
+                    items-center
+                    justify-center
+                    transition
+                  "
+                >
+                  <FaTimes />
+                </button>
+
+              </div>
+
+            </div>
+
+            {/* OPTIONS */}
+
+            <div className="p-5 space-y-3">
+
+              {/* CREATE */}
+
+              <button
+                type="button"
+                onClick={() =>
+                  handleSocialAction("create")
+                }
+                className="
+                  w-full
+                  p-4
+                  rounded-2xl
+                  border
+                  border-gray-200
+                  dark:border-white/10
+                  bg-gray-50
+                  dark:bg-white/5
+                  hover:bg-blue-50
+                  dark:hover:bg-blue-500/10
+                  hover:border-blue-400
+                  transition
+                  text-left
+                  flex
+                  items-center
+                  gap-4
+                  group
+                "
+              >
+
+                <div
+                  className="
+                    w-12
+                    h-12
+                    rounded-xl
+                    bg-blue-600
+                    text-white
+                    flex
+                    items-center
+                    justify-center
+                    shrink-0
+                    group-hover:scale-105
+                    transition
+                  "
+                >
+                  <FaPlus />
+                </div>
+
+                <div className="flex-1">
+
+                  <h3 className="font-bold">
+                    Create New Account
+                  </h3>
+
+                  <p
+                    className="
+                      text-xs
+                      text-gray-500
+                      dark:text-gray-400
+                      mt-1
+                    "
+                  >
+                    Create a brand-new{" "}
+                    {selectedPlatform.name}
+                    {" "}account.
+                  </p>
+
+                </div>
+
+              </button>
+
+              {/* LOGIN */}
+
+              <button
+                type="button"
+                onClick={() =>
+                  handleSocialAction("login")
+                }
+                className="
+                  w-full
+                  p-4
+                  rounded-2xl
+                  border
+                  border-gray-200
+                  dark:border-white/10
+                  bg-gray-50
+                  dark:bg-white/5
+                  hover:bg-purple-50
+                  dark:hover:bg-purple-500/10
+                  hover:border-purple-400
+                  transition
+                  text-left
+                  flex
+                  items-center
+                  gap-4
+                  group
+                "
+              >
+
+                <div
+                  className="
+                    w-12
+                    h-12
+                    rounded-xl
+                    bg-purple-600
+                    text-white
+                    flex
+                    items-center
+                    justify-center
+                    shrink-0
+                    group-hover:scale-105
+                    transition
+                  "
+                >
+                  <FaSignInAlt />
+                </div>
+
+                <div className="flex-1">
+
+                  <h3 className="font-bold">
+                    Open Existing Account
+                  </h3>
+
+                  <p
+                    className="
+                      text-xs
+                      text-gray-500
+                      dark:text-gray-400
+                      mt-1
+                    "
+                  >
+                    Sign in to your existing{" "}
+                    {selectedPlatform.name}
+                    {" "}account.
+                  </p>
+
+                </div>
+
+              </button>
+
+              {/* EXPLORE */}
+
+              <button
+                type="button"
+                onClick={() =>
+                  handleSocialAction("explore")
+                }
+                className="
+                  w-full
+                  p-4
+                  rounded-2xl
+                  border
+                  border-gray-200
+                  dark:border-white/10
+                  bg-gray-50
+                  dark:bg-white/5
+                  hover:bg-emerald-50
+                  dark:hover:bg-emerald-500/10
+                  hover:border-emerald-400
+                  transition
+                  text-left
+                  flex
+                  items-center
+                  gap-4
+                  group
+                "
+              >
+
+                <div
+                  className="
+                    w-12
+                    h-12
+                    rounded-xl
+                    bg-emerald-600
+                    text-white
+                    flex
+                    items-center
+                    justify-center
+                    shrink-0
+                    group-hover:scale-105
+                    transition
+                  "
+                >
+                  <FaCompass />
+                </div>
+
+                <div className="flex-1">
+
+                  <h3 className="font-bold">
+                    Explore Without Account
+                  </h3>
+
+                  <p
+                    className="
+                      text-xs
+                      text-gray-500
+                      dark:text-gray-400
+                      mt-1
+                    "
+                  >
+                    Browse{" "}
+                    {selectedPlatform.name}
+                    {" "}without creating an account.
+                  </p>
+
+                </div>
+
+              </button>
+
+              {/* CANCEL */}
+
+              <button
+                type="button"
+                onClick={closeSocialChoice}
+                className="
+                  w-full
+                  py-3
+                  rounded-xl
+                  text-sm
+                  font-semibold
+                  text-gray-500
+                  hover:text-gray-900
+                  dark:hover:text-white
+                  transition
+                "
+              >
+                Cancel
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+      )}
+
     </div>
   );
 }
