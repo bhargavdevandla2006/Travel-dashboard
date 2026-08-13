@@ -10,6 +10,7 @@ import {
   FaPlane,
   FaHeart,
   FaMoneyBillWave,
+  FaUserCheck,
   FaInstagram,
   FaFacebook,
   FaTwitter,
@@ -22,6 +23,7 @@ import {
   FaCheck,
   FaArrowLeft,
   FaPaperPlane,
+  FaExternalLinkAlt,
 } from "react-icons/fa";
 
 export default function TravelerProfile() {
@@ -48,15 +50,15 @@ export default function TravelerProfile() {
 
   const [error, setError] = useState("");
 
-  // =========================================================
-  // LOAD EVERYTHING
-  // =========================================================
-
   useEffect(() => {
     if (!id) return;
 
     loadEverything();
   }, [id]);
+
+  // =========================================================
+  // LOAD EVERYTHING
+  // =========================================================
 
   async function loadEverything() {
     setProfileLoading(true);
@@ -79,7 +81,9 @@ export default function TravelerProfile() {
 
   async function loadUser() {
     try {
-      const response = await fetch(`${apiUrl}/users/${id}`);
+      const response = await fetch(`${apiUrl}/users/${id}`, {
+        credentials: "include",
+      });
 
       if (!response.ok) {
         throw new Error("Failed to load traveler");
@@ -111,8 +115,7 @@ export default function TravelerProfile() {
 
       const currentUser = await response.json();
 
-      const self =
-        String(currentUser.id) === String(id);
+      const self = String(currentUser.id) === String(id);
 
       setIsOwnProfile(self);
 
@@ -133,27 +136,17 @@ export default function TravelerProfile() {
 
   async function checkStatus() {
     try {
-      const response = await fetch(
-        `${apiUrl}/follow-status/${id}`,
-        {
-          credentials: "include",
-        }
-      );
+      const response = await fetch(`${apiUrl}/follow-status/${id}`, {
+        credentials: "include",
+      });
 
-      if (!response.ok) {
-        throw new Error(
-          "Failed to check follow status"
-        );
-      }
+      if (!response.ok) return;
 
       const data = await response.json();
 
       setFollowing(Boolean(data.following));
     } catch (err) {
-      console.error(
-        "Follow status error:",
-        err
-      );
+      console.error("Follow status error:", err);
     } finally {
       setLoading(false);
     }
@@ -165,9 +158,7 @@ export default function TravelerProfile() {
 
   async function loadFollowers() {
     try {
-      const response = await fetch(
-        `${apiUrl}/followers-count/${id}`
-      );
+      const response = await fetch(`${apiUrl}/followers-count/${id}`);
 
       if (!response.ok) return;
 
@@ -175,10 +166,7 @@ export default function TravelerProfile() {
 
       setFollowers(Number(data.count) || 0);
     } catch (err) {
-      console.error(
-        "Followers error:",
-        err
-      );
+      console.error("Followers error:", err);
     }
   }
 
@@ -188,36 +176,27 @@ export default function TravelerProfile() {
 
   async function loadFollowing() {
     try {
-      const response = await fetch(
-        `${apiUrl}/following-count/${id}`
-      );
+      const response = await fetch(`${apiUrl}/following-count/${id}`);
 
       if (!response.ok) return;
 
       const data = await response.json();
 
-      setFollowingCount(
-        Number(data.count) || 0
-      );
+      setFollowingCount(Number(data.count) || 0);
     } catch (err) {
-      console.error(
-        "Following error:",
-        err
-      );
+      console.error("Following error:", err);
     }
   }
 
   // =========================================================
-  // LOAD TRIPS
+  // TRIPS
   // =========================================================
 
   async function loadTrips() {
     setTripsLoading(true);
 
     try {
-      const response = await fetch(
-        `${apiUrl}/users/${id}/trips`
-      );
+      const response = await fetch(`${apiUrl}/users/${id}/trips`);
 
       if (!response.ok) {
         setTrips([]);
@@ -226,17 +205,9 @@ export default function TravelerProfile() {
 
       const data = await response.json();
 
-      if (Array.isArray(data)) {
-        setTrips(data);
-      } else {
-        setTrips([]);
-      }
+      setTrips(Array.isArray(data) ? data : []);
     } catch (err) {
-      console.error(
-        "Trips error:",
-        err
-      );
-
+      console.error("Trips error:", err);
       setTrips([]);
     } finally {
       setTripsLoading(false);
@@ -248,48 +219,29 @@ export default function TravelerProfile() {
   // =========================================================
 
   async function handleFollow() {
-    if (isOwnProfile || followLoading) {
-      return;
-    }
+    if (isOwnProfile || followLoading) return;
 
     try {
       setFollowLoading(true);
 
-      const response = await fetch(
-        `${apiUrl}/follow/${id}`,
-        {
-          method: "POST",
-          credentials: "include",
-        }
-      );
+      const response = await fetch(`${apiUrl}/follow/${id}`, {
+        method: "POST",
+        credentials: "include",
+      });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          data.message ||
-            "Unable to follow user"
-        );
+        throw new Error(data.message || "Unable to follow user");
       }
 
       setFollowing(true);
 
-      setFollowers(
-        (prev) => prev + 1
-      );
-
       await loadFollowers();
-      await loadFollowing();
     } catch (err) {
-      console.error(
-        "Follow error:",
-        err
-      );
+      console.error("Follow error:", err);
 
-      alert(
-        err.message ||
-          "Unable to follow this traveler."
-      );
+      alert(err.message || "Unable to follow this traveler.");
     } finally {
       setFollowLoading(false);
     }
@@ -300,61 +252,32 @@ export default function TravelerProfile() {
   // =========================================================
 
   async function handleUnfollow() {
-    if (isOwnProfile || followLoading) {
-      return;
-    }
+    if (isOwnProfile || followLoading) return;
 
     try {
       setFollowLoading(true);
 
-      const response = await fetch(
-        `${apiUrl}/unfollow/${id}`,
-        {
-          method: "DELETE",
-          credentials: "include",
-        }
-      );
+      const response = await fetch(`${apiUrl}/unfollow/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          data.message ||
-            "Unable to unfollow user"
-        );
+        throw new Error(data.message || "Unable to unfollow user");
       }
 
       setFollowing(false);
 
-      setFollowers((prev) =>
-        Math.max(0, prev - 1)
-      );
-
       await loadFollowers();
-      await loadFollowing();
     } catch (err) {
-      console.error(
-        "Unfollow error:",
-        err
-      );
+      console.error("Unfollow error:", err);
 
-      alert(
-        err.message ||
-          "Unable to unfollow this traveler."
-      );
+      alert(err.message || "Unable to unfollow this traveler.");
     } finally {
       setFollowLoading(false);
     }
-  }
-
-  // =========================================================
-  // PROFILE LINK
-  // =========================================================
-
-  function getProfileUrl() {
-    if (!user?.id) return "";
-
-    return `${window.location.origin}/traveler/${user.id}`;
   }
 
   // =========================================================
@@ -364,24 +287,20 @@ export default function TravelerProfile() {
   async function handleShare() {
     if (!user?.id) return;
 
-    const profileUrl = getProfileUrl();
+    const profileUrl = `${window.location.origin}/traveler/${user.id}`;
 
     try {
       if (navigator.share) {
         await navigator.share({
-          title:
-            `${user.name} | TravelHub`,
-          text:
-            `Check out ${user.name}'s TravelHub profile.`,
+          title: `${user.name} | TravelHub`,
+          text: `Check out ${user.name}'s TravelHub profile.`,
           url: profileUrl,
         });
 
         return;
       }
 
-      await navigator.clipboard.writeText(
-        profileUrl
-      );
+      await navigator.clipboard.writeText(profileUrl);
 
       setCopied(true);
 
@@ -389,10 +308,7 @@ export default function TravelerProfile() {
         setCopied(false);
       }, 2500);
     } catch (err) {
-      console.error(
-        "Share error:",
-        err
-      );
+      console.error("Share error:", err);
     }
   }
 
@@ -403,12 +319,10 @@ export default function TravelerProfile() {
   async function handleCopyLink() {
     if (!user?.id) return;
 
-    const profileUrl = getProfileUrl();
+    const profileUrl = `${window.location.origin}/traveler/${user.id}`;
 
     try {
-      await navigator.clipboard.writeText(
-        profileUrl
-      );
+      await navigator.clipboard.writeText(profileUrl);
 
       setCopied(true);
 
@@ -416,120 +330,101 @@ export default function TravelerProfile() {
         setCopied(false);
       }, 2500);
     } catch (err) {
-      console.error(
-        "Copy error:",
-        err
-      );
+      console.error("Copy error:", err);
     }
-  }
-
-  // =========================================================
-  // GET DEFAULT USERNAME
-  //
-  // Priority:
-  // 1. Social-specific username
-  // 2. User username
-  // 3. User name
-  // 4. Email before @
-  // =========================================================
-
-  function getDefaultUsername() {
-    const possibleValues = [
-      user?.username,
-      user?.userName,
-      user?.name,
-      user?.email
-        ? user.email.split("@")[0]
-        : null,
-    ];
-
-    const value =
-      possibleValues.find(
-        (item) =>
-          item &&
-          String(item).trim()
-      );
-
-    if (!value) {
-      return null;
-    }
-
-    return String(value)
-      .trim()
-      .replace(/^@/, "")
-      .replace(/\s+/g, "");
   }
 
   // =========================================================
   // SOCIAL URL BUILDER
+  //
+  // CONNECTED ACCOUNT:
+  //     Open exact traveler account.
+  //
+  // NO CONNECTED ACCOUNT:
+  //     Open official signup page.
+  //
+  // NO RANDOM PROFILE URL.
+  // NO RANDOM ACCOUNT.
+  // NO POPUP.
   // =========================================================
 
-  function getSocialUrl(
-    platform,
-    value
-  ) {
-    let username =
-      value ||
-      getDefaultUsername();
+  function getSocialUrl(platform, value) {
+    const username = String(value || "").trim();
 
-    if (!username) {
-      return null;
+    // =======================================================
+    // TRAVELER HAS CONNECTED ACCOUNT
+    // =======================================================
+
+    if (username) {
+      // If database already contains complete URL
+      if (
+        username.startsWith("http://") ||
+        username.startsWith("https://")
+      ) {
+        return username;
+      }
+
+      const cleanUsername = username.replace(/^@/, "");
+
+      switch (platform) {
+        case "instagram":
+          return `https://www.instagram.com/${cleanUsername}/`;
+
+        case "facebook":
+          return `https://www.facebook.com/${cleanUsername}`;
+
+        case "twitter":
+          return `https://x.com/${cleanUsername}`;
+
+        case "linkedin":
+          return `https://www.linkedin.com/in/${cleanUsername}`;
+
+        case "youtube":
+          return `https://www.youtube.com/@${cleanUsername}`;
+
+        case "tiktok":
+          return `https://www.tiktok.com/@${cleanUsername}`;
+
+        case "website":
+          return cleanUsername.startsWith("www.")
+            ? `https://${cleanUsername}`
+            : `https://${cleanUsername}`;
+
+        default:
+          return null;
+      }
     }
 
-    username = String(username).trim();
-
-    // Already a URL
-    if (
-      username.startsWith(
-        "http://"
-      ) ||
-      username.startsWith(
-        "https://"
-      )
-    ) {
-      return username;
-    }
-
-    username = username
-      .replace(/^@/, "")
-      .trim();
-
-    // Remove URL fragments if accidentally entered
-    username = username
-      .replace(/^www\./, "");
+    // =======================================================
+    // TRAVELER DOES NOT HAVE ACCOUNT
+    //
+    // DIRECTLY GO TO SIGNUP.
+    //
+    // NO CONFIRM POPUP.
+    // NO RANDOM ACCOUNT.
+    // =======================================================
 
     switch (platform) {
       case "instagram":
-        return `https://www.instagram.com/${username}/`;
+        return "https://www.instagram.com/accounts/emailsignup/";
 
       case "facebook":
-        return `https://www.facebook.com/${username}`;
+        return "https://www.facebook.com/r.php";
 
       case "twitter":
-        return `https://x.com/${username}`;
+        return "https://x.com/i/flow/signup";
 
       case "linkedin":
-        return `https://www.linkedin.com/in/${username}`;
+        return "https://www.linkedin.com/signup";
 
       case "youtube":
-        return `https://www.youtube.com/@${username}`;
+        return "https://accounts.google.com/signup";
 
       case "tiktok":
-        return `https://www.tiktok.com/@${username}`;
+        return "https://www.tiktok.com/signup";
 
       case "website":
-        if (
-          username.startsWith(
-            "http://"
-          ) ||
-          username.startsWith(
-            "https://"
-          )
-        ) {
-          return username;
-        }
-
-        return `https://${username}`;
+        return null;
 
       default:
         return null;
@@ -540,33 +435,18 @@ export default function TravelerProfile() {
   // OPEN SOCIAL
   // =========================================================
 
-  function openSocial(
-    platform,
-    value
-  ) {
-    const url =
-      getSocialUrl(
-        platform,
-        value
-      );
+  function openSocial(platform, value) {
+    const url = getSocialUrl(platform, value);
 
     if (!url) {
-      alert(
-        "Social media username is not available."
-      );
-
       return;
     }
 
-    window.open(
-      url,
-      "_blank",
-      "noopener,noreferrer"
-    );
+    window.open(url, "_blank", "noopener,noreferrer");
   }
 
   // =========================================================
-  // SOCIAL BUTTON COMPONENT
+  // SOCIAL BUTTON
   // =========================================================
 
   function SocialButton({
@@ -576,44 +456,63 @@ export default function TravelerProfile() {
     icon,
     className,
   }) {
+    const connected = Boolean(value && String(value).trim());
+
     return (
       <button
         type="button"
-        onClick={() =>
-          openSocial(
-            platform,
-            value
-          )
+        onClick={() => openSocial(platform, value)}
+        title={
+          connected
+            ? `Open ${user.name}'s ${label}`
+            : `${user.name} has no ${label} account — create one`
         }
         className={`
           group
-          h-10
-          px-3.5
-          rounded-xl
-          ${className}
-          text-white
-          flex
+          inline-flex
           items-center
           gap-2
+          px-4
+          py-2.5
+          rounded-xl
+          text-white
+          text-sm
           font-semibold
-          text-xs
           shadow-lg
           border
-          border-white/20
-          hover:scale-105
-          hover:-translate-y-0.5
+          border-white/10
           transition-all
           duration-200
+          hover:-translate-y-1
+          hover:shadow-2xl
+          active:scale-95
+          ${className}
         `}
-        title={`Open ${label}`}
       >
         <span className="text-base">
           {icon}
         </span>
 
-        <span className="hidden sm:inline">
+        <span>
           {label}
         </span>
+
+        {!connected && (
+          <span className="text-[10px] opacity-80">
+            Create
+          </span>
+        )}
+
+        {connected && (
+          <FaExternalLinkAlt
+            className="
+              text-[9px]
+              opacity-0
+              group-hover:opacity-70
+              transition
+            "
+          />
+        )}
       </button>
     );
   }
@@ -623,9 +522,7 @@ export default function TravelerProfile() {
   // =========================================================
 
   function handleMessage() {
-    if (!id || isOwnProfile) {
-      return;
-    }
+    if (!id || isOwnProfile) return;
 
     navigate(`/messages/${id}`);
   }
@@ -634,10 +531,7 @@ export default function TravelerProfile() {
   // LOADING
   // =========================================================
 
-  if (
-    profileLoading ||
-    !user
-  ) {
+  if (profileLoading || !user) {
     return (
       <div
         className="
@@ -716,8 +610,7 @@ export default function TravelerProfile() {
           </h1>
 
           <p className="text-gray-500 mt-3">
-            We couldn't load this
-            traveler's profile.
+            We couldn't load this traveler's profile.
           </p>
         </div>
       </div>
@@ -730,8 +623,6 @@ export default function TravelerProfile() {
 
   const displayPhoto =
     user.photo ||
-    user.profilePhoto ||
-    user.avatar ||
     "https://i.pravatar.cc/500";
 
   const coverPhoto =
@@ -747,64 +638,6 @@ export default function TravelerProfile() {
     .filter(Boolean)
     .join(", ");
 
-  /*
-    IMPORTANT:
-
-    These values support many possible backend field names.
-
-    If Instagram URL exists:
-      user.instagram
-
-    If Instagram username exists:
-      user.instagramUsername
-
-    If neither exists:
-      getDefaultUsername()
-      -> username
-      -> name
-      -> email before @
-  */
-
-  const instagramValue =
-    user.instagram ||
-    user.instagramUsername ||
-    user.instagram_username;
-
-  const facebookValue =
-    user.facebook ||
-    user.facebookUsername ||
-    user.facebook_username;
-
-  const twitterValue =
-    user.twitter ||
-    user.x ||
-    user.twitter_url ||
-    user.twitterUsername ||
-    user.twitter_username;
-
-  const linkedinValue =
-    user.linkedin ||
-    user.linkedinUsername ||
-    user.linkedin_username;
-
-  const youtubeValue =
-    user.youtube ||
-    user.youtubeUsername ||
-    user.youtube_username;
-
-  const tiktokValue =
-    user.tiktok ||
-    user.tiktokUsername ||
-    user.tiktok_username;
-
-  const websiteValue =
-    user.website ||
-    user.website_url;
-
-  // =========================================================
-  // RETURN
-  // =========================================================
-
   return (
     <div
       className="
@@ -817,11 +650,15 @@ export default function TravelerProfile() {
     >
       <div className="flex min-h-screen">
 
-        {/* SIDEBAR */}
+        {/* =================================================
+            SIDEBAR
+        ================================================= */}
 
         <Sidebar />
 
-        {/* MAIN */}
+        {/* =================================================
+            MAIN
+        ================================================= */}
 
         <main className="flex-1 min-w-0">
 
@@ -829,15 +666,14 @@ export default function TravelerProfile() {
 
             <Navbar />
 
-            {/* BACK */}
+            {/* =================================================
+                BACK
+            ================================================= */}
 
             <div className="mt-5">
-
               <button
                 type="button"
-                onClick={() =>
-                  window.history.back()
-                }
+                onClick={() => navigate(-1)}
                 className="
                   inline-flex
                   items-center
@@ -854,7 +690,6 @@ export default function TravelerProfile() {
                 <FaArrowLeft />
                 Back
               </button>
-
             </div>
 
             {/* =================================================
@@ -867,12 +702,11 @@ export default function TravelerProfile() {
                 overflow-hidden
                 rounded-[32px]
                 mt-5
-                min-h-[350px]
+                min-h-[380px]
                 shadow-2xl
                 group
               "
             >
-
               <img
                 src={coverPhoto}
                 alt="Travel cover"
@@ -929,7 +763,7 @@ export default function TravelerProfile() {
                 className="
                   relative
                   z-10
-                  min-h-[350px]
+                  min-h-[380px]
                   p-6
                   lg:p-10
                   flex
@@ -941,7 +775,9 @@ export default function TravelerProfile() {
                 "
               >
 
-                {/* PROFILE INFO */}
+                {/* =================================================
+                    PROFILE
+                ================================================= */}
 
                 <div
                   className="
@@ -973,10 +809,7 @@ export default function TravelerProfile() {
 
                     <img
                       src={displayPhoto}
-                      alt={
-                        user.name ||
-                        "Traveler"
-                      }
+                      alt={user.name || "Traveler"}
                       className="
                         relative
                         w-32
@@ -1007,11 +840,11 @@ export default function TravelerProfile() {
 
                   </div>
 
-                  {/* DETAILS */}
+                  {/* INFO */}
 
                   <div className="text-white">
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 flex-wrap">
 
                       <h1
                         className="
@@ -1044,14 +877,6 @@ export default function TravelerProfile() {
 
                     </div>
 
-                    {/* USERNAME */}
-
-                    {user.username && (
-                      <p className="mt-1 text-white/60">
-                        @{user.username}
-                      </p>
-                    )}
-
                     <p
                       className="
                         mt-2
@@ -1059,8 +884,7 @@ export default function TravelerProfile() {
                         font-medium
                       "
                     >
-                      Explorer • Traveler •
-                      Adventure Lover ✈️
+                      Explorer • Traveler • Adventure Lover ✈️
                     </p>
 
                     <p
@@ -1074,7 +898,6 @@ export default function TravelerProfile() {
                       "
                     >
                       <FaEnvelope />
-
                       {user.email}
                     </p>
 
@@ -1090,124 +913,169 @@ export default function TravelerProfile() {
                         "
                       >
                         <FaMapMarkerAlt />
-
                         {location}
                       </p>
                     )}
 
                     {/* =================================================
                         SOCIAL MEDIA
-
-                        THESE ARE ALWAYS VISIBLE.
-
-                        If traveler has no Instagram field,
-                        username/email fallback is automatically used.
                     ================================================= */}
 
-                    <div
-                      className="
-                        mt-5
-                        flex
-                        flex-wrap
-                        items-center
-                        gap-2
-                      "
-                    >
+                    <div className="mt-6">
 
-                      <SocialButton
-                        platform="instagram"
-                        value={instagramValue}
-                        label="Instagram"
-                        icon={
-                          <FaInstagram />
-                        }
+                      <p
                         className="
-                          bg-gradient-to-tr
-                          from-yellow-400
-                          via-pink-500
-                          to-purple-600
+                          text-xs
+                          uppercase
+                          tracking-[0.2em]
+                          text-white/50
+                          font-bold
+                          mb-3
                         "
-                      />
+                      >
+                        Connect
+                      </p>
 
-                      <SocialButton
-                        platform="facebook"
-                        value={facebookValue}
-                        label="Facebook"
-                        icon={
-                          <FaFacebook />
-                        }
-                        className="bg-[#1877F2]"
-                      />
+                      <div className="flex flex-wrap gap-2">
 
-                      <SocialButton
-                        platform="twitter"
-                        value={twitterValue}
-                        label="X"
-                        icon={
-                          <FaTwitter />
-                        }
-                        className="bg-black"
-                      />
+                        {/* INSTAGRAM */}
 
-                      <SocialButton
-                        platform="linkedin"
-                        value={linkedinValue}
-                        label="LinkedIn"
-                        icon={
-                          <FaLinkedin />
-                        }
-                        className="bg-[#0A66C2]"
-                      />
+                        <SocialButton
+                          platform="instagram"
+                          value={user.instagram}
+                          label="Instagram"
+                          icon={<FaInstagram />}
+                          className="
+                            bg-gradient-to-tr
+                            from-yellow-400
+                            via-pink-500
+                            to-purple-600
+                          "
+                        />
 
-                      <SocialButton
-                        platform="youtube"
-                        value={youtubeValue}
-                        label="YouTube"
-                        icon={
-                          <FaYoutube />
-                        }
-                        className="bg-[#FF0000]"
-                      />
+                        {/* FACEBOOK */}
 
-                      <SocialButton
-                        platform="tiktok"
-                        value={tiktokValue}
-                        label="TikTok"
-                        icon={
-                          <FaTiktok />
-                        }
-                        className="bg-black"
-                      />
+                        <SocialButton
+                          platform="facebook"
+                          value={user.facebook}
+                          label="Facebook"
+                          icon={<FaFacebook />}
+                          className="bg-[#1877F2]"
+                        />
 
-                      {/* Website only when a website exists */}
+                        {/* X */}
 
-                      {websiteValue && (
+                        <SocialButton
+                          platform="twitter"
+                          value={
+                            user.twitter ||
+                            user.x ||
+                            user.twitter_url
+                          }
+                          label="X"
+                          icon={<FaTwitter />}
+                          className="bg-black"
+                        />
+
+                        {/* LINKEDIN */}
+
+                        <SocialButton
+                          platform="linkedin"
+                          value={user.linkedin}
+                          label="LinkedIn"
+                          icon={<FaLinkedin />}
+                          className="bg-[#0A66C2]"
+                        />
+
+                        {/* YOUTUBE */}
+
+                        <SocialButton
+                          platform="youtube"
+                          value={user.youtube}
+                          label="YouTube"
+                          icon={<FaYoutube />}
+                          className="bg-[#FF0000]"
+                        />
+
+                        {/* TIKTOK */}
+
+                        <SocialButton
+                          platform="tiktok"
+                          value={user.tiktok}
+                          label="TikTok"
+                          icon={<FaTiktok />}
+                          className="bg-black"
+                        />
+
+                        {/* WEBSITE */}
+
                         <SocialButton
                           platform="website"
-                          value={websiteValue}
-                          label="Website"
-                          icon={
-                            <FaGlobe />
+                          value={
+                            user.website ||
+                            user.website_url
                           }
+                          label="Website"
+                          icon={<FaGlobe />}
                           className="bg-indigo-600"
                         />
-                      )}
+
+                      </div>
+
+                      <p className="mt-3 text-xs text-white/45">
+                        Connected accounts open the traveler's
+                        exact profile. Missing accounts open
+                        the official signup page.
+                      </p>
 
                     </div>
 
                   </div>
+
                 </div>
 
-                {/* ACTION BUTTONS */}
+                {/* =================================================
+                    ACTIONS
+                ================================================= */}
 
-                <div
-                  className="
-                    flex
-                    flex-wrap
-                    items-center
-                    gap-3
-                  "
-                >
+                <div className="flex flex-wrap items-center gap-3">
+
+                  {/* FOLLOW */}
+
+                  {!isOwnProfile && (
+                    <button
+                      type="button"
+                      disabled={followLoading}
+                      onClick={
+                        following
+                          ? handleUnfollow
+                          : handleFollow
+                      }
+                      className="
+                        h-11
+                        px-5
+                        rounded-xl
+                        bg-blue-600
+                        hover:bg-blue-700
+                        text-white
+                        font-bold
+                        flex
+                        items-center
+                        gap-2
+                        transition
+                        shadow-xl
+                        disabled:opacity-50
+                      "
+                    >
+                      <FaUserCheck />
+
+                      {followLoading
+                        ? "Please wait..."
+                        : following
+                        ? "Following"
+                        : "Follow"}
+                    </button>
+                  )}
 
                   {/* SHARE */}
 
@@ -1241,7 +1109,7 @@ export default function TravelerProfile() {
 
                     {copied
                       ? "Link Copied!"
-                      : "Share Profile"}
+                      : "Share"}
                   </button>
 
                   {/* COPY */}
@@ -1271,6 +1139,33 @@ export default function TravelerProfile() {
                     <FaCopy />
                   </button>
 
+                  {/* MESSAGE */}
+
+                  {!isOwnProfile && (
+                    <button
+                      type="button"
+                      onClick={handleMessage}
+                      className="
+                        h-11
+                        px-5
+                        rounded-xl
+                        bg-white
+                        text-blue-700
+                        font-bold
+                        flex
+                        items-center
+                        gap-2
+                        hover:bg-blue-50
+                        hover:scale-105
+                        transition-all
+                        shadow-xl
+                      "
+                    >
+                      <FaPaperPlane />
+                      Message
+                    </button>
+                  )}
+
                   {/* OWN PROFILE */}
 
                   {isOwnProfile && (
@@ -1290,7 +1185,8 @@ export default function TravelerProfile() {
                         gap-2
                       "
                     >
-                      ✓ Your Profile
+                      <FaUserCheck />
+                      Your Profile
                     </div>
                   )}
 
@@ -1299,74 +1195,6 @@ export default function TravelerProfile() {
               </div>
 
             </section>
-
-            {/* =================================================
-                FOLLOW BUTTON
-            ================================================= */}
-
-            {!isOwnProfile && (
-              <div
-                className="
-                  mt-5
-                  flex
-                  justify-end
-                "
-              >
-
-                {following ? (
-
-                  <button
-                    type="button"
-                    onClick={handleUnfollow}
-                    disabled={followLoading}
-                    className="
-                      px-6
-                      py-3
-                      rounded-2xl
-                      bg-gray-200
-                      dark:bg-gray-800
-                      text-gray-800
-                      dark:text-white
-                      font-bold
-                      hover:bg-gray-300
-                      dark:hover:bg-gray-700
-                      transition
-                      disabled:opacity-50
-                    "
-                  >
-                    ✓ Following
-                  </button>
-
-                ) : (
-
-                  <button
-                    type="button"
-                    onClick={handleFollow}
-                    disabled={followLoading}
-                    className="
-                      px-6
-                      py-3
-                      rounded-2xl
-                      bg-gradient-to-r
-                      from-blue-600
-                      to-purple-600
-                      text-white
-                      font-bold
-                      shadow-lg
-                      hover:scale-105
-                      transition
-                      disabled:opacity-50
-                    "
-                  >
-                    {followLoading
-                      ? "Following..."
-                      : "+ Follow"}
-                  </button>
-
-                )}
-
-              </div>
-            )}
 
             {/* =================================================
                 STATS
@@ -1383,6 +1211,8 @@ export default function TravelerProfile() {
               "
             >
 
+              {/* FOLLOWERS */}
+
               <div
                 className="
                   bg-white
@@ -1397,7 +1227,6 @@ export default function TravelerProfile() {
                   transition
                 "
               >
-
                 <div
                   className="
                     w-12
@@ -1422,8 +1251,9 @@ export default function TravelerProfile() {
                 <p className="text-gray-500 mt-1">
                   Followers
                 </p>
-
               </div>
+
+              {/* FOLLOWING */}
 
               <div
                 className="
@@ -1439,7 +1269,6 @@ export default function TravelerProfile() {
                   transition
                 "
               >
-
                 <div
                   className="
                     w-12
@@ -1464,8 +1293,9 @@ export default function TravelerProfile() {
                 <p className="text-gray-500 mt-1">
                   Following
                 </p>
-
               </div>
+
+              {/* SPENDING */}
 
               <div
                 className="
@@ -1481,7 +1311,6 @@ export default function TravelerProfile() {
                   transition
                 "
               >
-
                 <div
                   className="
                     w-12
@@ -1508,8 +1337,9 @@ export default function TravelerProfile() {
                 <p className="text-gray-500 mt-1">
                   Travel Spending
                 </p>
-
               </div>
+
+              {/* COUNTRIES */}
 
               <div
                 className="
@@ -1525,7 +1355,6 @@ export default function TravelerProfile() {
                   transition
                 "
               >
-
                 <div
                   className="
                     w-12
@@ -1551,7 +1380,6 @@ export default function TravelerProfile() {
                 <p className="text-gray-500 mt-1">
                   Countries
                 </p>
-
               </div>
 
             </section>
@@ -1617,7 +1445,7 @@ export default function TravelerProfile() {
             </section>
 
             {/* =================================================
-                MESSAGE
+                MESSAGE CTA
             ================================================= */}
 
             {!isOwnProfile && (
@@ -1643,13 +1471,11 @@ export default function TravelerProfile() {
                 <div>
 
                   <h2 className="text-xl font-bold">
-                    Want to connect with{" "}
-                    {user.name}?
+                    Want to connect with {user.name}?
                   </h2>
 
                   <p className="text-white/75 mt-1">
-                    Start a conversation and
-                    plan your next adventure.
+                    Start a conversation and plan your next adventure.
                   </p>
 
                 </div>
@@ -1674,7 +1500,7 @@ export default function TravelerProfile() {
                   "
                 >
                   <FaPaperPlane />
-                  Message
+                  Message {user.name}
                 </button>
 
               </section>
@@ -1750,7 +1576,6 @@ export default function TravelerProfile() {
                     shadow-lg
                   "
                 >
-
                   <div
                     className="
                       w-10
@@ -1767,7 +1592,6 @@ export default function TravelerProfile() {
                   <p className="mt-4 text-gray-500">
                     Loading trips...
                   </p>
-
                 </div>
 
               ) : trips.length === 0 ? (
@@ -1825,156 +1649,153 @@ export default function TravelerProfile() {
                   "
                 >
 
-                  {trips.map(
-                    (trip) => (
-                      <article
-                        key={trip.id}
+                  {trips.map((trip) => (
+
+                    <article
+                      key={trip.id}
+                      className="
+                        group
+                        bg-white
+                        dark:bg-[#0f172a]
+                        rounded-3xl
+                        overflow-hidden
+                        shadow-lg
+                        border
+                        border-gray-100
+                        dark:border-gray-800
+                        hover:-translate-y-2
+                        transition-all
+                        duration-300
+                      "
+                    >
+
+                      <div
                         className="
-                          group
-                          bg-white
-                          dark:bg-[#0f172a]
-                          rounded-3xl
+                          relative
+                          h-56
                           overflow-hidden
-                          shadow-lg
-                          border
-                          border-gray-100
-                          dark:border-gray-800
-                          hover:-translate-y-2
-                          transition-all
-                          duration-300
                         "
                       >
 
+                        <img
+                          src={
+                            trip.image ||
+                            "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80"
+                          }
+                          alt={trip.title || "Trip"}
+                          className="
+                            w-full
+                            h-full
+                            object-cover
+                            group-hover:scale-110
+                            transition-transform
+                            duration-700
+                          "
+                        />
+
                         <div
                           className="
-                            relative
-                            h-56
-                            overflow-hidden
+                            absolute
+                            inset-0
+                            bg-gradient-to-t
+                            from-black/60
+                            to-transparent
+                          "
+                        />
+
+                        <div
+                          className="
+                            absolute
+                            bottom-4
+                            left-4
+                            right-4
+                            text-white
                           "
                         >
 
-                          <img
-                            src={
-                              trip.image ||
-                              "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80"
-                            }
-                            alt={
-                              trip.title ||
-                              "Trip"
-                            }
+                          <p
                             className="
-                              w-full
-                              h-full
-                              object-cover
-                              group-hover:scale-110
-                              transition-transform
-                              duration-700
+                              text-xs
+                              uppercase
+                              tracking-widest
+                              text-white/70
                             "
+                          >
+                            Adventure
+                          </p>
+
+                          <h3
+                            className="
+                              text-xl
+                              font-black
+                              mt-1
+                            "
+                          >
+                            {trip.title}
+                          </h3>
+
+                        </div>
+
+                      </div>
+
+                      <div className="p-5">
+
+                        <p
+                          className="
+                            text-gray-600
+                            dark:text-gray-300
+                            flex
+                            items-center
+                            gap-2
+                          "
+                        >
+                          <FaMapMarkerAlt
+                            className="text-blue-500"
                           />
 
-                          <div
-                            className="
-                              absolute
-                              inset-0
-                              bg-gradient-to-t
-                              from-black/60
-                              to-transparent
-                            "
-                          />
+                          {trip.location ||
+                            "Unknown location"}
+                        </p>
 
+                        {trip.price && (
                           <div
                             className="
-                              absolute
-                              bottom-4
-                              left-4
-                              right-4
-                              text-white
+                              mt-4
+                              flex
+                              items-center
+                              justify-between
                             "
                           >
 
-                            <p
+                            <span
                               className="
                                 text-xs
                                 uppercase
-                                tracking-widest
-                                text-white/70
+                                tracking-wider
+                                text-gray-400
                               "
                             >
-                              Adventure
-                            </p>
+                              Trip Cost
+                            </span>
 
-                            <h3
+                            <span
                               className="
-                                text-xl
+                                text-lg
                                 font-black
-                                mt-1
+                                text-blue-600
                               "
                             >
-                              {trip.title}
-                            </h3>
+                              ₹ {trip.price}
+                            </span>
 
                           </div>
+                        )}
 
-                        </div>
+                      </div>
 
-                        <div className="p-5">
+                    </article>
 
-                          <p
-                            className="
-                              text-gray-600
-                              dark:text-gray-300
-                              flex
-                              items-center
-                              gap-2
-                            "
-                          >
-                            <FaMapMarkerAlt
-                              className="text-blue-500"
-                            />
-
-                            {trip.location ||
-                              "Unknown location"}
-                          </p>
-
-                          {trip.price && (
-                            <div
-                              className="
-                                mt-4
-                                flex
-                                items-center
-                                justify-between
-                              "
-                            >
-
-                              <span
-                                className="
-                                  text-xs
-                                  uppercase
-                                  tracking-wider
-                                  text-gray-400
-                                "
-                              >
-                                Trip Cost
-                              </span>
-
-                              <span
-                                className="
-                                  text-lg
-                                  font-black
-                                  text-blue-600
-                                "
-                              >
-                                ₹ {trip.price}
-                              </span>
-
-                            </div>
-                          )}
-
-                        </div>
-
-                      </article>
-                    )
-                  )}
+                  ))}
 
                 </div>
 
