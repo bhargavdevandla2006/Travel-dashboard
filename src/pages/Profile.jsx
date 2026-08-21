@@ -1,7 +1,6 @@
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import EditProfile from "../components/EditProfile";
-import { FaUserEdit, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import apiUrl from "../services/api";
 import { getProfile, logoutUser } from "../services/api";
