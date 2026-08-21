@@ -25,11 +25,28 @@ export default function Messages() {
   // LOAD USER
   // =========================================================
 
-  useEffect(() => {
-    if (!id) return;
+ useEffect(() => {
+  const loadMessages = async () => {
+    try {
+      const response = await fetch(
+        `${apiUrl}/messages/${id}`,
+        {
+          credentials: "include",
+        }
+      );
 
-    loadUser();
-  }, [id]);
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessages(data);
+      }
+    } catch (error) {
+      console.error("LOAD MESSAGES ERROR:", error);
+    }
+  };
+
+  loadMessages();
+}, [id]);
 
   async function loadUser() {
     try {
@@ -54,44 +71,56 @@ export default function Messages() {
     }
   }
 
+
   // =========================================================
   // SEND MESSAGE
   // =========================================================
 
-  async function handleSend(e) {
-    e.preventDefault();
+  const handleSend = async () => {
+  if (!input.trim()) return;
 
-    const text = message.trim();
+  try {
+    const response = await fetch(
+      `${apiUrl}/messages/${id}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          message: input.trim(),
+        }),
+      }
+    );
 
-    if (!text || sending) {
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error(data.message);
       return;
     }
 
-    try {
-      setSending(true);
+    setInput("");
 
-      /*
-       * For now this adds the message to the UI.
-       *
-       * Later we can connect this to your backend API.
-       */
+    // Reload conversation after sending
+    const messagesResponse = await fetch(
+      `${apiUrl}/messages/${id}`,
+      {
+        credentials: "include",
+      }
+    );
 
-      const newMessage = {
-        id: Date.now(),
-        text: text,
-        sender: "me",
-        createdAt: new Date().toISOString(),
-      };
+    const messagesData = await messagesResponse.json();
 
-      setMessages((prev) => [...prev, newMessage]);
-
-      setMessage("");
-    } catch (error) {
-      console.error("Send message error:", error);
-    } finally {
-      setSending(false);
+    if (messagesResponse.ok) {
+      setMessages(messagesData);
     }
+
+  } catch (error) {
+    console.error("SEND MESSAGE ERROR:", error);
   }
+};
 
   // =========================================================
   // LOADING

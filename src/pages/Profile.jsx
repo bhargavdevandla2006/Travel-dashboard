@@ -5,7 +5,12 @@ import { FaUserEdit, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import apiUrl from "../services/api";
 import { getProfile, logoutUser } from "../services/api";
-
+import {
+  FaUserEdit,
+  FaEnvelope,
+  FaMapMarkerAlt,
+  FaShareAlt
+} from "react-icons/fa";
 
 export default function Profile() {
 
@@ -73,6 +78,25 @@ export default function Profile() {
       </div>
     );
   }
+
+  const handleShareProfile = async () => {
+    const profileUrl = `${window.location.origin}/traveler/${user.id}`;
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: `${user.name}'s Travel Profile`,
+          text: `Check out ${user.name}'s travel profile!`,
+          url: profileUrl,
+        });
+      } else {
+        await navigator.clipboard.writeText(profileUrl);
+        alert("Profile link copied!");
+      }
+    } catch (error) {
+      console.error("Share error:", error);
+    }
+  };
 
   return (
 
@@ -182,6 +206,14 @@ export default function Profile() {
               >
                 <FaUserEdit />
                 Edit Profile
+              </button>
+
+              <button
+                onClick={handleShareProfile}
+                className="bg-purple-600 text-white px-8 py-4 rounded-2xl hover:bg-purple-700 transition font-bold flex items-center gap-2"
+              >
+                <FaShareAlt />
+                Share Profile
               </button>
 
               <button
