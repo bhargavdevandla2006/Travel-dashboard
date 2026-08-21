@@ -714,95 +714,107 @@ export default function TravelerProfile() {
   // LOADING
   // =========================================================
 
-  if (profileLoading || !user) {
-    return (
-      <div
-        className="
-          min-h-screen
-          bg-[#f8fafc]
-          dark:bg-[#020617]
-          flex
-          items-center
-          justify-center
-        "
-      >
-        <div className="text-center">
+// =========================================================
+// LOADING
+// =========================================================
 
-          <div
-            className="
-              w-16
-              h-16
-              rounded-full
-              border-4
-              border-blue-200
-              border-t-blue-600
-              animate-spin
-              mx-auto
-            "
-          />
+if (profileLoading) {
+  return (
+    <div className="
+      min-h-screen
+      bg-[#f8fafc]
+      dark:bg-[#020617]
+      flex
+      items-center
+      justify-center
+    ">
+      <div className="text-center">
 
-          <p
-            className="
-              mt-5
-              text-gray-600
-              dark:text-gray-300
-              font-medium
-            "
-          >
-            Loading traveler profile...
-          </p>
+        <div className="
+          w-16
+          h-16
+          rounded-full
+          border-4
+          border-blue-200
+          border-t-blue-600
+          animate-spin
+          mx-auto
+        " />
 
-        </div>
+        <p className="
+          mt-5
+          text-gray-600
+          dark:text-gray-300
+          font-medium
+        ">
+          Loading traveler profile...
+        </p>
+
       </div>
-    );
-  }
+    </div>
+  );
+}
 
-  // =========================================================
-  // ERROR
-  // =========================================================
 
-  if (error && !user) {
-    return (
-      <div
-        className="
-          min-h-screen
-          bg-[#f8fafc]
-          dark:bg-[#020617]
-          flex
-          items-center
-          justify-center
-          p-6
-        "
-      >
-        <div
+// =========================================================
+// ERROR
+// =========================================================
+
+if (error || !user) {
+  return (
+    <div className="
+      min-h-screen
+      bg-[#f8fafc]
+      dark:bg-[#020617]
+      flex
+      items-center
+      justify-center
+      p-6
+    ">
+      <div className="
+        max-w-md
+        w-full
+        bg-white
+        dark:bg-[#0f172a]
+        rounded-3xl
+        shadow-xl
+        p-10
+        text-center
+      ">
+
+        <div className="text-5xl mb-5">
+          😕
+        </div>
+
+        <h1 className="text-2xl font-bold">
+          Traveler not found
+        </h1>
+
+        <p className="text-gray-500 mt-3">
+          {error || "We couldn't load this traveler's profile."}
+        </p>
+
+        <button
+          onClick={() => navigate(-1)}
           className="
-            max-w-md
-            w-full
-            bg-white
-            dark:bg-[#0f172a]
-            rounded-3xl
-            shadow-xl
-            p-10
-            text-center
+            mt-6
+            px-5
+            py-3
+            rounded-xl
+            bg-blue-600
+            text-white
+            font-bold
+            hover:bg-blue-700
+            transition
           "
         >
+          Go Back
+        </button>
 
-          <div className="text-5xl mb-5">
-            😕
-          </div>
-
-          <h1 className="text-2xl font-bold">
-            Traveler not found
-          </h1>
-
-          <p className="text-gray-500 mt-3">
-            We couldn't load this traveler's profile.
-          </p>
-
-        </div>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   // =========================================================
   // DATA
