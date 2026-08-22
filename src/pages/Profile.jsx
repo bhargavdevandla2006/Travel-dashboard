@@ -79,7 +79,7 @@ export default function Profile() {
   }
 
   const handleShareProfile = async () => {
-    const profileUrl = `${window.location.origin}/traveler/${user.id}`;
+    const profileUrl = `https://travel-dashboard-lnfg.vercel.app/traveler/${user.id}`;
 
     try {
       if (navigator.share) {
