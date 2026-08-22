@@ -78,24 +78,26 @@ export default function Profile() {
     );
   }
 
-  const handleShareProfile = async () => {
-    const profileUrl = `https://travel-dashboard-lnfg.vercel.app/traveler/${user.id}`;
+const handleShareProfile = async () => {
+  const profileUrl =
+    `https://travel-dashboard-lnfg.vercel.app/traveler/${user.id}`;
 
-    try {
-      if (navigator.share) {
-        await navigator.share({
-          title: `${user.name}'s Travel Profile`,
-          text: `Check out ${user.name}'s travel profile!`,
-          url: profileUrl,
-        });
-      } else {
-        await navigator.clipboard.writeText(profileUrl);
-        alert("Profile link copied!");
-      }
-    } catch (error) {
-      console.error("Share error:", error);
+  const shareText = `Check out ${user.name}'s TravelHub profile!\n${profileUrl}`;
+
+  try {
+    if (navigator.share) {
+      await navigator.share({
+        title: `${user.name}'s TravelHub Profile`,
+        text: shareText,
+      });
+    } else {
+      await navigator.clipboard.writeText(shareText);
+      alert("Profile link copied!");
     }
-  };
+  } catch (error) {
+    console.error("Share error:", error);
+  }
+};
 
   return (
 
