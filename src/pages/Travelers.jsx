@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
@@ -5,19 +6,18 @@ import { useNavigate } from "react-router-dom";
 import apiUrl, { getProfile } from "../services/api";
 
 import {
-  FaSearch,
   FaMapMarkerAlt,
   FaArrowRight,
-  FaChevronLeft,
-  FaChevronRight,
-  FaUsers,
-  FaCompass,
+  FaArrowLeft,
+  FaChevronDown,
+  FaPlane,
+  FaCircle,
 } from "react-icons/fa";
 
 export default function Travelers() {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [visibleCount, setVisibleCount] = useState(3);
 
   const navigate = useNavigate();
 
@@ -36,251 +36,93 @@ export default function Travelers() {
       });
 
       const data = await response.json();
-      const currentUser = await getProfile();
 
-      const sortedUsers = data.sort((a, b) => {
+      let currentUser = null;
+
+      try {
+        currentUser = await getProfile();
+      } catch (error) {
+        console.log("No logged in user");
+      }
+
+      const sortedUsers = [...data].sort((a, b) => {
+        if (!currentUser) return 0;
+
         if (a.id === currentUser.id) return -1;
         if (b.id === currentUser.id) return 1;
+
         return 0;
       });
 
       setUsers(sortedUsers);
-      setCurrentIndex(0);
+      setVisibleCount(3);
     } catch (err) {
       console.log(err);
     }
   }
 
-  const visibleUsers = users.slice(currentIndex, currentIndex + 3);
+  const handleSeeMore = () => {
+    setVisibleCount((prev) =>
+      Math.min(prev + 3, users.length)
+    );
+  };
 
-  function nextProfiles() {
-    if (currentIndex + 3 < users.length) {
-      setCurrentIndex((prev) => prev + 3);
-    }
-  }
+  const handleNext = () => {
+    setVisibleCount((prev) =>
+      Math.min(prev + 3, users.length)
+    );
+  };
 
-  function previousProfiles() {
-    if (currentIndex > 0) {
-      setCurrentIndex((prev) => Math.max(0, prev - 3));
-    }
-  }
+  const handlePrevious = () => {
+    setVisibleCount((prev) =>
+      Math.max(3, prev - 3)
+    );
+  };
+
+  const visibleUsers = users.slice(0, visibleCount);
 
   return (
-    <div className="min-h-screen p-6 bg-[#0f172a] text-white overflow-hidden">
+    <div className="min-h-screen p-6 bg-white text-gray-900 dark:bg-[#0f172a] dark:text-white">
 
-      {/* CUSTOM ANIMATIONS */}
-      <style>
-        {`
-
-          @keyframes auroraMove {
-            0% {
-              background-position: 0% 50%;
-            }
-            50% {
-              background-position: 100% 50%;
-            }
-            100% {
-              background-position: 0% 50%;
-            }
-          }
-
-          @keyframes floatParticle {
-            0%, 100% {
-              transform: translateY(0px);
-              opacity: 0.3;
-            }
-
-            50% {
-              transform: translateY(-20px);
-              opacity: 1;
-            }
-          }
-
-          @keyframes rotateOrbit {
-            from {
-              transform: rotate(0deg);
-            }
-
-            to {
-              transform: rotate(360deg);
-            }
-          }
-
-          @keyframes cardEnter {
-            from {
-              opacity: 0;
-              transform: translateY(50px) scale(0.9);
-              filter: blur(10px);
-            }
-
-            to {
-              opacity: 1;
-              transform: translateY(0px) scale(1);
-              filter: blur(0px);
-            }
-          }
-
-          @keyframes shineMove {
-            0% {
-              transform: translateX(-150%) rotate(20deg);
-            }
-
-            100% {
-              transform: translateX(250%) rotate(20deg);
-            }
-          }
-
-          .traveler-card {
-            animation: cardEnter 0.7s ease forwards;
-            position: relative;
-            overflow: hidden;
-            transform-style: preserve-3d;
-          }
-
-          .traveler-card:hover {
-            transform:
-              translateY(-12px)
-              scale(1.025)
-              rotateX(2deg)
-              rotateY(-2deg);
-          }
-
-          .traveler-card::before {
-            content: "";
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-
-            background:
-              radial-gradient(
-                circle,
-                rgba(96, 165, 250, 0.18),
-                transparent 40%
-              );
-
-            opacity: 0;
-            transition: 0.5s;
-            pointer-events: none;
-          }
-
-          .traveler-card:hover::before {
-            opacity: 1;
-          }
-
-          .shine-effect {
-            position: absolute;
-            width: 40%;
-            height: 150%;
-            top: -30%;
-
-            background:
-              linear-gradient(
-                90deg,
-                transparent,
-                rgba(255,255,255,0.12),
-                transparent
-              );
-
-            pointer-events: none;
-          }
-
-          .traveler-card:hover .shine-effect {
-            animation: shineMove 1.2s ease forwards;
-          }
-
-          .aurora-header {
-            background:
-              linear-gradient(
-                120deg,
-                #2563eb,
-                #4f46e5,
-                #7c3aed,
-                #c026d3,
-                #2563eb
-              );
-
-            background-size: 300% 300%;
-
-            animation: auroraMove 7s ease infinite;
-          }
-
-          .profile-orbit {
-            animation: rotateOrbit 8s linear infinite;
-          }
-
-          .traveler-card:hover .profile-orbit {
-            animation-duration: 2s;
-          }
-
-          .floating-particle {
-            animation: floatParticle 3s ease-in-out infinite;
-          }
-
-          .floating-particle:nth-child(2) {
-            animation-delay: 1s;
-          }
-
-          .floating-particle:nth-child(3) {
-            animation-delay: 2s;
-          }
-
-        `}
-      </style>
-
-      <div className="bg-[#111827] rounded-[40px] overflow-hidden flex border border-white/5 shadow-2xl">
+      <div className="bg-white dark:bg-[#111827] rounded-[40px] overflow-hidden flex shadow-xl">
 
         <Sidebar />
 
-        <div className="flex-1 p-10 min-w-0">
+        <div className="flex-1 p-6 md:p-10 overflow-hidden">
 
           <Navbar />
 
           {/* HEADER */}
 
-          <div className="mt-10 flex justify-between items-end">
-
+          <div
+            id="travelers-section"
+            className="mt-10 flex items-end justify-between"
+          >
             <div>
+              <p className="text-xs font-bold tracking-[0.25em] text-blue-500 animate-pulse">
+                ✦ EXPLORE PEOPLE
+              </p>
 
-              <div className="flex items-center gap-3 text-blue-400 text-xs font-bold tracking-[0.4em]">
-
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-
-                EXPLORE PEOPLE
-
-              </div>
-
-              <h1 className="text-4xl font-black mt-3 bg-gradient-to-r from-white via-blue-300 to-purple-400 bg-clip-text text-transparent">
+              <h1 className="text-3xl font-black mt-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
                 Travel Community
               </h1>
 
-              <p className="text-gray-400 mt-3">
+              <p className="text-gray-600 dark:text-gray-400 mt-2 text-sm">
                 Discover travelers, explorers and people sharing their journeys.
               </p>
-
             </div>
 
-            <div className="hidden md:flex items-center gap-2 text-blue-300">
-
-              <FaUsers />
-
-              <span className="text-sm">
-                {users.length} Travelers
-              </span>
-
+            <div className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-sm text-blue-500">
+              👥 {users.length} Travelers
             </div>
-
           </div>
 
 
           {/* SEARCH */}
 
-          <div className="relative mt-8">
+          <div className="relative mt-8 group">
 
-            <FaSearch
-              className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500"
-            />
+            <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-0 blur group-focus-within:opacity-70 transition duration-500" />
 
             <input
               type="text"
@@ -288,371 +130,339 @@ export default function Travelers() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="
+                relative
                 w-full
-                bg-[#111827]
                 border
-                border-slate-700
+                border-gray-300
+                dark:border-gray-700
+                bg-white
+                dark:bg-[#111827]
+                text-gray-900
+                dark:text-white
+                px-6
+                py-4
                 rounded-2xl
-                py-5
-                pl-14
-                pr-5
                 outline-none
                 transition
-                focus:border-blue-500
-                focus:shadow-[0_0_30px_rgba(59,130,246,0.15)]
+                focus:border-transparent
               "
             />
 
           </div>
 
 
-          {/* SECTION HEADER */}
-
-          {!search && users.length > 0 && (
-
-            <div className="flex justify-between items-center mt-10">
-
-              <div className="flex items-center gap-3">
-
-                <div className="
-                  w-11
-                  h-11
-                  rounded-2xl
-                  bg-blue-500/10
-                  border
-                  border-blue-400/20
-                  flex
-                  items-center
-                  justify-center
-                  text-blue-400
-                ">
-                  <FaCompass />
-                </div>
-
-                <div>
-
-                  <h2 className="font-bold text-xl">
-                    Discover Travelers
-                  </h2>
-
-                  <p className="text-gray-500 text-xs mt-1">
-                    Meet new people and explore their journeys
-                  </p>
-
-                </div>
-
-              </div>
-
-
-              {/* ARROWS */}
-
-              <div className="flex gap-3">
-
-                <button
-                  onClick={previousProfiles}
-                  disabled={currentIndex === 0}
-                  className="
-                    w-12
-                    h-12
-                    rounded-full
-                    border
-                    border-slate-700
-                    flex
-                    items-center
-                    justify-center
-                    transition
-                    hover:bg-white
-                    hover:text-black
-                    disabled:opacity-30
-                    disabled:cursor-not-allowed
-                  "
-                >
-                  <FaChevronLeft />
-                </button>
-
-
-                <button
-                  onClick={nextProfiles}
-                  disabled={currentIndex + 3 >= users.length}
-                  className="
-                    w-12
-                    h-12
-                    rounded-full
-                    bg-gradient-to-r
-                    from-blue-600
-                    to-purple-600
-                    flex
-                    items-center
-                    justify-center
-                    transition
-                    hover:scale-110
-                    hover:shadow-[0_0_25px_rgba(139,92,246,0.6)]
-                    disabled:opacity-30
-                    disabled:cursor-not-allowed
-                  "
-                >
-                  <FaChevronRight />
-                </button>
-
-              </div>
-
-            </div>
-
-          )}
-
-
           {/* CARDS */}
 
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mt-8">
 
-            {(search ? users : visibleUsers).map((user, index) => (
+            {visibleUsers.map((user, index) => (
 
               <div
                 key={user.id}
                 onClick={() => navigate(`/traveler/${user.id}`)}
                 className="
-                  traveler-card
                   group
-                  bg-[#161f2f]
+                  relative
+                  min-h-[470px]
+                  overflow-hidden
                   rounded-[32px]
-                  border
-                  border-slate-700/70
                   cursor-pointer
+                  bg-white
+                  dark:bg-[#111827]
+                  border
+                  border-gray-200
+                  dark:border-white/10
+                  shadow-xl
                   transition-all
                   duration-500
-                  hover:border-blue-400/70
-                  hover:shadow-[0_20px_60px_rgba(37,99,235,0.2)]
+                  hover:-translate-y-4
+                  hover:scale-[1.02]
+                  hover:shadow-[0_25px_70px_rgba(59,130,246,0.25)]
+                  animate-[fadeIn_0.6s_ease-out_forwards]
                 "
                 style={{
                   animationDelay: `${index * 0.12}s`,
                 }}
               >
 
-                {/* PARTICLES */}
+                {/* AURORA BACKGROUND */}
 
                 <div
                   className="
-                    floating-particle
                     absolute
-                    top-16
-                    right-10
-                    w-2
-                    h-2
-                    bg-blue-400
+                    -top-32
+                    -left-32
+                    w-72
+                    h-72
                     rounded-full
-                    opacity-40
+                    bg-blue-500/20
+                    blur-3xl
+                    transition-all
+                    duration-700
+                    group-hover:translate-x-40
+                    group-hover:translate-y-20
+                    group-hover:bg-purple-500/30
                   "
                 />
 
                 <div
                   className="
-                    floating-particle
                     absolute
-                    top-28
-                    right-24
-                    w-1
-                    h-1
-                    bg-purple-400
+                    -bottom-32
+                    -right-32
+                    w-72
+                    h-72
                     rounded-full
+                    bg-purple-500/20
+                    blur-3xl
+                    transition-all
+                    duration-700
+                    group-hover:-translate-x-24
+                    group-hover:-translate-y-20
+                    group-hover:bg-pink-500/30
                   "
                 />
+
+                {/* MOVING LIGHT */}
 
                 <div
                   className="
-                    floating-particle
-                    absolute
-                    top-10
-                    left-20
-                    w-1.5
-                    h-1.5
-                    bg-cyan-300
-                    rounded-full
-                  "
-                />
-
-
-                <div className="shine-effect" />
-
-
-                {/* AURORA */}
-
-                <div className="aurora-header h-28 relative overflow-hidden">
-
-                  <div className="
                     absolute
                     inset-0
-                    bg-gradient-to-b
-                    from-transparent
-                    to-[#161f2f]
-                  " />
-
+                    opacity-0
+                    group-hover:opacity-100
+                    transition-opacity
+                    duration-500
+                    overflow-hidden
+                  "
+                >
+                  <div
+                    className="
+                      absolute
+                      -top-full
+                      left-1/2
+                      w-32
+                      h-[200%]
+                      bg-gradient-to-b
+                      from-transparent
+                      via-white/20
+                      to-transparent
+                      rotate-45
+                      transition-transform
+                      duration-1000
+                      group-hover:translate-x-96
+                    "
+                  />
                 </div>
 
 
-                {/* PROFILE */}
+                {/* TOP GRADIENT */}
 
-                <div className="px-6 relative -mt-10">
+                <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20" />
 
-                  <div className="relative w-20 h-20">
+
+                <div className="relative z-10 p-6 pt-14">
+
+                  {/* TOP SECTION */}
+
+                  <div className="flex justify-between items-start">
+
+                    {/* PROFILE IMAGE */}
+
+                    <div className="relative w-24 h-24">
+
+                      {/* ORBIT */}
+
+                      <div
+                        className="
+                          absolute
+                          inset-[-6px]
+                          rounded-full
+                          bg-gradient-to-r
+                          from-blue-500
+                          via-purple-500
+                          to-pink-500
+                          opacity-70
+                          blur-[1px]
+                          transition
+                          duration-700
+                          group-hover:rotate-[360deg]
+                        "
+                      />
+
+                      <div className="absolute inset-[3px] rounded-full bg-white dark:bg-[#111827]" />
+
+                      <img
+                        src={user.photo}
+                        alt={user.name}
+                        className="
+                          relative
+                          w-full
+                          h-full
+                          rounded-full
+                          object-cover
+                          border-4
+                          border-white
+                          dark:border-[#111827]
+                          transition
+                          duration-500
+                          group-hover:scale-105
+                        "
+                      />
+
+                      {/* ONLINE */}
+
+                      <span className="absolute bottom-1 right-1 w-5 h-5 rounded-full bg-green-400 border-4 border-white dark:border-[#111827] animate-pulse" />
+
+                    </div>
+
+
+                    {/* BADGE */}
 
                     <div
                       className="
-                        profile-orbit
-                        absolute
-                        -inset-1
+                        px-4
+                        py-2
                         rounded-full
-                        bg-gradient-to-r
-                        from-cyan-400
-                        via-purple-500
-                        to-pink-500
-                      "
-                    />
-
-                    <img
-                      src={user.photo}
-                      alt={user.name}
-                      className="
-                        relative
-                        w-20
-                        h-20
-                        rounded-full
-                        object-cover
-                        border-4
-                        border-[#161f2f]
+                        text-[10px]
+                        font-bold
+                        tracking-widest
+                        text-purple-600
+                        dark:text-purple-300
+                        bg-purple-500/10
+                        border
+                        border-purple-500/20
+                        backdrop-blur-xl
                         transition
                         duration-500
                         group-hover:scale-110
+                        group-hover:bg-purple-500/20
                       "
-                    />
-
-                    <div className="
-                      absolute
-                      bottom-0
-                      right-0
-                      w-4
-                      h-4
-                      bg-green-400
-                      rounded-full
-                      border-2
-                      border-[#161f2f]
-                      animate-pulse
-                    " />
+                    >
+                      ✦ TRAVELER
+                    </div>
 
                   </div>
 
 
-                  {/* NAME */}
+                  {/* USER INFO */}
 
-                  <div className="flex justify-between items-center mt-4">
+                  <div className="mt-6">
 
-                    <div>
-
-                      <h2 className="
-                        text-xl
+                    <h2
+                      className="
+                        text-2xl
                         font-black
-                        transition
-                        duration-300
-                        group-hover:text-blue-300
-                      ">
-                        {user.name}
-                      </h2>
+                        transition-all
+                        duration-500
+                        group-hover:tracking-wide
+                        group-hover:text-blue-500
+                      "
+                    >
+                      {user.name}
+                    </h2>
 
-                      <div className="
-                        flex
-                        items-center
-                        gap-2
-                        text-gray-400
-                        text-sm
-                        mt-2
-                      ">
+                    <div className="flex items-center gap-2 mt-3 text-sm text-gray-500 dark:text-gray-400">
 
-                        <FaMapMarkerAlt className="text-blue-400" />
-
-                        {user.city}, {user.country}
-
+                      <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500">
+                        <FaMapMarkerAlt />
                       </div>
 
-                    </div>
+                      <span>
+                        {user.city || "Unknown"},{" "}
+                        {user.country || "India"}
+                      </span>
 
-
-                    <div className="
-                      px-3
-                      py-1
-                      rounded-full
-                      text-[10px]
-                      font-bold
-                      tracking-wider
-                      text-blue-300
-                      bg-blue-500/10
-                      border
-                      border-blue-400/10
-                    ">
-                      TRAVELER
                     </div>
 
                   </div>
 
 
-                  {/* JOURNEY INFO */}
+                  {/* TRAVEL ROUTE */}
 
-                  <div className="grid grid-cols-2 gap-3 mt-6">
+                  <div className="flex items-center gap-3 mt-8">
 
-                    <div className="
-                      bg-white/[0.04]
-                      border
-                      border-white/[0.06]
-                      rounded-2xl
-                      p-4
-                      transition
-                      duration-300
-                      group-hover:bg-blue-500/[0.08]
-                    ">
+                    <FaCircle className="text-blue-500 text-[8px]" />
 
-                      <p className="
-                        text-[10px]
-                        tracking-widest
-                        text-gray-500
-                      ">
+                    <div className="flex-1 h-[2px] overflow-hidden rounded-full bg-gradient-to-r from-blue-500/20 via-purple-500 to-pink-500/20">
+
+                      <div
+                        className="
+                          w-1/3
+                          h-full
+                          bg-blue-400
+                          transition-all
+                          duration-700
+                          group-hover:translate-x-[220%]
+                        "
+                      />
+
+                    </div>
+
+                    <div className="text-purple-500 transition duration-500 group-hover:translate-x-2 group-hover:-translate-y-2">
+                      <FaPlane />
+                    </div>
+
+                    <div className="flex-1 h-[2px] bg-gradient-to-r from-purple-500/20 via-pink-500 to-blue-500/20 rounded-full" />
+
+                    <FaCircle className="text-pink-500 text-[8px]" />
+
+                  </div>
+
+
+                  {/* INFO BOXES */}
+
+                  <div className="grid grid-cols-2 gap-4 mt-8">
+
+                    <div
+                      className="
+                        p-4
+                        rounded-2xl
+                        bg-gray-50
+                        dark:bg-white/5
+                        border
+                        border-gray-200
+                        dark:border-white/10
+                        transition
+                        duration-500
+                        group-hover:-translate-y-1
+                        group-hover:border-blue-500/40
+                      "
+                    >
+                      <span className="text-[10px] tracking-widest text-gray-400">
                         STATUS
-                      </p>
+                      </span>
 
-                      <p className="
-                        font-bold
-                        text-sm
-                        mt-2
-                      ">
+                      <b className="block mt-2 text-sm text-green-500">
                         Exploring
-                      </p>
+                      </b>
 
                     </div>
 
 
-                    <div className="
-                      bg-white/[0.04]
-                      border
-                      border-white/[0.06]
-                      rounded-2xl
-                      p-4
-                      transition
-                      duration-300
-                      group-hover:bg-purple-500/[0.08]
-                    ">
-
-                      <p className="
-                        text-[10px]
-                        tracking-widest
-                        text-gray-500
-                      ">
+                    <div
+                      className="
+                        p-4
+                        rounded-2xl
+                        bg-gray-50
+                        dark:bg-white/5
+                        border
+                        border-gray-200
+                        dark:border-white/10
+                        transition
+                        duration-500
+                        delay-75
+                        group-hover:-translate-y-1
+                        group-hover:border-purple-500/40
+                      "
+                    >
+                      <span className="text-[10px] tracking-widest text-gray-400">
                         JOURNEY
-                      </p>
+                      </span>
 
-                      <p className="
-                        font-bold
-                        text-sm
-                        mt-2
-                      ">
-                        India
-                      </p>
+                      <b className="block mt-2 text-sm truncate">
+                        {user.country || "India"}
+                      </b>
 
                     </div>
 
@@ -662,40 +472,38 @@ export default function Travelers() {
                   {/* BUTTON */}
 
                   <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/traveler/${user.id}`);
+                    }}
                     className="
-                      mt-6
-                      mb-6
+                      group/btn
+                      relative
                       w-full
+                      mt-7
                       py-4
                       rounded-2xl
+                      overflow-hidden
+                      bg-gray-900
+                      dark:bg-white
+                      text-white
+                      dark:text-gray-900
                       font-bold
-                      text-sm
-                      flex
-                      items-center
-                      justify-center
-                      gap-3
-                      bg-white/[0.05]
-                      border
-                      border-white/[0.08]
                       transition-all
                       duration-500
-                      group-hover:
-                      bg-gradient-to-r
-                      group-hover:from-blue-600
-                      group-hover:to-purple-600
-                      group-hover:shadow-[0_10px_30px_rgba(37,99,235,0.35)]
+                      hover:shadow-[0_15px_40px_rgba(99,102,241,0.4)]
                     "
                   >
 
-                    Enter Journey
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 translate-x-[-100%] group-hover/btn:translate-x-0 transition-transform duration-500" />
 
-                    <FaArrowRight
-                      className="
-                        transition-transform
-                        duration-300
-                        group-hover:translate-x-2
-                      "
-                    />
+                    <span className="relative z-10 flex justify-center items-center gap-3">
+
+                      Enter Journey
+
+                      <FaArrowRight className="transition-transform duration-300 group-hover/btn:translate-x-2" />
+
+                    </span>
 
                   </button>
 
@@ -708,52 +516,175 @@ export default function Travelers() {
           </div>
 
 
-          {/* SEE MORE */}
+          {/* EMPTY */}
 
-          {!search &&
-            currentIndex + 3 < users.length && (
+          {users.length === 0 && (
 
-              <div className="flex justify-center mt-10">
+            <div className="text-center py-20 text-gray-400">
+
+              <div className="text-5xl mb-4 animate-bounce">
+                🧳
+              </div>
+
+              No travelers found
+
+            </div>
+
+          )}
+
+
+          {/* SEE MORE + ARROWS */}
+
+          {users.length > 3 && (
+
+            <div className="flex justify-center items-center gap-4 mt-12 mb-6">
+
+              {/* LEFT */}
+
+              <button
+                onClick={handlePrevious}
+                disabled={visibleCount <= 3}
+                className={`
+                  w-12
+                  h-12
+                  rounded-full
+                  flex
+                  items-center
+                  justify-center
+                  border
+                  border-gray-300
+                  dark:border-white/10
+                  bg-white
+                  dark:bg-[#111827]
+                  transition-all
+                  duration-300
+                  hover:scale-110
+                  hover:bg-blue-500
+                  hover:text-white
+                  hover:border-blue-500
+                  ${
+                    visibleCount <= 3
+                      ? "opacity-30 cursor-not-allowed"
+                      : ""
+                  }
+                `}
+              >
+                <FaArrowLeft />
+              </button>
+
+
+              {/* SEE MORE */}
+
+              {visibleCount < users.length ? (
 
                 <button
-                  onClick={nextProfiles}
+                  onClick={handleSeeMore}
                   className="
                     group
                     flex
                     items-center
-                    gap-4
-                    px-8
+                    gap-3
+                    px-7
                     py-4
                     rounded-full
-                    border
-                    border-blue-500/30
-                    bg-blue-500/5
-                    text-blue-300
+                    bg-gradient-to-r
+                    from-blue-600
+                    via-purple-600
+                    to-pink-600
+                    text-white
                     font-bold
+                    shadow-lg
                     transition-all
-                    duration-300
-                    hover:bg-blue-600
-                    hover:text-white
+                    duration-500
                     hover:scale-105
-                    hover:shadow-[0_0_35px_rgba(37,99,235,0.4)]
+                    hover:shadow-[0_15px_40px_rgba(99,102,241,0.4)]
                   "
                 >
 
                   See More Travelers
 
-                  <FaArrowRight
-                    className="
-                      transition-transform
-                      duration-300
-                      group-hover:translate-x-2
-                    "
-                  />
+                  <FaChevronDown className="transition-transform duration-300 group-hover:translate-y-1" />
 
                 </button>
 
-              </div>
+              ) : (
 
-            )}
+                <button
+                  onClick={() => {
+                    setVisibleCount(3);
+
+                    document
+                      .getElementById("travelers-section")
+                      ?.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                      });
+                  }}
+                  className="
+                    group
+                    flex
+                    items-center
+                    gap-3
+                    px-7
+                    py-4
+                    rounded-full
+                    bg-gradient-to-r
+                    from-purple-600
+                    to-blue-600
+                    text-white
+                    font-bold
+                    shadow-lg
+                    transition-all
+                    duration-500
+                    hover:scale-105
+                  "
+                >
+
+                  Show Less
+
+                  <FaChevronDown className="rotate-180 transition-transform duration-300 group-hover:-translate-y-1" />
+
+                </button>
+
+              )}
+
+
+              {/* RIGHT */}
+
+              <button
+                onClick={handleNext}
+                disabled={visibleCount >= users.length}
+                className={`
+                  w-12
+                  h-12
+                  rounded-full
+                  flex
+                  items-center
+                  justify-center
+                  border
+                  border-gray-300
+                  dark:border-white/10
+                  bg-white
+                  dark:bg-[#111827]
+                  transition-all
+                  duration-300
+                  hover:scale-110
+                  hover:bg-purple-500
+                  hover:text-white
+                  hover:border-purple-500
+                  ${
+                    visibleCount >= users.length
+                      ? "opacity-30 cursor-not-allowed"
+                      : ""
+                  }
+                `}
+              >
+                <FaArrowRight />
+              </button>
+
+            </div>
+
+          )}
 
         </div>
 
@@ -762,3 +693,4 @@ export default function Travelers() {
     </div>
   );
 }
+
