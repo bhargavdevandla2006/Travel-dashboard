@@ -175,99 +175,131 @@ export default function TripCard({
   */
 
   async function handleLikeToggle() {
-    // Prevent multiple clicks while request is running
-    if (likeLoading) {
+
+  if (likeLoading) {
+    return;
+  }
+
+  setLikeLoading(true);
+
+  try {
+
+    const response = await fetch(
+      `${apiUrl}/like/${id}`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+
+      console.error(
+        "Like toggle failed:",
+        data
+      );
+
       return;
     }
 
-    setLikeLoading(true);
+    // Backend tells us the new state
+    setLiked(data.liked);
 
-    try {
-      /*
-      =======================================================
-      IF ALREADY LIKED
-      -> UNLIKE
-      =======================================================
-      */
+    // Backend also gives us the new count
+    setLikes(Number(data.count || 0));
 
-      if (liked) {
-        const response = await fetch(
-          `${apiUrl}/unlike/${id}`,
-          {
-            method: "DELETE",
-            credentials: "include",
-          }
+    // ============================================
+    // FAVORITES
+    // ============================================
+
+    if (data.liked) {
+
+      try {
+
+        const existing =
+          JSON.parse(
+            localStorage.getItem("favorites")
+          ) || [];
+
+        const place = {
+          name: title,
+          country: location,
+          image,
+        };
+
+        const found = existing.find(
+          (p) =>
+            p.name === place.name &&
+            p.country === place.country
         );
 
-        if (!response.ok) {
-          console.error(
-            "Unlike failed:",
-            response.status
-          );
+        if (!found) {
 
-          return;
+          existing.push(place);
+
+          localStorage.setItem(
+            "favorites",
+            JSON.stringify(existing)
+          );
         }
 
-        await response.json();
+      } catch (error) {
 
-        // Update UI immediately
-        setLiked(false);
-
-        // Remove from favorites
-        removeFromFavorites();
-
-        // Get latest count from backend
-        await loadLikes();
+        console.error(
+          "Failed to add favorite:",
+          error
+        );
       }
 
-      /*
-      =======================================================
-      IF NOT LIKED
-      -> LIKE
-      =======================================================
-      */
+    } else {
 
-      else {
-        const response = await fetch(
-          `${apiUrl}/like/${id}`,
-          {
-            method: "POST",
-            credentials: "include",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
+      try {
+
+        const existing =
+          JSON.parse(
+            localStorage.getItem("favorites")
+          ) || [];
+
+        const filtered =
+          existing.filter(
+            (p) =>
+              !(
+                p.name === title &&
+                p.country === location
+              )
+          );
+
+        localStorage.setItem(
+          "favorites",
+          JSON.stringify(filtered)
         );
 
-        if (!response.ok) {
-          console.error(
-            "Like failed:",
-            response.status
-          );
+      } catch (error) {
 
-          return;
-        }
-
-        await response.json();
-
-        // Update UI immediately
-        setLiked(true);
-
-        // Add to favorites
-        addToFavorites();
-
-        // Get latest count from backend
-        await loadLikes();
+        console.error(
+          "Failed to remove favorite:",
+          error
+        );
       }
-    } catch (error) {
-      console.error(
-        "Like / Unlike error:",
-        error
-      );
-    } finally {
-      setLikeLoading(false);
     }
+
+  } catch (error) {
+
+    console.error(
+      "Like toggle error:",
+      error
+    );
+
+  } finally {
+
+    setLikeLoading(false);
   }
+}
 
   /*
   =========================================================
