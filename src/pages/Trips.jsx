@@ -1,279 +1,217 @@
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import TripCard from "../components/TripCard";
+
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+
 import { getTrips } from "../services/api";
 
-
 export default function Trips() {
-
-
   const navigate = useNavigate();
 
   const [trips, setTrips] = useState([]);
 
-
+  /*
+  =========================================================
+  LOAD TRIPS
+  =========================================================
+  */
 
   useEffect(() => {
-
-
     async function loadTrips() {
-
       try {
-
         const data = await getTrips();
 
-        setTrips(Array.isArray(data) ? data : []);
-
-
-      } catch (err) {
-
-        console.error(err);
+        setTrips(
+          Array.isArray(data)
+            ? data
+            : []
+        );
+      } catch (error) {
+        console.error(
+          "Failed to load trips:",
+          error
+        );
 
         setTrips([]);
-
       }
-
-
     }
 
-
     loadTrips();
-
-
   }, []);
 
+  /*
+  =========================================================
+  ADD NEW TRIP
+  =========================================================
+  */
 
-
-
-  const tripsBtn = () => {
-
+  function tripsBtn() {
     navigate("/add-trip");
+  }
 
-  };
-
-
-
+  /*
+  =========================================================
+  RENDER
+  =========================================================
+  */
 
   return (
-
-
     <div
       className="
-bg-white
-dark:bg-[#0f172a]
+        bg-white
+        dark:bg-[#0f172a]
 
-min-h-screen
+        min-h-screen
 
-p-6
-transition
-duration-300
-"
+        p-6
+
+        transition
+        duration-300
+      "
     >
-
-
       <div
         className="
-bg-white
-dark:bg-[#1e293b]
+          bg-white
+          dark:bg-[#1e293b]
 
-rounded-[40px]
+          rounded-[40px]
 
-overflow-hidden
+          overflow-hidden
 
-flex
+          flex
 
-transition
-duration-300
-"
+          transition
+          duration-300
+        "
       >
-
+        {/* =================================================
+            SIDEBAR
+        ================================================= */}
 
         <Sidebar />
 
-
+        {/* =================================================
+            MAIN CONTENT
+        ================================================= */}
 
         <div
           className="
-flex-1
-
-p-12
-"
+            flex-1
+            p-12
+          "
         >
-
+          {/* Navbar */}
 
           <Navbar />
 
-
-
-
+          {/* =================================================
+              PAGE HEADER
+          ================================================= */}
 
           <div
             className="
-flex
-justify-between
-items-center
+              flex
+              justify-between
+              items-center
 
-mt-14
-"
+              mt-14
+            "
           >
-
-
-
             <div>
-
-
               <h1
                 className="
-text-3xl
+                  text-3xl
 
-font-playfair
-font-bold
+                  font-playfair
+                  font-bold
 
-text-gray-900
-dark:text-white
+                  text-gray-900
+                  dark:text-white
 
-tracking-tight
-"
+                  tracking-tight
+                "
               >
-
                 Explore Trips
-
               </h1>
-
-
-
 
               <p
                 className="
-text-gray-600
-dark:text-gray-300
+                  text-gray-600
+                  dark:text-gray-300
 
-mt-3
+                  mt-3
 
-text-lg
+                  text-lg
 
-font-medium
-"
+                  font-medium
+                "
               >
-
-                Discover beautiful destinations around the world
-
+                Discover beautiful destinations
+                around the world
               </p>
-
-
             </div>
 
-
-
-
-
+            {/* Add Trip */}
 
             <button
-
+              type="button"
               onClick={tripsBtn}
-
               className="
-bg-blue-600
+                bg-blue-600
 
-text-white
+                text-white
 
-px-10
+                px-10
+                py-4
 
-py-4
+                rounded-2xl
 
-rounded-2xl
+                font-bold
 
-font-bold
+                hover:bg-blue-700
 
-hover:bg-blue-700
+                transition
 
-transition
-
-shadow-lg
-
-hover:shadow-xl
-"
-
+                shadow-lg
+                hover:shadow-xl
+              "
             >
-
               + Add New Trip
-
             </button>
-
-
-
-
           </div>
 
-
-
-
-
-
+          {/* =================================================
+              TRIPS GRID
+          ================================================= */}
 
           <div
             className="
-grid
+              grid
 
-grid-cols-1
-md:grid-cols-2
-xl:grid-cols-3
+              grid-cols-1
+              md:grid-cols-2
+              xl:grid-cols-3
 
-gap-10
+              gap-10
 
-mt-16
-"
+              mt-16
+            "
           >
-
-
-            {
-
-
-              trips.map((trip) => (
-
-
-                <TripCard
-
-                  id={trip.id}
-
-                  key={trip.id}
-
-                  title={trip.title}
-
-                  location={trip.location}
-
-                  price={trip.price}
-
-                  image={trip.image}
-
-                />
-
-
-              ))
-
-
-            }
-
-
-
+            {trips.map((trip) => (
+              <TripCard
+                key={trip.id}
+                id={trip.id}
+                title={trip.title}
+                location={trip.location}
+                price={trip.price}
+                image={trip.image}
+              />
+            ))}
           </div>
-
-
-
-
-
         </div>
-
-
       </div>
-
-
     </div>
-
-
   );
-
-
 }
