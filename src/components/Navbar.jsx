@@ -749,7 +749,7 @@ export default function Navbar({ search = "", setSearch }) {
 
             navigate("/messages");
 
-          }}
+          }}x
           className="
             relative
 
