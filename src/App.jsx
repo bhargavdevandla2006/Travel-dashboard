@@ -1,5 +1,6 @@
 ﻿import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+import FaceTest from "./pages/FaceTest";
 import Travelers from "./pages/Travelers";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
@@ -51,7 +52,11 @@ export default function App() {
               path="/register"
               element={<Register />}
             />
-
+            
+            <Route
+    path="/face-test"
+    element={<FaceTest />}
+/>
 
             {/* ================= TRAVELERS ================= */}
 

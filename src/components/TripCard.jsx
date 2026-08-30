@@ -14,6 +14,7 @@ export default function TripCard({
 
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState(0);
+
   const [loading, setLoading] = useState(true);
   const [likeLoading, setLikeLoading] = useState(false);
 
@@ -28,10 +29,63 @@ export default function TripCard({
 
     async function loadData() {
       try {
-        await Promise.all([
-          checkLike(mounted),
-          loadLikes(mounted),
-        ]);
+        const [likeStatusResponse, likesCountResponse] =
+          await Promise.all([
+            fetch(`${apiUrl}/check-like/${id}`, {
+              method: "GET",
+              credentials: "include",
+            }),
+
+            fetch(`${apiUrl}/likes-count/${id}`),
+          ]);
+
+        /*
+        =====================================================
+        CHECK LIKE STATUS
+        =====================================================
+        */
+
+        if (likeStatusResponse.ok) {
+          const likeData =
+            await likeStatusResponse.json();
+
+          if (mounted) {
+            setLiked(Boolean(likeData.liked));
+          }
+        } else {
+          console.error(
+            "Check like failed:",
+            likeStatusResponse.status
+          );
+        }
+
+        /*
+        =====================================================
+        LOAD LIKE COUNT
+        =====================================================
+        */
+
+        if (likesCountResponse.ok) {
+          const countData =
+            await likesCountResponse.json();
+
+          if (mounted) {
+            setLikes(
+              Number(countData.count || 0)
+            );
+          }
+        } else {
+          console.error(
+            "Load likes failed:",
+            likesCountResponse.status
+          );
+        }
+
+      } catch (error) {
+        console.error(
+          "Failed to load like data:",
+          error
+        );
       } finally {
         if (mounted) {
           setLoading(false);
@@ -48,58 +102,6 @@ export default function TripCard({
 
   /*
   =========================================================
-  CHECK WHETHER CURRENT USER LIKED THIS TRIP
-  =========================================================
-  */
-
-  async function checkLike() {
-    try {
-      const response = await fetch(
-        `${apiUrl}/check-like/${id}`,
-        {
-          method: "GET",
-          credentials: "include",
-        }
-      );
-
-      if (!response.ok) {
-        return;
-      }
-
-      const data = await response.json();
-
-      setLiked(Boolean(data.liked));
-    } catch (error) {
-      console.error("Check like error:", error);
-    }
-  }
-
-  /*
-  =========================================================
-  LOAD TOTAL LIKES
-  =========================================================
-  */
-
-  async function loadLikes() {
-    try {
-      const response = await fetch(
-        `${apiUrl}/likes-count/${id}`
-      );
-
-      if (!response.ok) {
-        return;
-      }
-
-      const data = await response.json();
-
-      setLikes(Number(data.count || 0));
-    } catch (error) {
-      console.error("Load likes error:", error);
-    }
-  }
-
-  /*
-  =========================================================
   ADD TO FAVORITES
   =========================================================
   */
@@ -107,7 +109,9 @@ export default function TripCard({
   function addToFavorites() {
     try {
       const existing =
-        JSON.parse(localStorage.getItem("favorites")) || [];
+        JSON.parse(
+          localStorage.getItem("favorites")
+        ) || [];
 
       const place = {
         name: title,
@@ -129,6 +133,7 @@ export default function TripCard({
           JSON.stringify(existing)
         );
       }
+
     } catch (error) {
       console.error(
         "Failed to add favorite:",
@@ -146,20 +151,24 @@ export default function TripCard({
   function removeFromFavorites() {
     try {
       const existing =
-        JSON.parse(localStorage.getItem("favorites")) || [];
+        JSON.parse(
+          localStorage.getItem("favorites")
+        ) || [];
 
-      const filtered = existing.filter(
-        (p) =>
-          !(
-            p.name === title &&
-            p.country === location
-          )
-      );
+      const filtered =
+        existing.filter(
+          (p) =>
+            !(
+              p.name === title &&
+              p.country === location
+            )
+        );
 
       localStorage.setItem(
         "favorites",
         JSON.stringify(filtered)
       );
+
     } catch (error) {
       console.error(
         "Failed to remove favorite:",
@@ -176,130 +185,108 @@ export default function TripCard({
 
   async function handleLikeToggle() {
 
-  if (likeLoading) {
-    return;
-  }
-
-  setLikeLoading(true);
-
-  try {
-
-    const response = await fetch(
-      `${apiUrl}/like/${id}`,
-      {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-
-      console.error(
-        "Like toggle failed:",
-        data
-      );
-
+    // Prevent multiple requests at the same time
+    if (likeLoading) {
       return;
     }
 
-    // Backend tells us the new state
-    setLiked(data.liked);
+    setLikeLoading(true);
 
-    // Backend also gives us the new count
-    setLikes(Number(data.count || 0));
+    try {
 
-    // ============================================
-    // FAVORITES
-    // ============================================
+      const response = await fetch(
+        `${apiUrl}/like/${id}`,
+        {
+          method: "POST",
 
-    if (data.liked) {
+          credentials: "include",
 
-      try {
-
-        const existing =
-          JSON.parse(
-            localStorage.getItem("favorites")
-          ) || [];
-
-        const place = {
-          name: title,
-          country: location,
-          image,
-        };
-
-        const found = existing.find(
-          (p) =>
-            p.name === place.name &&
-            p.country === place.country
-        );
-
-        if (!found) {
-
-          existing.push(place);
-
-          localStorage.setItem(
-            "favorites",
-            JSON.stringify(existing)
-          );
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
+      );
 
-      } catch (error) {
+      const data =
+        await response.json();
 
-        console.error(
-          "Failed to add favorite:",
-          error
-        );
-      }
+      /*
+      =====================================================
+      DEBUG
+      =====================================================
+      */
 
-    } else {
+      console.log(
+        "LIKE RESPONSE:",
+        response.status,
+        data
+      );
 
-      try {
+      /*
+      =====================================================
+      REQUEST FAILED
+      =====================================================
+      */
 
-        const existing =
-          JSON.parse(
-            localStorage.getItem("favorites")
-          ) || [];
-
-        const filtered =
-          existing.filter(
-            (p) =>
-              !(
-                p.name === title &&
-                p.country === location
-              )
-          );
-
-        localStorage.setItem(
-          "favorites",
-          JSON.stringify(filtered)
-        );
-
-      } catch (error) {
+      if (!response.ok) {
 
         console.error(
-          "Failed to remove favorite:",
-          error
+          "Like toggle failed:",
+          data
         );
+
+        return;
       }
+
+      /*
+      =====================================================
+      UPDATE LIKE STATE
+      =====================================================
+      */
+
+      setLiked(
+        Boolean(data.liked)
+      );
+
+      /*
+      =====================================================
+      UPDATE LIKE COUNT
+      =====================================================
+      */
+
+      setLikes(
+        Number(data.count || 0)
+      );
+
+      /*
+      =====================================================
+      FAVORITES
+      =====================================================
+      */
+
+      if (data.liked) {
+
+        addToFavorites();
+
+      } else {
+
+        removeFromFavorites();
+
+      }
+
+    } catch (error) {
+
+      console.error(
+        "Like toggle error:",
+        error
+      );
+
+    } finally {
+
+      setLikeLoading(false);
+
     }
-
-  } catch (error) {
-
-    console.error(
-      "Like toggle error:",
-      error
-    );
-
-  } finally {
-
-    setLikeLoading(false);
   }
-}
 
   /*
   =========================================================
@@ -330,6 +317,7 @@ export default function TripCard({
         hover:-translate-y-2
       "
     >
+
       {/* =================================================
           IMAGE SECTION
       ================================================= */}
@@ -356,6 +344,7 @@ export default function TripCard({
           duration-300
         "
       >
+
         <img
           src={image}
           alt={title}
@@ -371,7 +360,9 @@ export default function TripCard({
           "
         />
 
-        {/* Rating */}
+        {/* =================================================
+            RATING
+        ================================================= */}
 
         <div
           className="
@@ -394,6 +385,7 @@ export default function TripCard({
             shadow-lg
           "
         >
+
           <span className="text-yellow-500">
             ⭐
           </span>
@@ -409,6 +401,7 @@ export default function TripCard({
           >
             4.8
           </span>
+
         </div>
 
         {/* =================================================
@@ -417,13 +410,17 @@ export default function TripCard({
 
         <button
           type="button"
+
           onClick={handleLikeToggle}
-          disabled={likeLoading || loading}
+
+          disabled={likeLoading}
+
           aria-label={
             liked
               ? "Unlike this trip"
               : "Like this trip"
           }
+
           className={`
             absolute
             top-4
@@ -456,8 +453,11 @@ export default function TripCard({
             }
           `}
         >
+
           {liked ? "❤️" : "🤍"}
+
         </button>
+
       </div>
 
       {/* =================================================
@@ -465,7 +465,10 @@ export default function TripCard({
       ================================================= */}
 
       <div className="p-6">
-        {/* Title */}
+
+        {/* =================================================
+            TITLE
+        ================================================= */}
 
         <h2
           className="
@@ -479,7 +482,9 @@ export default function TripCard({
           {title}
         </h2>
 
-        {/* Location */}
+        {/* =================================================
+            LOCATION
+        ================================================= */}
 
         <p
           className="
@@ -509,9 +514,11 @@ export default function TripCard({
             mt-5
           "
         >
-          {/* Price */}
+
+          {/* PRICE */}
 
           <div>
+
             <p
               className="
                 text-sm
@@ -531,11 +538,13 @@ export default function TripCard({
             >
               ₹{price}
             </h2>
+
           </div>
 
-          {/* Likes */}
+          {/* LIKES */}
 
           <div className="text-right">
+
             <p
               className="
                 text-red-500
@@ -555,7 +564,9 @@ export default function TripCard({
             >
               Total Likes
             </p>
+
           </div>
+
         </div>
 
         {/* =================================================
@@ -571,11 +582,18 @@ export default function TripCard({
             mt-6
           "
         >
+
+          {/* HOTELS */}
+
           <button
             type="button"
+
             onClick={() =>
-              navigate(`/hotels/${location}`)
+              navigate(
+                `/hotels/${location}`
+              )
             }
+
             className="
               bg-green-100
               dark:bg-green-900/40
@@ -598,11 +616,17 @@ export default function TripCard({
             🏨 Hotels
           </button>
 
+          {/* TRANSPORT */}
+
           <button
             type="button"
+
             onClick={() =>
-              navigate(`/transport/${location}`)
+              navigate(
+                `/transport/${location}`
+              )
             }
+
             className="
               bg-orange-100
               dark:bg-orange-900/40
@@ -624,6 +648,7 @@ export default function TripCard({
           >
             🚖 Transport
           </button>
+
         </div>
 
         {/* =================================================
@@ -632,17 +657,22 @@ export default function TripCard({
 
         <button
           type="button"
+
           onClick={() =>
-            navigate(`/trip/${title}`, {
-              state: {
-                id,
-                title,
-                location,
-                price,
-                image,
-              },
-            })
+            navigate(
+              `/trip/${title}`,
+              {
+                state: {
+                  id,
+                  title,
+                  location,
+                  price,
+                  image,
+                },
+              }
+            )
           }
+
           className="
             w-full
             mt-5
@@ -685,7 +715,9 @@ export default function TripCard({
         >
           <Comments tripId={id} />
         </div>
+
       </div>
+
     </div>
   );
 }
