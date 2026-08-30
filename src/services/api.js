@@ -36,6 +36,17 @@ export const loginUser = async (userData) => {
   });
 };
 
+export const faceLogin = async (faceData) => {
+  return request("/face-login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(faceData),
+  });
+};
+
 export const registerUser = async (userData) => {
   return request("/register", {
     method: "POST",
