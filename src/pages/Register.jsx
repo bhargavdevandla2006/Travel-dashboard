@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { registerUser } from "../services/api";
 import FaceAuth from "../components/FaceAuth";
+import { getBrowserId } from "../utils/browserAuth";
 
 export default function Register() {
     const navigate = useNavigate();
@@ -41,28 +42,41 @@ export default function Register() {
     // REGISTER
     // -----------------------------
 
-    const handleRegister = async (e) => {
-        e.preventDefault();
+const handleRegister = async (e) => {
+    e.preventDefault();
 
-        if (!passwordValid) {
-            alert(
-                "Password must contain at least 8 characters, one alphabet and one number."
-            );
-            return;
-        }
+    if (!passwordValid) {
+        alert(
+            "Password must contain at least 8 characters, one alphabet and one number."
+        );
+        return;
+    }
 
-        try {
-            const receivedData = await registerUser(formData);
+    if (!faceDescriptor) {
+        alert("Please register your face before creating the account.");
+        return;
+    }
 
-            console.log(receivedData);
+    try {
+        const browserId = getBrowserId();
 
-            navigate("/");
-        } catch (error) {
-            console.log(error);
+        const receivedData = await registerUser({
+            ...formData,
+            faceDescriptor: faceDescriptor,
+            browserId: browserId
+        });
 
-            alert(error.message || "Register failed");
-        }
-    };
+        console.log(receivedData);
+
+        alert("Registration successful!");
+
+        navigate("/");
+    } catch (error) {
+        console.error(error);
+
+        alert(error.message || "Register failed");
+    }
+};
 
     // -----------------------------
     // FACE DETECTED
