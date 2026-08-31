@@ -46,32 +46,38 @@ export default function Login() {
     // FACE DETECTED
     // -------------------------------
     const handleFaceDetected = async (descriptor) => {
-        console.log("Face detected:", descriptor);
 
-        // Save the face descriptor in state
-        setFaceDescriptor(descriptor);
+    console.log("Face detected:", descriptor);
 
-        try {
-            const browserId = getBrowserId();
+    setFaceDescriptor(descriptor);
 
-            const receivedData = await faceLogin({
-                browserId: browserId,
-                faceDescriptor: descriptor,
-            });
+    try {
 
-            console.log(receivedData);
+        const browserId = getBrowserId();
 
-            navigate("/");
+        const receivedData = await faceLogin({
+            browserId: browserId,
+            faceDescriptor: descriptor,
+        });
 
-        } catch (error) {
-            console.error(error);
+        console.log(receivedData);
 
-            alert(
-                error.message ||
-                "Face authentication failed"
-            );
-        }
-    };
+        setShowFaceAuth(false);
+
+        navigate("/");
+
+    } catch (error) {
+
+        console.error(error);
+
+        setShowFaceAuth(false);
+
+        alert(
+            error.message ||
+            "Face authentication failed"
+        );
+    }
+};
 
     return (
         <div className="min-h-screen bg-black-50 flex items-center justify-center p-6 relative overflow-hidden">
