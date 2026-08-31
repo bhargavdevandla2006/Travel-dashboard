@@ -25,16 +25,33 @@ async function request(path, options = {}) {
   return data;
 }
 
-export const loginUser = async (userData) => {
-  return request("/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    credentials: "include",
-    body: JSON.stringify(userData),
-  });
-};
+export async function loginUser(data) {
+
+    const response = await fetch(
+        "https://travel-dashboard-backend-2.onrender.com/login",
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            credentials: "include",
+
+            body: JSON.stringify(data)
+        }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+        throw new Error(
+            result.message || "Login failed"
+        );
+    }
+
+    return result;
+}
 
 export const faceLogin = async (faceData) => {
   return request("/face-login", {
