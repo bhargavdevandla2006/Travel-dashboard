@@ -2,7 +2,7 @@ import { useState } from "react";
 import { loginUser, faceLogin } from "../services/api";
 import { useNavigate, Link } from "react-router-dom";
 import FaceAuth from "../components/FaceAuth";
-
+import { getBrowserId } from "../utils/browserAuth";
 
 
 export default function Login() {
@@ -25,7 +25,12 @@ export default function Login() {
         e.preventDefault();
 
         try {
-            const receivedData = await loginUser(formData);
+            const browserId = getBrowserId();
+
+            const receivedData = await loginUser({
+                ...formData,
+                browserId: browserId
+            });
 
             console.log(receivedData);
 
@@ -40,24 +45,33 @@ export default function Login() {
     // -------------------------------
     // FACE DETECTED
     // -------------------------------
+    const handleFaceDetected = async (descriptor) => {
+        console.log("Face detected:", descriptor);
 
-  const handleFaceDetected = async (descriptor) => {
-  console.log("Face detected:", descriptor);
+        // Save the face descriptor in state
+        setFaceDescriptor(descriptor);
 
-  try {
-   const receivedData = await faceLogin({
-    faceDescriptor: descriptor,
-});
+        try {
+            const browserId = getBrowserId();
 
-    console.log(receivedData);
+            const receivedData = await faceLogin({
+                browserId: browserId,
+                faceDescriptor: descriptor,
+            });
 
-    navigate("/");
-  } catch (error) {
-    console.error(error);
+            console.log(receivedData);
 
-    alert(error.message || "Face authentication failed");
-  }
-};
+            navigate("/");
+
+        } catch (error) {
+            console.error(error);
+
+            alert(
+                error.message ||
+                "Face authentication failed"
+            );
+        }
+    };
 
     return (
         <div className="min-h-screen bg-black-50 flex items-center justify-center p-6 relative overflow-hidden">
