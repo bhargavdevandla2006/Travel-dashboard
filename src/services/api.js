@@ -53,15 +53,48 @@ export async function loginUser(data) {
     return result;
 }
 
-export const faceLogin = async (data) => {
-    return request("/face-login", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(data),
-    });
+export const sendOtp = async (data) => {
+  return request("/send-otp", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+};
+
+export const verifyOtp = async (data) => {
+  return request("/verify-otp", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+};
+
+export const sendLoginOtp = async (data) => {
+  return request("/send-login-otp", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+};
+
+export const verifyOtpLogin = async (data) => {
+  return request("/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
 };
 
 export const registerUser = async (userData) => {

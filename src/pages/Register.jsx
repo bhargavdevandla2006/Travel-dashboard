@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { registerUser } from "../services/api";
-import FaceAuth from "../components/FaceAuth";
-import { getBrowserId } from "../utils/browserAuth";
+import { registerUser, sendOtp, verifyOtp } from "../services/api";
 
 export default function Register() {
     const navigate = useNavigate();
@@ -11,23 +9,21 @@ export default function Register() {
         name: "",
         email: "",
         password: "",
+        phone: "",
+        otp: "",
     });
 
     const [showPassword, setShowPassword] = useState(false);
-    const [showFaceAuth, setShowFaceAuth] = useState(false);
-    const [faceDescriptor, setFaceDescriptor] = useState(null);
+    const [otpSent, setOtpSent] = useState(false);
+    const [otpVerified, setOtpVerified] = useState(false);
+    const [isSendingOtp, setIsSendingOtp] = useState(false);
 
-    // Password checks
     const hasLength = formData.password.length >= 8;
     const hasLetter = /[A-Za-z]/.test(formData.password);
     const hasNumber = /[0-9]/.test(formData.password);
 
-    const passwordValid =
-        hasLength &&
-        hasLetter &&
-        hasNumber;
+    const passwordValid = hasLength && hasLetter && hasNumber;
 
-    // Password strength
     let passwordStrength = "Weak";
 
     if (hasLength && hasLetter) {
@@ -38,56 +34,67 @@ export default function Register() {
         passwordStrength = "Strong";
     }
 
-    // -----------------------------
-    // REGISTER
-    // -----------------------------
+    const handleSendOtp = async () => {
+        if (!formData.phone.trim()) {
+            alert("Please enter your mobile number");
+            return;
+        }
 
-const handleRegister = async (e) => {
-    e.preventDefault();
+        try {
+            setIsSendingOtp(true);
+            await sendOtp({ phone: formData.phone });
+            setOtpSent(true);
+            alert("OTP sent to your mobile number");
+        } catch (error) {
+            alert(error.message || "Unable to send OTP");
+        } finally {
+            setIsSendingOtp(false);
+        }
+    };
 
-    if (!passwordValid) {
-        alert(
-            "Password must contain at least 8 characters, one alphabet and one number."
-        );
-        return;
-    }
+    const handleVerifyOtp = async () => {
+        if (!formData.otp.trim()) {
+            alert("Please enter the OTP");
+            return;
+        }
 
-    if (!faceDescriptor) {
-        alert("Please register your face before creating the account.");
-        return;
-    }
+        try {
+            setIsSendingOtp(true);
+            await verifyOtp({ phone: formData.phone, otp: formData.otp });
+            setOtpVerified(true);
+            alert("Phone number verified successfully");
+        } catch (error) {
+            alert(error.message || "OTP verification failed");
+        } finally {
+            setIsSendingOtp(false);
+        }
+    };
 
-    try {
-        const browserId = getBrowserId();
+    const handleRegister = async (e) => {
+        e.preventDefault();
 
-        const receivedData = await registerUser({
-            ...formData,
-            faceDescriptor: faceDescriptor,
-            browserId: browserId
-        });
+        if (!passwordValid) {
+            alert("Password must contain at least 8 characters, one alphabet and one number.");
+            return;
+        }
 
-        console.log(receivedData);
+        if (!otpVerified) {
+            alert("Please verify your mobile number with OTP first.");
+            return;
+        }
 
-        alert("Registration successful!");
+        try {
+            await registerUser({
+                ...formData,
+                phone: formData.phone,
+                otp: formData.otp,
+            });
 
-        navigate("/");
-    } catch (error) {
-        console.error(error);
-
-        alert(error.message || "Register failed");
-    }
-};
-
-    // -----------------------------
-    // FACE DETECTED
-    // -----------------------------
-
-    const handleFaceDetected = (descriptor) => {
-        console.log("Face captured:", descriptor);
-
-        setFaceDescriptor(descriptor);
-
-        setShowFaceAuth(false);
+            alert("Registration successful!");
+            navigate("/");
+        } catch (error) {
+            alert(error.message || "Register failed");
+        }
     };
 
     return (
@@ -402,119 +409,95 @@ const handleRegister = async (e) => {
                         </div>
 
 
-                        {/* ========================================= */}
-                        {/* REGISTER BUTTON */}
-                        {/* ========================================= */}
-
-                        <button
-                            type="submit"
-                            className="group w-full h-14 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-bold text-lg shadow-lg shadow-blue-200 hover:shadow-xl hover:shadow-blue-300 hover:-translate-y-1 active:translate-y-0 transition-all duration-300 flex items-center justify-center gap-3"
-                        >
-
-                            <span>
-                                Register
-                            </span>
-
-                            <span className="text-2xl group-hover:translate-x-2 transition-transform duration-300">
-                                →
-                            </span>
-
-                        </button>
-
-
-                        {/* ========================================= */}
-                        {/* OR */}
-                        {/* ========================================= */}
-
-                        <div className="flex items-center gap-4 my-7">
-
-                            <div className="h-px bg-slate-200 flex-1"></div>
-
-                            <span className="text-slate-400 font-medium">
-                                OR
-                            </span>
-
-                            <div className="h-px bg-slate-200 flex-1"></div>
-
+                        <div className="relative mb-4">
+                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-600 text-xl">
+                                📱
+                            </div>
+                            <input
+                                type="tel"
+                                placeholder="Enter your mobile number"
+                                value={formData.phone}
+                                required
+                                className="w-full h-14 pl-12 pr-4 rounded-2xl border border-slate-200 bg-white text-slate-800 outline-none transition-all duration-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 shadow-sm"
+                                onChange={(e) =>
+                                    setFormData({
+                                        ...formData,
+                                        phone: e.target.value,
+                                    })
+                                }
+                            />
                         </div>
 
-
-                        {/* ========================================= */}
-                        {/* FACE REGISTER */}
-                        {/* ========================================= */}
-
-                        <button
-                            type="button"
-                            onClick={() => setShowFaceAuth(true)}
-                            className="group w-full h-14 rounded-2xl border border-slate-200 bg-white hover:bg-blue-50 hover:border-blue-300 shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-between px-5"
-                        >
-
-                            <div className="flex items-center gap-4">
-
-                                <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
-                                    👤
+                        {!otpSent ? (
+                            <button
+                                type="button"
+                                onClick={handleSendOtp}
+                                disabled={isSendingOtp}
+                                className="group w-full h-14 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-bold text-lg shadow-lg shadow-blue-200 hover:shadow-xl hover:shadow-blue-300 hover:-translate-y-1 active:translate-y-0 transition-all duration-300"
+                            >
+                                {isSendingOtp ? "Sending..." : "Send OTP"}
+                            </button>
+                        ) : (
+                            <>
+                                <div className="relative mb-4">
+                                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-600 text-xl">
+                                        🔐
+                                    </div>
+                                    <input
+                                        type="text"
+                                        placeholder="Enter OTP"
+                                        value={formData.otp}
+                                        required
+                                        className="w-full h-14 pl-12 pr-4 rounded-2xl border border-slate-200 bg-white text-slate-800 outline-none transition-all duration-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 shadow-sm"
+                                        onChange={(e) =>
+                                            setFormData({
+                                                ...formData,
+                                                otp: e.target.value,
+                                            })
+                                        }
+                                    />
                                 </div>
 
-                                <span className="font-semibold text-slate-800">
-                                    Register with Face ID
-                                </span>
+                                <button
+                                    type="button"
+                                    onClick={handleVerifyOtp}
+                                    disabled={isSendingOtp}
+                                    className="group w-full h-14 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-2xl font-bold text-lg shadow-lg shadow-emerald-200 hover:shadow-xl hover:shadow-emerald-300 hover:-translate-y-1 active:translate-y-0 transition-all duration-300"
+                                >
+                                    {isSendingOtp ? "Verifying..." : "Verify OTP"}
+                                </button>
+                            </>
+                        )}
 
-                            </div>
-
-                            <span className="text-xl text-slate-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all">
-                                →
-                            </span>
-
-                        </button>
-
-
-                        {/* FACE STATUS */}
-
-                        {faceDescriptor && (
+                        {otpVerified && (
                             <div className="mt-4 p-3 rounded-xl bg-green-50 border border-green-100 text-center">
-
                                 <p className="text-green-600 font-semibold text-sm">
-                                    Face captured successfully! ✅
+                                    Mobile number verified successfully ✅
                                 </p>
-
                             </div>
                         )}
 
-
-                        {/* ========================================= */}
-                        {/* LOGIN LINK */}
-                        {/* ========================================= */}
+                        <button
+                            type="submit"
+                            disabled={!otpVerified}
+                            className="group w-full h-14 mt-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-bold text-lg shadow-lg shadow-blue-200 hover:shadow-xl hover:shadow-blue-300 hover:-translate-y-1 active:translate-y-0 transition-all duration-300 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            <span>Register</span>
+                            <span className="text-2xl group-hover:translate-x-2 transition-transform duration-300">→</span>
+                        </button>
 
                         <p className="text-center text-slate-500 mt-8">
-
                             Already have an account?
-
                             <Link
                                 to="/login"
                                 className="text-blue-600 font-bold ml-2 hover:text-blue-700 transition"
                             >
                                 Login →
                             </Link>
-
                         </p>
-
                     </form>
-
                 </div>
-
             </div>
-
-
-            {/* ========================================= */}
-            {/* FACE AUTH POPUP */}
-            {/* ========================================= */}
-
-            {showFaceAuth && (
-                <FaceAuth
-                    onFaceDetected={handleFaceDetected}
-                    onClose={() => setShowFaceAuth(false)}
-                />
-            )}
 
         </div>
     );
