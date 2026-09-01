@@ -1,83 +1,51 @@
 import { useState } from "react";
-import { loginUser, faceLogin } from "../services/api";
+import { loginUser, sendLoginOtp, verifyOtpLogin } from "../services/api";
 import { useNavigate, Link } from "react-router-dom";
-import FaceAuth from "../components/FaceAuth";
-import { getBrowserId } from "../utils/browserAuth";
-
 
 export default function Login() {
     const navigate = useNavigate();
 
-    const [formData, setFormData] = useState({
-        email: "",
-        password: "",
-    });
+    const [phone, setPhone] = useState("");
+    const [otp, setOtp] = useState("");
+    const [otpSent, setOtpSent] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-    const [showPassword, setShowPassword] = useState(false);
-    const [showFaceAuth, setShowFaceAuth] = useState(false);
-    const [faceDescriptor, setFaceDescriptor] = useState(null);
-
-    // -------------------------------
-    // NORMAL LOGIN
-    // -------------------------------
-
-    const handleLogin = async (e) => {
-        e.preventDefault();
+    const handleSendOtp = async () => {
+        if (!phone.trim()) {
+            alert("Please enter your mobile number");
+            return;
+        }
 
         try {
-            const browserId = getBrowserId();
-
-            const receivedData = await loginUser({
-                ...formData,
-                browserId: browserId
-            });
-
-            console.log(receivedData);
-
-            navigate("/");
+            setLoading(true);
+            await sendLoginOtp({ phone });
+            setOtpSent(true);
+            alert("OTP sent to your mobile number");
         } catch (error) {
-            console.log(error);
-
-            alert(error.message || "Login failed");
+            alert(error.message || "Unable to send OTP");
+        } finally {
+            setLoading(false);
         }
     };
 
-    // -------------------------------
-    // FACE DETECTED
-    // -------------------------------
-    const handleFaceDetected = async (descriptor) => {
+    const handleVerifyLogin = async (e) => {
+        e.preventDefault();
 
-    console.log("Face detected:", descriptor);
+        if (!phone.trim() || !otp.trim()) {
+            alert("Please enter your mobile number and OTP");
+            return;
+        }
 
-    setFaceDescriptor(descriptor);
-
-    try {
-
-        const browserId = getBrowserId();
-
-        const receivedData = await faceLogin({
-            browserId: browserId,
-            faceDescriptor: descriptor,
-        });
-
-        console.log(receivedData);
-
-        setShowFaceAuth(false);
-
-        navigate("/");
-
-    } catch (error) {
-
-        console.error(error);
-
-        setShowFaceAuth(false);
-
-        alert(
-            error.message ||
-            "Face authentication failed"
-        );
-    }
-};
+        try {
+            setLoading(true);
+            await verifyOtpLogin({ phone, otp });
+            navigate("/");
+        } catch (error) {
+            alert(error.message || "Login failed");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div className="min-h-screen bg-black-50 flex items-center justify-center p-6 relative overflow-hidden">
@@ -172,207 +140,68 @@ export default function Login() {
                     {/* LOGIN FORM */}
                     {/* ================================================= */}
 
-                    <form onSubmit={handleLogin}>
-
-
-                        {/* EMAIL */}
-
+                    <form onSubmit={handleVerifyLogin}>
                         <div className="relative mb-5">
-
                             <div className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-600 text-xl">
-                                ✉
+                                📱
                             </div>
-
                             <input
-                                type="email"
-                                placeholder="Enter your email"
-                                value={formData.email}
+                                type="tel"
+                                placeholder="Enter your mobile number"
+                                value={phone}
                                 required
                                 className="w-full h-14 pl-12 pr-4 rounded-2xl border border-slate-200 bg-white text-slate-800 outline-none transition-all duration-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 shadow-sm"
-                                onChange={(e) =>
-                                    setFormData({
-                                        ...formData,
-                                        email: e.target.value,
-                                    })
-                                }
+                                onChange={(e) => setPhone(e.target.value)}
                             />
-
                         </div>
 
-
-                        {/* PASSWORD */}
-
-                        <div className="relative mb-5">
-
-                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-600 text-xl">
-                                🔒
-                            </div>
-
-                            <input
-                                type={showPassword ? "text" : "password"}
-                                placeholder="Enter your password"
-                                value={formData.password}
-                                required
-                                className="w-full h-14 pl-12 pr-12 rounded-2xl border border-slate-200 bg-white text-slate-800 outline-none transition-all duration-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 shadow-sm"
-                                onChange={(e) =>
-                                    setFormData({
-                                        ...formData,
-                                        password: e.target.value,
-                                    })
-                                }
-                            />
-
-                            {/* Show / Hide password */}
-
+                        {!otpSent ? (
                             <button
                                 type="button"
-                                onClick={() =>
-                                    setShowPassword(!showPassword)
-                                }
-                                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-blue-600 transition"
+                                onClick={handleSendOtp}
+                                disabled={loading}
+                                className="group w-full h-14 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-bold text-lg shadow-lg shadow-blue-200 hover:shadow-xl hover:shadow-blue-300 hover:-translate-y-1 active:translate-y-0 transition-all duration-300"
                             >
-                                {showPassword ? "🙈" : "👁️"}
+                                {loading ? "Sending..." : "Send OTP"}
                             </button>
-
-                        </div>
-
-
-                        {/* REMEMBER + FORGOT */}
-
-                        <div className="flex items-center justify-between mb-6 text-sm">
-
-                            <label className="flex items-center gap-2 text-slate-500 cursor-pointer">
-
-                                <input
-                                    type="checkbox"
-                                    className="w-4 h-4 accent-blue-600"
-                                />
-
-                                Remember me
-
-                            </label>
-
-                            <button
-                                type="button"
-                                className="text-blue-600 font-semibold hover:text-blue-700 transition"
-                            >
-                                Forgot Password?
-                            </button>
-
-                        </div>
-
-
-                        {/* ================================================= */}
-                        {/* LOGIN BUTTON */}
-                        {/* ================================================= */}
-
-                        <button
-                            type="submit"
-                            className="group w-full h-14 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-bold text-lg shadow-lg shadow-blue-200 hover:shadow-xl hover:shadow-blue-300 hover:-translate-y-1 active:translate-y-0 transition-all duration-300 flex items-center justify-center gap-3"
-                        >
-
-                            <span>
-                                Login
-                            </span>
-
-                            <span className="text-2xl group-hover:translate-x-2 transition-transform duration-300">
-                                →
-                            </span>
-
-                        </button>
-
-
-                        {/* ================================================= */}
-                        {/* OR */}
-                        {/* ================================================= */}
-
-                        <div className="flex items-center gap-4 my-7">
-
-                            <div className="h-px bg-slate-200 flex-1"></div>
-
-                            <span className="text-slate-400 font-medium">
-                                OR
-                            </span>
-
-                            <div className="h-px bg-slate-200 flex-1"></div>
-
-                        </div>
-
-
-                        {/* ================================================= */}
-                        {/* FACE LOGIN */}
-                        {/* ================================================= */}
-
-                        <button
-                            type="button"
-                            onClick={() => setShowFaceAuth(true)}
-                            className="group w-full h-14 rounded-2xl border border-slate-200 bg-white hover:bg-blue-50 hover:border-blue-300 shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-between px-5"
-                        >
-
-                            <div className="flex items-center gap-4">
-
-                                <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
-                                    👤
+                        ) : (
+                            <>
+                                <div className="relative mb-5">
+                                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-600 text-xl">
+                                        🔐
+                                    </div>
+                                    <input
+                                        type="text"
+                                        placeholder="Enter OTP"
+                                        value={otp}
+                                        required
+                                        className="w-full h-14 pl-12 pr-4 rounded-2xl border border-slate-200 bg-white text-slate-800 outline-none transition-all duration-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 shadow-sm"
+                                        onChange={(e) => setOtp(e.target.value)}
+                                    />
                                 </div>
 
-                                <span className="font-semibold text-slate-800">
-                                    Login with Face ID
-                                </span>
-
-                            </div>
-
-                            <span className="text-xl text-slate-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all">
-                                →
-                            </span>
-
-                        </button>
-
-
-                        {/* FACE STATUS */}
-
-                        {faceDescriptor && (
-                            <div className="mt-4 p-3 rounded-xl bg-green-50 border border-green-100 text-center">
-                                <p className="text-green-600 font-semibold text-sm">
-                                    Face captured successfully! ✅
-                                </p>
-                            </div>
+                                <button
+                                    type="submit"
+                                    disabled={loading}
+                                    className="group w-full h-14 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-bold text-lg shadow-lg shadow-blue-200 hover:shadow-xl hover:shadow-blue-300 hover:-translate-y-1 active:translate-y-0 transition-all duration-300"
+                                >
+                                    {loading ? "Verifying..." : "Verify & Login"}
+                                </button>
+                            </>
                         )}
 
-
-                        {/* ================================================= */}
-                        {/* REGISTER */}
-                        {/* ================================================= */}
-
                         <p className="text-center text-slate-500 mt-8">
-
                             Don't have an account?
-
                             <Link
                                 to="/register"
                                 className="text-blue-600 font-bold ml-2 hover:text-blue-700 transition"
                             >
                                 Register →
                             </Link>
-
                         </p>
-
                     </form>
-
                 </div>
-
             </div>
-
-
-            {/* ================================================= */}
-            {/* FACE AUTH POPUP */}
-            {/* ================================================= */}
-
-            {showFaceAuth && (
-                <FaceAuth
-                    onFaceDetected={handleFaceDetected}
-                    onClose={() => setShowFaceAuth(false)}
-                />
-            )}
 
         </div>
     );
