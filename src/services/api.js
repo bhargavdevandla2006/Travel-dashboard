@@ -53,12 +53,14 @@ export async function loginUser(data) {
     return result;
 }
 
-export const faceLogin = async (faceDescriptor) => {
+export const faceLogin = async (data) => {
     return request("/face-login", {
         method: "POST",
-        body: JSON.stringify({
-            faceDescriptor
-        })
+        headers: {
+            "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(data),
     });
 };
 
