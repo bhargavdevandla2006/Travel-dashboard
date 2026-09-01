@@ -1,4 +1,4 @@
-export const apiUrl = import.meta.env.VITE_API_URL || "https://travel-dashboard-backend-2.onrender.com";
+export const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 async function parseJsonResponse(response) {
   const text = await response.text();
@@ -28,7 +28,7 @@ async function request(path, options = {}) {
 export async function loginUser(data) {
 
     const response = await fetch(
-        "https://travel-dashboard-backend-2.onrender.com/login",
+        `${apiUrl}/login`,
         {
             method: "POST",
 
