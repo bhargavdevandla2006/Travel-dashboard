@@ -116,7 +116,7 @@ export default function CreateReel() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
 
-      {/* TOP BAR */}
+      
 
       <div className="sticky top-0 z-30 border-b border-gray-200 bg-white/90 backdrop-blur">
 
@@ -163,7 +163,7 @@ export default function CreateReel() {
       </div>
 
 
-      {/* MAIN */}
+      
 
       <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-12">
 
@@ -176,7 +176,7 @@ export default function CreateReel() {
           "
         >
 
-          {/* LEFT SIDE — PREVIEW */}
+          
 
           <div>
 
@@ -265,7 +265,7 @@ export default function CreateReel() {
                 )}
 
 
-                {/* PREVIEW OVERLAY */}
+                
 
                 {(thumbnail || videoUrl) && (
 
@@ -308,7 +308,7 @@ export default function CreateReel() {
           </div>
 
 
-          {/* RIGHT SIDE — FORM */}
+          
 
           <div
             className="
@@ -335,7 +335,7 @@ export default function CreateReel() {
             </div>
 
 
-            {/* TITLE */}
+            
 
             <div className="mb-6">
 
@@ -371,7 +371,7 @@ export default function CreateReel() {
             </div>
 
 
-            {/* DESCRIPTION */}
+            
 
             <div className="mb-6">
 
@@ -408,7 +408,7 @@ export default function CreateReel() {
             </div>
 
 
-            {/* VIDEO URL */}
+            
 
             <div className="mb-6">
 
@@ -446,7 +446,7 @@ export default function CreateReel() {
             </div>
 
 
-            {/* THUMBNAIL */}
+            
 
             <div className="mb-8">
 
@@ -484,7 +484,7 @@ export default function CreateReel() {
             </div>
 
 
-            {/* VISIBILITY */}
+            
 
             <div className="mb-8">
 
@@ -594,7 +594,7 @@ export default function CreateReel() {
             </div>
 
 
-            {/* MESSAGE */}
+            
 
             {message && (
 
@@ -619,7 +619,7 @@ export default function CreateReel() {
             )}
 
 
-            {/* SUBMIT */}
+            
 
             <button
               type="submit"

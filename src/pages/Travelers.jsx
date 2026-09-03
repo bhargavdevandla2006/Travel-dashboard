@@ -92,7 +92,7 @@ export default function Travelers() {
 
           <Navbar />
 
-          {/* HEADER */}
+          
 
           <div
             id="travelers-section"
@@ -118,7 +118,7 @@ export default function Travelers() {
           </div>
 
 
-          {/* SEARCH */}
+          
 
           <div className="relative mt-8 group">
 
@@ -151,7 +151,7 @@ export default function Travelers() {
           </div>
 
 
-          {/* CARDS */}
+          
 
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mt-8">
 
@@ -185,7 +185,7 @@ export default function Travelers() {
                 }}
               >
 
-                {/* AURORA BACKGROUND */}
+                
 
                 <div
                   className="
@@ -223,7 +223,7 @@ export default function Travelers() {
                   "
                 />
 
-                {/* MOVING LIGHT */}
+                
 
                 <div
                   className="
@@ -256,22 +256,22 @@ export default function Travelers() {
                 </div>
 
 
-                {/* TOP GRADIENT */}
+                
 
                 <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20" />
 
 
                 <div className="relative z-10 p-6 pt-14">
 
-                  {/* TOP SECTION */}
+                  
 
                   <div className="flex justify-between items-start">
 
-                    {/* PROFILE IMAGE */}
+                    
 
                     <div className="relative w-24 h-24">
 
-                      {/* ORBIT */}
+                      
 
                       <div
                         className="
@@ -310,14 +310,14 @@ export default function Travelers() {
                         "
                       />
 
-                      {/* ONLINE */}
+                      
 
                       <span className="absolute bottom-1 right-1 w-5 h-5 rounded-full bg-green-400 border-4 border-white dark:border-[#111827] animate-pulse" />
 
                     </div>
 
 
-                    {/* BADGE */}
+                    
 
                     <div
                       className="
@@ -345,7 +345,7 @@ export default function Travelers() {
                   </div>
 
 
-                  {/* USER INFO */}
+                  
 
                   <div className="mt-6">
 
@@ -378,7 +378,7 @@ export default function Travelers() {
                   </div>
 
 
-                  {/* TRAVEL ROUTE */}
+                  
 
                   <div className="flex items-center gap-3 mt-8">
 
@@ -410,7 +410,7 @@ export default function Travelers() {
                   </div>
 
 
-                  {/* INFO BOXES */}
+                  
 
                   <div className="grid grid-cols-2 gap-4 mt-8">
 
@@ -469,7 +469,7 @@ export default function Travelers() {
                   </div>
 
 
-                  {/* BUTTON */}
+                  
 
                   <button
                     onClick={(e) => {
@@ -516,7 +516,7 @@ export default function Travelers() {
           </div>
 
 
-          {/* EMPTY */}
+          
 
           {users.length === 0 && (
 
@@ -533,13 +533,13 @@ export default function Travelers() {
           )}
 
 
-          {/* SEE MORE + ARROWS */}
+          
 
           {users.length > 3 && (
 
             <div className="flex justify-center items-center gap-4 mt-12 mb-6">
 
-              {/* LEFT */}
+              
 
               <button
                 onClick={handlePrevious}
@@ -573,7 +573,7 @@ export default function Travelers() {
               </button>
 
 
-              {/* SEE MORE */}
+              
 
               {visibleCount < users.length ? (
 
@@ -649,7 +649,7 @@ export default function Travelers() {
               )}
 
 
-              {/* RIGHT */}
+              
 
               <button
                 onClick={handleNext}

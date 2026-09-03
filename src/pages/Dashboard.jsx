@@ -16,11 +16,7 @@ import MapView from "../components/MapView";
 import { useState } from "react";
 import { useTheme } from "../context/ThemeContext";
 
-/*
-=========================================================
-STATS
-=========================================================
-*/
+
 
 const stats = [
   {
@@ -49,14 +45,7 @@ const stats = [
   },
 ];
 
-/*
-=========================================================
-TRIPS
 
-IMPORTANT:
-The IDs MUST match the IDs in your database.
-=========================================================
-*/
 
 const trips = [
   {
@@ -95,11 +84,7 @@ const trips = [
   },
 ];
 
-/*
-=========================================================
-QUICK START
-=========================================================
-*/
+
 
 const quickStart = [
   {
@@ -151,22 +136,14 @@ const quickStart = [
   },
 ];
 
-/*
-=========================================================
-DASHBOARD
-=========================================================
-*/
+
 
 export default function Index() {
   const { darkMode } = useTheme();
 
   const [search, setSearch] = useState("");
 
-  /*
-  =========================================================
-  FILTER TRIPS
-  =========================================================
-  */
+  
 
   const filteredTrips = trips.filter((item) => {
     return (
@@ -180,11 +157,7 @@ export default function Index() {
     );
   });
 
-  /*
-  =========================================================
-  RENDER
-  =========================================================
-  */
+  
 
   return (
     <div
@@ -195,9 +168,7 @@ export default function Index() {
       }`}
     >
 
-      {/* =================================================
-          MAIN CONTAINER
-      ================================================= */}
+      
 
       <div
         className={`rounded-[40px] overflow-hidden flex flex-col lg:flex-row min-h-[calc(100vh-3rem)] shadow-xl transition-colors duration-300 ${
@@ -207,15 +178,11 @@ export default function Index() {
         }`}
       >
 
-        {/* =================================================
-            SIDEBAR
-        ================================================= */}
+        
 
         <Sidebar />
 
-        {/* =================================================
-            MAIN CONTENT
-        ================================================= */}
+        
 
         <div
           className={`flex-1 p-5 lg:p-7 transition-colors duration-300 ${
@@ -225,18 +192,14 @@ export default function Index() {
           }`}
         >
 
-          {/* =================================================
-              NAVBAR
-          ================================================= */}
+          
 
           <Navbar
             search={search}
             setSearch={setSearch}
           />
 
-          {/* =================================================
-              HERO SECTION
-          ================================================= */}
+          
 
           <div
             className="
@@ -366,15 +329,11 @@ export default function Index() {
             </div>
           </div>
 
-          {/* =================================================
-              DASHBOARD CONTENT
-          ================================================= */}
+          
 
           <div className="space-y-6 mt-6">
 
-            {/* =================================================
-                STATS
-            ================================================= */}
+            
 
             <div
               className="
@@ -398,9 +357,7 @@ export default function Index() {
 
             </div>
 
-            {/* =================================================
-                QUICK START
-            ================================================= */}
+            
 
             <div className="mt-8">
 
@@ -593,9 +550,7 @@ export default function Index() {
 
             </div>
 
-            {/* =================================================
-                DESTINATION + NAVIGATION
-            ================================================= */}
+            
 
             <div>
 
@@ -608,7 +563,7 @@ export default function Index() {
                 "
               >
 
-                {/* Destination */}
+                
 
                 <div
                   className="
@@ -670,7 +625,7 @@ export default function Index() {
 
                 </div>
 
-                {/* Navigation */}
+                
 
                 <div
                   className="
@@ -745,15 +700,13 @@ export default function Index() {
 
               </div>
 
-              {/* Map */}
+              
 
               <MapView />
 
             </div>
 
-            {/* =================================================
-                YOUR TRIPS
-            ================================================= */}
+            
 
             <div>
 
@@ -786,10 +739,7 @@ export default function Index() {
                   <TripCard
                     key={item.id}
 
-                    /*
-                    IMPORTANT:
-                    PASS DATABASE ID
-                    */
+                    
 
                     id={item.id}
 

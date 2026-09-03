@@ -21,10 +21,6 @@ export default function Messages() {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
 
-  // =========================================================
-  // LOAD USER
-  // =========================================================
-
  useEffect(() => {
   const loadMessages = async () => {
     try {
@@ -71,11 +67,6 @@ export default function Messages() {
     }
   }
 
-
-  // =========================================================
-  // SEND MESSAGE
-  // =========================================================
-
   const handleSend = async () => {
   if (!input.trim()) return;
 
@@ -102,8 +93,6 @@ export default function Messages() {
     }
 
     setInput("");
-
-    // Reload conversation after sending
     const messagesResponse = await fetch(
       `${apiUrl}/messages/${id}`,
       {
@@ -122,10 +111,6 @@ export default function Messages() {
   }
 };
 
-  // =========================================================
-  // LOADING
-  // =========================================================
-
   if (loading) {
     return (
       <div className="min-h-screen bg-[#020617] text-white flex items-center justify-center">
@@ -139,10 +124,6 @@ export default function Messages() {
       </div>
     );
   }
-
-  // =========================================================
-  // USER NOT FOUND
-  // =========================================================
 
   if (!user) {
     return (
@@ -179,25 +160,15 @@ export default function Messages() {
     );
   }
 
-  // =========================================================
-  // USER PHOTO
-  // =========================================================
-
   const photo =
     user.photo ||
     user.profile_photo ||
     "https://i.pravatar.cc/300";
 
-  // =========================================================
-  // PAGE
-  // =========================================================
-
   return (
     <div className="min-h-screen bg-[#020617] text-white">
 
-      {/* =====================================================
-          HEADER
-      ====================================================== */}
+      
 
       <header
         className="
@@ -223,7 +194,7 @@ export default function Messages() {
           "
         >
 
-          {/* BACK */}
+          
 
           <button
             type="button"
@@ -249,7 +220,7 @@ export default function Messages() {
             <FaArrowLeft />
           </button>
 
-          {/* USER */}
+          
 
           <div className="flex items-center gap-3 min-w-0">
 
@@ -299,7 +270,7 @@ export default function Messages() {
 
           </div>
 
-          {/* PROFILE BUTTON */}
+          
 
           <div className="ml-auto">
 
@@ -331,29 +302,25 @@ export default function Messages() {
         </div>
       </header>
 
-      {/* =====================================================
-          MAIN
-      ====================================================== */}
+      
 
       <main className="max-w-5xl mx-auto px-4 lg:px-6">
 
         <div className="min-h-[calc(100vh-80px)] flex flex-col">
 
-          {/* =================================================
-              CHAT AREA
-          ================================================== */}
+          
 
           <div className="flex-1 py-8">
 
             {messages.length === 0 ? (
 
-              /* EMPTY CHAT */
+              
 
               <div className="min-h-[500px] flex items-center justify-center">
 
                 <div className="text-center max-w-md">
 
-                  {/* PROFILE IMAGE */}
+                  
 
                   <div className="relative inline-block">
 
@@ -430,7 +397,7 @@ export default function Messages() {
 
             ) : (
 
-              /* MESSAGES */
+              
 
               <div className="space-y-4">
 
@@ -480,9 +447,7 @@ export default function Messages() {
 
           </div>
 
-          {/* =================================================
-              MESSAGE INPUT
-          ================================================== */}
+          
 
           <div className="sticky bottom-0 pb-5">
 
@@ -502,7 +467,7 @@ export default function Messages() {
               "
             >
 
-              {/* USER ICON */}
+              
 
               <div
                 className="
@@ -521,7 +486,7 @@ export default function Messages() {
                 <FaUserCircle />
               </div>
 
-              {/* INPUT */}
+              
 
               <input
                 type="text"
@@ -540,7 +505,7 @@ export default function Messages() {
                 "
               />
 
-              {/* SEND */}
+              
 
               <button
                 type="submit"

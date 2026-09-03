@@ -54,15 +54,7 @@ export default function TravelerProfile() {
 
   const [error, setError] = useState("");
 
-  // =========================================================
-  // SOCIAL CHOICE
-  // =========================================================
-
   const [socialChoice, setSocialChoice] = useState(null);
-
-  // =========================================================
-  // LOAD EVERYTHING
-  // =========================================================
 
   useEffect(() => {
     if (!id) return;
@@ -85,10 +77,6 @@ export default function TravelerProfile() {
     setProfileLoading(false);
   }
 
-  // =========================================================
-  // LOAD USER
-  // =========================================================
-
   async function loadUser() {
     try {
       const response = await fetch(`${apiUrl}/users/${id}`, {
@@ -107,10 +95,6 @@ export default function TravelerProfile() {
       setError("Unable to load this traveler.");
     }
   }
-
-  // =========================================================
-  // LOAD CURRENT USER
-  // =========================================================
 
   async function loadCurrentUser() {
     try {
@@ -141,10 +125,6 @@ export default function TravelerProfile() {
     }
   }
 
-  // =========================================================
-  // CHECK FOLLOW STATUS
-  // =========================================================
-
   async function checkStatus() {
     try {
       const response = await fetch(
@@ -166,10 +146,6 @@ export default function TravelerProfile() {
     }
   }
 
-  // =========================================================
-  // FOLLOWERS
-  // =========================================================
-
   async function loadFollowers() {
     try {
       const response = await fetch(
@@ -186,10 +162,6 @@ export default function TravelerProfile() {
     }
   }
 
-  // =========================================================
-  // FOLLOWING
-  // =========================================================
-
   async function loadFollowing() {
     try {
       const response = await fetch(
@@ -205,10 +177,6 @@ export default function TravelerProfile() {
       console.error("Following error:", err);
     }
   }
-
-  // =========================================================
-  // TRIPS
-  // =========================================================
 
   async function loadTrips() {
     setTripsLoading(true);
@@ -233,10 +201,6 @@ export default function TravelerProfile() {
       setTripsLoading(false);
     }
   }
-
-  // =========================================================
-  // FOLLOW
-  // =========================================================
 
   async function handleFollow() {
     if (isOwnProfile || followLoading) return;
@@ -275,10 +239,6 @@ export default function TravelerProfile() {
     }
   }
 
-  // =========================================================
-  // UNFOLLOW
-  // =========================================================
-
   async function handleUnfollow() {
     if (isOwnProfile || followLoading) return;
 
@@ -316,10 +276,6 @@ export default function TravelerProfile() {
     }
   }
 
-  // =========================================================
-  // SHARE PROFILE
-  // =========================================================
-
   async function handleShare() {
     if (!user?.id) return;
 
@@ -349,10 +305,6 @@ export default function TravelerProfile() {
     }
   }
 
-  // =========================================================
-  // COPY PROFILE LINK
-  // =========================================================
-
   async function handleCopyLink() {
     if (!user?.id) return;
 
@@ -371,10 +323,6 @@ export default function TravelerProfile() {
       console.error("Copy error:", err);
     }
   }
-
-  // =========================================================
-  // SOCIAL PLATFORM DATA
-  // =========================================================
 
   const socialPlatforms = {
     instagram: {
@@ -479,10 +427,6 @@ export default function TravelerProfile() {
     },
   };
 
-  // =========================================================
-  // GET EXACT SOCIAL PROFILE URL
-  // =========================================================
-
   function getConnectedSocialUrl(platform, value) {
     const username = String(value || "").trim();
 
@@ -529,18 +473,9 @@ export default function TravelerProfile() {
     }
   }
 
-  // =========================================================
-  // OPEN SOCIAL CHOICE
-  // =========================================================
-
   function openSocial(platform, value) {
     const connected =
       Boolean(value && String(value).trim());
-
-    // =======================================================
-    // ACCOUNT IS CONNECTED
-    // OPEN EXACT PROFILE
-    // =======================================================
 
     if (connected) {
       const url =
@@ -560,11 +495,6 @@ export default function TravelerProfile() {
       return;
     }
 
-    // =======================================================
-    // NO ACCOUNT CONNECTED
-    // SHOW OUR TRAVELHUB CHOICE SCREEN
-    // =======================================================
-
     if (platform === "website") {
       return;
     }
@@ -572,17 +502,9 @@ export default function TravelerProfile() {
     setSocialChoice(platform);
   }
 
-  // =========================================================
-  // CLOSE SOCIAL CHOICE
-  // =========================================================
-
   function closeSocialChoice() {
     setSocialChoice(null);
   }
-
-  // =========================================================
-  // SOCIAL ACTION
-  // =========================================================
 
   function handleSocialAction(action) {
     if (!socialChoice) return;
@@ -616,10 +538,6 @@ export default function TravelerProfile() {
 
     setSocialChoice(null);
   }
-
-  // =========================================================
-  // SOCIAL BUTTON
-  // =========================================================
 
   function SocialButton({
     platform,
@@ -700,23 +618,11 @@ export default function TravelerProfile() {
     );
   }
 
-  // =========================================================
-  // MESSAGE
-  // =========================================================
-
   function handleMessage() {
     if (!id || isOwnProfile) return;
 
     navigate(`/messages/${id}`);
   }
-
-  // =========================================================
-  // LOADING
-  // =========================================================
-
-// =========================================================
-// LOADING
-// =========================================================
 
 if (profileLoading) {
   return (
@@ -754,11 +660,6 @@ if (profileLoading) {
     </div>
   );
 }
-
-
-// =========================================================
-// ERROR
-// =========================================================
 
 if (error || !user) {
   return (
@@ -816,10 +717,6 @@ if (error || !user) {
   );
 }
 
-  // =========================================================
-  // DATA
-  // =========================================================
-
   const displayPhoto =
     user.photo ||
     "https://i.pravatar.cc/500";
@@ -855,15 +752,11 @@ if (error || !user) {
 
       <div className="flex min-h-screen">
 
-        {/* =====================================================
-            SIDEBAR
-        ===================================================== */}
+        
 
         <Sidebar />
 
-        {/* =====================================================
-            MAIN
-        ===================================================== */}
+        
 
         <main className="flex-1 min-w-0">
 
@@ -871,9 +764,7 @@ if (error || !user) {
 
             <Navbar />
 
-            {/* =================================================
-                BACK
-            ================================================= */}
+            
 
             <div className="mt-5">
 
@@ -899,9 +790,7 @@ if (error || !user) {
 
             </div>
 
-            {/* =================================================
-                HERO
-            ================================================= */}
+            
 
             <section
               className="
@@ -983,9 +872,7 @@ if (error || !user) {
                 "
               >
 
-                {/* =================================================
-                    PROFILE
-                ================================================= */}
+                
 
                 <div
                   className="
@@ -998,7 +885,7 @@ if (error || !user) {
                   "
                 >
 
-                  {/* PHOTO */}
+                  
 
                   <div className="relative shrink-0">
 
@@ -1048,7 +935,7 @@ if (error || !user) {
 
                   </div>
 
-                  {/* INFO */}
+                  
 
                   <div className="text-white">
 
@@ -1132,9 +1019,7 @@ if (error || !user) {
                       </p>
                     )}
 
-                    {/* =================================================
-                        SOCIAL MEDIA
-                    ================================================= */}
+                    
 
                     <div className="mt-6">
 
@@ -1236,9 +1121,7 @@ if (error || !user) {
 
                 </div>
 
-                {/* =================================================
-                    ACTIONS
-                ================================================= */}
+                
 
                 <div
                   className="
@@ -1395,9 +1278,7 @@ if (error || !user) {
 
             </section>
 
-            {/* =================================================
-                STATS
-            ================================================= */}
+            
 
             <section
               className="
@@ -1410,7 +1291,7 @@ if (error || !user) {
               "
             >
 
-              {/* FOLLOWERS */}
+              
 
               <div
                 className="
@@ -1454,7 +1335,7 @@ if (error || !user) {
 
               </div>
 
-              {/* FOLLOWING */}
+              
 
               <div
                 className="
@@ -1498,7 +1379,7 @@ if (error || !user) {
 
               </div>
 
-              {/* SPENDING */}
+              
 
               <div
                 className="
@@ -1544,7 +1425,7 @@ if (error || !user) {
 
               </div>
 
-              {/* COUNTRIES */}
+              
 
               <div
                 className="
@@ -1591,9 +1472,7 @@ if (error || !user) {
 
             </section>
 
-            {/* =================================================
-                ABOUT
-            ================================================= */}
+            
 
             <section
               className="
@@ -1651,9 +1530,7 @@ if (error || !user) {
 
             </section>
 
-            {/* =================================================
-                MESSAGE CTA
-            ================================================= */}
+            
 
             {!isOwnProfile && (
               <section
@@ -1714,9 +1591,7 @@ if (error || !user) {
               </section>
             )}
 
-            {/* =================================================
-                TRIPS
-            ================================================= */}
+            
 
             <section className="mt-8">
 
@@ -2023,9 +1898,7 @@ if (error || !user) {
 
       </div>
 
-      {/* =======================================================
-          SOCIAL ACCOUNT CHOICE
-      ======================================================= */}
+      
 
       {socialChoice && selectedPlatform && (
         <div
@@ -2057,7 +1930,7 @@ if (error || !user) {
             "
           >
 
-            {/* HEADER */}
+            
 
             <div
               className={`
@@ -2123,11 +1996,11 @@ if (error || !user) {
 
             </div>
 
-            {/* OPTIONS */}
+            
 
             <div className="p-5 space-y-3">
 
-              {/* CREATE */}
+              
 
               <button
                 type="button"
@@ -2196,7 +2069,7 @@ if (error || !user) {
 
               </button>
 
-              {/* LOGIN */}
+              
 
               <button
                 type="button"
@@ -2265,7 +2138,7 @@ if (error || !user) {
 
               </button>
 
-              {/* EXPLORE */}
+              
 
               <button
                 type="button"
@@ -2334,7 +2207,7 @@ if (error || !user) {
 
               </button>
 
-              {/* CANCEL */}
+              
 
               <button
                 type="button"

@@ -1,29 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import {
-    getCountries,
-    getCountryCallingCode,
-    isValidPhoneNumber as validateInternationalPhone,
-} from "libphonenumber-js";
-import { registerUser, sendOtp, verifyOtp } from "../services/api";
-
-const countryNames = new Intl.DisplayNames(["en"], { type: "region" });
-const countries = getCountries()
-    .map((code) => ({
-        code,
-        name: countryNames.of(code) || code,
-        dialCode: getCountryCallingCode(code),
-    }))
-    .sort((first, second) => first.name.localeCompare(second.name));
-
-const getCountryFlag = (countryCode) =>
-    countryCode
-        .split("")
-        .map((letter) => String.fromCodePoint(letter.charCodeAt(0) + 127397))
-        .join("");
-
-const getFullPhoneNumber = (countryCode, phoneNumber) =>
-    `+${getCountryCallingCode(countryCode)}${phoneNumber.replace(/\D/g, "")}`;
+import FaceAuth from "../components/FaceAuth";
+import { registerUser } from "../services/api";
+import { getBrowserId } from "../utils/browserAuth";
 
 export default function Register() {
     const navigate = useNavigate();
@@ -32,24 +11,17 @@ export default function Register() {
         name: "",
         email: "",
         password: "",
-        phone: "",
-        otp: "",
     });
 
     const [showPassword, setShowPassword] = useState(false);
-    const [otpSent, setOtpSent] = useState(false);
-    const [otpVerified, setOtpVerified] = useState(false);
-    const [isSendingOtp, setIsSendingOtp] = useState(false);
-    const [countdown, setCountdown] = useState(0);
-    const [countryCode, setCountryCode] = useState("IN");
-    const [phoneNumber, setPhoneNumber] = useState("");
+    const [showFaceAuth, setShowFaceAuth] = useState(false);
+    const [isRegistering, setIsRegistering] = useState(false);
 
     const hasLength = formData.password.length >= 8;
     const hasLetter = /[A-Za-z]/.test(formData.password);
     const hasNumber = /[0-9]/.test(formData.password);
 
     const passwordValid = hasLength && hasLetter && hasNumber;
-
     let passwordStrength = "Weak";
 
     if (hasLength && hasLetter) {
@@ -60,68 +32,6 @@ export default function Register() {
         passwordStrength = "Strong";
     }
 
-    useEffect(() => {
-        if (countdown <= 0) return;
-
-        const timer = setTimeout(() => {
-            setCountdown((prev) => prev - 1);
-        }, 1000);
-
-        return () => clearTimeout(timer);
-    }, [countdown]);
-
-    const handleSendOtp = async () => {
-        if (!phoneNumber.trim()) {
-            alert("Please enter your mobile number");
-            return;
-        }
-
-        const fullPhoneNumber = getFullPhoneNumber(countryCode, phoneNumber);
-
-        if (!validateInternationalPhone(fullPhoneNumber)) {
-            alert("Please enter a valid mobile number with country code");
-            return;
-        }
-
-        try {
-            setIsSendingOtp(true);
-            await sendOtp({ phone: fullPhoneNumber });
-            setFormData((prev) => ({ ...prev, phone: fullPhoneNumber, otp: "" }));
-            setOtpSent(true);
-            setOtpVerified(false);
-            setCountdown(30);
-            alert("OTP sent to your mobile number");
-        } catch (error) {
-            alert(error.message || "Unable to send OTP");
-        } finally {
-            setIsSendingOtp(false);
-        }
-    };
-
-    const handleVerifyOtp = async () => {
-        if (!formData.otp.trim()) {
-            alert("Please enter the OTP");
-            return;
-        }
-
-        if (!validateInternationalPhone(formData.phone)) {
-            alert("Please enter a valid mobile number before verifying OTP");
-            return;
-        }
-
-        try {
-            setIsSendingOtp(true);
-            await verifyOtp({ phone: formData.phone, otp: formData.otp });
-            setOtpVerified(true);
-            setCountdown(0);
-            alert("Phone number verified successfully");
-        } catch (error) {
-            alert(error.message || "OTP verification failed");
-        } finally {
-            setIsSendingOtp(false);
-        }
-    };
-
     const handleRegister = async (e) => {
         e.preventDefault();
 
@@ -130,35 +40,33 @@ export default function Register() {
             return;
         }
 
-        if (!otpVerified) {
-            alert("Please verify your mobile number with OTP first.");
-            return;
-        }
+        setShowFaceAuth(true);
+    };
 
+    const handleFaceDetected = async (faceDescriptor) => {
         try {
-            await registerUser({
-                ...formData,
-                phone: formData.phone,
-                otp: formData.otp,
-            });
-
+            setIsRegistering(true);
+            await registerUser({ ...formData, faceDescriptor, browserId: getBrowserId() });
             alert("Registration successful!");
             navigate("/");
         } catch (error) {
             alert(error.message || "Register failed");
+        } finally {
+            setIsRegistering(false);
+            setShowFaceAuth(false);
         }
     };
 
     return (
         <div className="min-h-screen bg-black-50 flex items-center justify-center p-6 relative overflow-hidden">
 
-            {/* ========================================= */}
-            {/* BACKGROUND ANIMATIONS */}
-            {/* ========================================= */}
+            
+            
+            
 
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
 
-                {/* Floating dots */}
+                
 
                 <div className="absolute top-20 left-[15%] w-4 h-4 bg-blue-500 rounded-full animate-bounce opacity-70"></div>
 
@@ -169,14 +77,14 @@ export default function Register() {
                 <div className="absolute bottom-20 right-[20%] w-4 h-4 bg-purple-400 rounded-full animate-bounce opacity-50"></div>
 
 
-                {/* Large decorative circles */}
+                
 
                 <div className="absolute -top-24 -left-24 w-80 h-80 border border-blue-100 rounded-full"></div>
 
                 <div className="absolute -bottom-32 -right-24 w-96 h-96 border border-indigo-100 rounded-full"></div>
 
 
-                {/* Decorative lines */}
+                
 
                 <div className="absolute top-28 left-0 w-72 h-[2px] bg-gradient-to-r from-transparent via-blue-300 to-transparent animate-pulse"></div>
 
@@ -185,13 +93,13 @@ export default function Register() {
             </div>
 
 
-            {/* ========================================= */}
-            {/* MAIN CARD */}
-            {/* ========================================= */}
+            
+            
+            
 
             <div className="relative w-full max-w-md">
 
-                {/* Glow */}
+                
 
                 <div className="absolute -inset-1 bg-gradient-to-r from-blue-200 via-indigo-200 to-purple-200 rounded-[35px] blur-xl opacity-40"></div>
 
@@ -199,20 +107,20 @@ export default function Register() {
                 <div className="relative bg-white rounded-[32px] shadow-2xl border border-white p-8 sm:p-10">
 
 
-                    {/* ========================================= */}
-                    {/* ICON */}
-                    {/* ========================================= */}
+                    
+                    
+                    
 
                     <div className="flex justify-center mb-6">
 
                         <div className="relative">
 
-                            {/* Animated ring */}
+                            
 
                             <div className="absolute inset-0 w-24 h-24 rounded-full border-2 border-blue-200 animate-ping opacity-30"></div>
 
 
-                            {/* Icon */}
+                            
 
                             <div className="relative w-24 h-24 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center shadow-lg">
 
@@ -220,7 +128,7 @@ export default function Register() {
                                     👤
                                 </span>
 
-                                {/* Plus */}
+                                
 
                                 <span className="absolute bottom-1 right-1 w-7 h-7 bg-blue-600 text-white rounded-full flex items-center justify-center text-lg shadow-md">
                                     +
@@ -233,9 +141,9 @@ export default function Register() {
                     </div>
 
 
-                    {/* ========================================= */}
-                    {/* TITLE */}
-                    {/* ========================================= */}
+                    
+                    
+                    
 
                     <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 text-center tracking-tight">
                         Create Account 🎉
@@ -246,14 +154,14 @@ export default function Register() {
                     </p>
 
 
-                    {/* ========================================= */}
-                    {/* FORM */}
-                    {/* ========================================= */}
+                    
+                    
+                    
 
                     <form onSubmit={handleRegister}>
 
 
-                        {/* NAME */}
+                        
 
                         <div className="relative mb-4">
 
@@ -278,7 +186,7 @@ export default function Register() {
                         </div>
 
 
-                        {/* EMAIL */}
+                        
 
                         <div className="relative mb-4">
 
@@ -303,7 +211,7 @@ export default function Register() {
                         </div>
 
 
-                        {/* PASSWORD */}
+                        
 
                         <div className="relative mb-4">
 
@@ -326,7 +234,7 @@ export default function Register() {
                             />
 
 
-                            {/* SHOW PASSWORD */}
+                            
 
                             <button
                                 type="button"
@@ -341,9 +249,9 @@ export default function Register() {
                         </div>
 
 
-                        {/* ========================================= */}
-                        {/* PASSWORD STRENGTH */}
-                        {/* ========================================= */}
+                        
+                        
+                        
 
                         <div className="mb-5">
 
@@ -368,7 +276,7 @@ export default function Register() {
                             </div>
 
 
-                            {/* Strength bars */}
+                            
 
                             <div className="flex gap-2">
 
@@ -409,9 +317,9 @@ export default function Register() {
                         </div>
 
 
-                        {/* ========================================= */}
-                        {/* PASSWORD REQUIREMENTS */}
-                        {/* ========================================= */}
+                        
+                        
+                        
 
                         <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 mb-6">
 
@@ -420,7 +328,7 @@ export default function Register() {
                             </p>
 
 
-                            {/* LENGTH */}
+                            
 
                             <p
                                 className={`text-sm mb-2 ${
@@ -433,7 +341,7 @@ export default function Register() {
                             </p>
 
 
-                            {/* LETTER */}
+                            
 
                             <p
                                 className={`text-sm mb-2 ${
@@ -446,7 +354,7 @@ export default function Register() {
                             </p>
 
 
-                            {/* NUMBER */}
+                            
 
                             <p
                                 className={`text-sm ${
@@ -461,106 +369,12 @@ export default function Register() {
                         </div>
 
 
-                        <div className="relative mb-4">
-                            <div className="flex h-14 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
-                                <label className="flex shrink-0 items-center border-r border-slate-200 bg-slate-50 px-2">
-                                    <span className="sr-only">Select country</span>
-                                    <span className="mr-1 text-lg" aria-hidden="true">
-                                        {getCountryFlag(countryCode)}
-                                    </span>
-                                    <select
-                                        value={countryCode}
-                                        aria-label="Country and dialing code"
-                                        className="h-full max-w-[110px] cursor-pointer border-0 bg-transparent pr-1 text-sm text-slate-700 outline-none"
-                                        onChange={(e) => setCountryCode(e.target.value)}
-                                    >
-                                        {countries.map((country) => (
-                                            <option key={country.code} value={country.code}>
-                                                {getCountryFlag(country.code)} {country.name} +{country.dialCode}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </label>
-                                <span className="flex items-center px-2 text-sm text-slate-500">
-                                    +{getCountryCallingCode(countryCode)}
-                                </span>
-                                <input
-                                    type="tel"
-                                    placeholder="Mobile number"
-                                    value={phoneNumber}
-                                    required
-                                    inputMode="tel"
-                                    autoComplete="tel-national"
-                                    className="min-w-0 flex-1 border-0 bg-transparent pr-4 text-slate-800 outline-none"
-                                    onChange={(e) => setPhoneNumber(e.target.value)}
-                                />
-                            </div>
-                        </div>
-
-                        {!otpSent ? (
-                            <button
-                                type="button"
-                                onClick={handleSendOtp}
-                                disabled={isSendingOtp}
-                                className="group w-full h-14 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-bold text-lg shadow-lg shadow-blue-200 hover:shadow-xl hover:shadow-blue-300 hover:-translate-y-1 active:translate-y-0 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
-                            >
-                                {isSendingOtp ? "Sending..." : "Send OTP"}
-                            </button>
-                        ) : (
-                            <>
-                                <div className="relative mb-4">
-                                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-600 text-xl">
-                                        🔐
-                                    </div>
-                                    <input
-                                        type="text"
-                                        placeholder="Enter OTP"
-                                        value={formData.otp}
-                                        required
-                                        className="w-full h-14 pl-12 pr-4 rounded-2xl border border-slate-200 bg-white text-slate-800 outline-none transition-all duration-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 shadow-sm"
-                                        onChange={(e) =>
-                                            setFormData({
-                                                ...formData,
-                                                otp: e.target.value,
-                                            })
-                                        }
-                                    />
-                                </div>
-
-                                <button
-                                    type="button"
-                                    onClick={handleVerifyOtp}
-                                    disabled={isSendingOtp}
-                                    className="group w-full h-14 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-2xl font-bold text-lg shadow-lg shadow-emerald-200 hover:shadow-xl hover:shadow-emerald-300 hover:-translate-y-1 active:translate-y-0 transition-all duration-300"
-                                >
-                                    {isSendingOtp ? "Verifying..." : "Verify OTP"}
-                                </button>
-
-                                <button
-                                    type="button"
-                                    onClick={handleSendOtp}
-                                    disabled={isSendingOtp || countdown > 0}
-                                    className="mt-3 w-full h-11 rounded-2xl border border-slate-200 bg-slate-50 text-slate-700 font-semibold hover:bg-slate-100 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    {countdown > 0 ? `Resend OTP in ${countdown}s` : "Resend OTP"}
-                                </button>
-                            </>
-                        )}
-
-                        {otpVerified && (
-                            <div className="mt-4 p-3 rounded-xl bg-green-50 border border-green-100 text-center">
-                                <p className="text-green-600 font-semibold text-sm">
-                                    Mobile number verified successfully ✅
-                                </p>
-                            </div>
-                        )}
-
                         <button
                             type="submit"
-                            disabled={!otpVerified}
+                            disabled={isRegistering}
                             className="group w-full h-14 mt-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-bold text-lg shadow-lg shadow-blue-200 hover:shadow-xl hover:shadow-blue-300 hover:-translate-y-1 active:translate-y-0 transition-all duration-300 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            <span>Register</span>
+                            <span>{isRegistering ? "Creating account..." : "Verify Face & Register"}</span>
                             <span className="text-2xl group-hover:translate-x-2 transition-transform duration-300">→</span>
                         </button>
 
@@ -576,6 +390,13 @@ export default function Register() {
                     </form>
                 </div>
             </div>
+
+            {showFaceAuth && (
+                <FaceAuth
+                    onFaceDetected={handleFaceDetected}
+                    onClose={() => setShowFaceAuth(false)}
+                />
+            )}
 
         </div>
     );
