@@ -1,4 +1,4 @@
-﻿import {
+import {
   FaBell,
   FaEnvelope,
   FaMoon,
@@ -41,11 +41,6 @@ export default function Navbar({ search = "", setSearch }) {
 
   const { t } = useLanguage();
 
-
-  // =========================
-  // LOAD USER
-  // =========================
-
   useEffect(() => {
 
     loadUser();
@@ -68,11 +63,6 @@ export default function Navbar({ search = "", setSearch }) {
     }
 
   }
-
-
-  // =========================
-  // LOAD NOTIFICATIONS
-  // =========================
 
   useEffect(() => {
 
@@ -125,20 +115,12 @@ export default function Navbar({ search = "", setSearch }) {
 
   }
 
-
-  // =========================
-  // DYNAMIC TIME AGO
-  // =========================
-
   function getTimeAgo(date) {
 
     if (!date) return "Just now";
 
 
     const now = new Date();
-
-
-    // SQLite datetime format support
     const notificationDate = new Date(
       date.includes("T")
         ? date
@@ -152,17 +134,11 @@ export default function Navbar({ search = "", setSearch }) {
         (now - notificationDate) / 1000
       )
     );
-
-
-    // JUST NOW
     if (difference < 5) {
 
       return "Just now";
 
     }
-
-
-    // SECONDS
     if (difference < 60) {
 
       return `${difference} sec${difference === 1 ? "" : "s"} ago`;
@@ -173,9 +149,6 @@ export default function Navbar({ search = "", setSearch }) {
     const minutes = Math.floor(
       difference / 60
     );
-
-
-    // MINUTES
     if (minutes < 60) {
 
       return `${minutes} min${minutes === 1 ? "" : "s"} ago`;
@@ -186,9 +159,6 @@ export default function Navbar({ search = "", setSearch }) {
     const hours = Math.floor(
       minutes / 60
     );
-
-
-    // HOURS
     if (hours < 24) {
 
       return `${hours} hour${hours === 1 ? "" : "s"} ago`;
@@ -204,11 +174,6 @@ export default function Navbar({ search = "", setSearch }) {
     return `${days} day${days === 1 ? "" : "s"} ago`;
 
   }
-
-
-  // =========================
-  // LOGOUT
-  // =========================
 
   async function handleLogout() {
 
@@ -230,11 +195,6 @@ export default function Navbar({ search = "", setSearch }) {
     }
 
   }
-
-
-  // =========================
-  // NAVBAR UI
-  // =========================
 
   return (
 
@@ -266,7 +226,7 @@ export default function Navbar({ search = "", setSearch }) {
     >
 
 
-      {/* ================= TITLE ================= */}
+      
 
       <div>
 
@@ -297,7 +257,7 @@ export default function Navbar({ search = "", setSearch }) {
 
 
 
-      {/* ================= SEARCH ================= */}
+      
 
       <div className="hidden lg:block relative w-[420px]">
 
@@ -346,7 +306,7 @@ export default function Navbar({ search = "", setSearch }) {
 
 
 
-      {/* ================= RIGHT ACTIONS ================= */}
+      
 
       <div
         className="
@@ -357,7 +317,7 @@ export default function Navbar({ search = "", setSearch }) {
       >
 
 
-        {/* ================= NOTIFICATIONS ================= */}
+        
 
         <div className="relative">
 
@@ -435,7 +395,7 @@ export default function Navbar({ search = "", setSearch }) {
 
 
 
-          {/* NOTIFICATION PANEL */}
+          
 
           {notificationOpen && (
 
@@ -472,7 +432,7 @@ export default function Navbar({ search = "", setSearch }) {
             >
 
 
-              {/* HEADER */}
+              
 
               <div
                 className="
@@ -534,7 +494,7 @@ export default function Navbar({ search = "", setSearch }) {
 
 
 
-              {/* NOTIFICATIONS */}
+              
 
               <div
                 className="
@@ -617,7 +577,7 @@ export default function Navbar({ search = "", setSearch }) {
                       >
 
 
-                        {/* ICON */}
+                        
 
                         <div
                           className={`
@@ -664,7 +624,7 @@ export default function Navbar({ search = "", setSearch }) {
 
 
 
-                        {/* TEXT */}
+                        
 
                         <div className="flex-1">
 
@@ -698,7 +658,7 @@ export default function Navbar({ search = "", setSearch }) {
                           </p>
 
 
-                          {/* REAL DYNAMIC TIME */}
+                          
 
                           <p
                             className={`
@@ -742,7 +702,7 @@ export default function Navbar({ search = "", setSearch }) {
 
 
 
-        {/* ================= MESSAGES ================= */}
+        
 
         <button
           onClick={() => {
@@ -781,7 +741,7 @@ export default function Navbar({ search = "", setSearch }) {
 
 
 
-        {/* ================= THEME ================= */}
+        
 
         <button
           onClick={toggleTheme}
@@ -821,7 +781,7 @@ export default function Navbar({ search = "", setSearch }) {
 
 
 
-        {/* ================= PROFILE ================= */}
+        
 
         <div className="relative">
 
@@ -919,7 +879,7 @@ export default function Navbar({ search = "", setSearch }) {
 
 
 
-          {/* PROFILE DROPDOWN */}
+          
 
           {open && (
 
@@ -949,7 +909,7 @@ export default function Navbar({ search = "", setSearch }) {
             >
 
 
-              {/* PROFILE */}
+              
 
               <button
                 onClick={() => {
@@ -986,7 +946,7 @@ export default function Navbar({ search = "", setSearch }) {
 
 
 
-              {/* SETTINGS */}
+              
 
               <button
                 onClick={() => {
@@ -1027,7 +987,7 @@ export default function Navbar({ search = "", setSearch }) {
 
 
 
-              {/* LOGOUT */}
+              
 
               <button
                 onClick={handleLogout}

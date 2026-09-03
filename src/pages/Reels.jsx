@@ -116,7 +116,7 @@ export default function Reels() {
   return (
     <div className="min-h-screen bg-gray-50">
 
-      {/* HEADER */}
+      
 
       <div className="sticky top-0 z-20 bg-white border-b border-gray-200">
 
@@ -165,7 +165,7 @@ export default function Reels() {
       </div>
 
 
-      {/* REELS */}
+      
 
       <div className="max-w-7xl mx-auto px-6 py-10">
 
@@ -205,7 +205,7 @@ export default function Reels() {
                 "
               >
 
-                {/* REEL IMAGE */}
+                
 
                 <div className="relative h-[360px] overflow-hidden bg-gray-900">
 
@@ -238,7 +238,7 @@ export default function Reels() {
                   )}
 
 
-                  {/* DARK OVERLAY */}
+                  
 
                   <div
                     className="
@@ -252,7 +252,7 @@ export default function Reels() {
                   />
 
 
-                  {/* PLAY BUTTON */}
+                  
 
                   <div
                     className="
@@ -287,7 +287,7 @@ export default function Reels() {
                   </div>
 
 
-                  {/* TITLE ON IMAGE */}
+                  
 
                   <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
 
@@ -302,7 +302,7 @@ export default function Reels() {
                 </div>
 
 
-                {/* CONTENT */}
+                
 
                 <div className="p-5">
 
@@ -314,7 +314,7 @@ export default function Reels() {
                   </p>
 
 
-                  {/* ACTIONS */}
+                  
 
                   <div
                     className="
@@ -328,7 +328,7 @@ export default function Reels() {
                     "
                   >
 
-                    {/* LIKE */}
+                    
 
                     <button
                       onClick={(event) =>
@@ -369,7 +369,7 @@ export default function Reels() {
                     </button>
 
 
-                    {/* SAVE */}
+                    
 
                     <button
                       onClick={(event) =>
@@ -415,7 +415,7 @@ export default function Reels() {
 
         ) : (
 
-          /* EMPTY STATE */
+          
 
           <div
             className="

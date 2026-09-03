@@ -1,4 +1,4 @@
-﻿import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Comments from "./Comments";
 import apiUrl from "../services/api";
@@ -18,11 +18,7 @@ export default function TripCard({
   const [loading, setLoading] = useState(true);
   const [likeLoading, setLikeLoading] = useState(false);
 
-  /*
-  =========================================================
-  LOAD LIKE STATUS + LIKE COUNT
-  =========================================================
-  */
+  
 
   useEffect(() => {
     let mounted = true;
@@ -39,11 +35,7 @@ export default function TripCard({
             fetch(`${apiUrl}/likes-count/${id}`),
           ]);
 
-        /*
-        =====================================================
-        CHECK LIKE STATUS
-        =====================================================
-        */
+        
 
         if (likeStatusResponse.ok) {
           const likeData =
@@ -59,11 +51,7 @@ export default function TripCard({
           );
         }
 
-        /*
-        =====================================================
-        LOAD LIKE COUNT
-        =====================================================
-        */
+        
 
         if (likesCountResponse.ok) {
           const countData =
@@ -100,11 +88,7 @@ export default function TripCard({
     };
   }, [id]);
 
-  /*
-  =========================================================
-  ADD TO FAVORITES
-  =========================================================
-  */
+  
 
   function addToFavorites() {
     try {
@@ -142,11 +126,7 @@ export default function TripCard({
     }
   }
 
-  /*
-  =========================================================
-  REMOVE FROM FAVORITES
-  =========================================================
-  */
+  
 
   function removeFromFavorites() {
     try {
@@ -177,15 +157,9 @@ export default function TripCard({
     }
   }
 
-  /*
-  =========================================================
-  LIKE / UNLIKE TOGGLE
-  =========================================================
-  */
+  
 
   async function handleLikeToggle() {
-
-    // Prevent multiple requests at the same time
     if (likeLoading) {
       return;
     }
@@ -210,11 +184,7 @@ export default function TripCard({
       const data =
         await response.json();
 
-      /*
-      =====================================================
-      DEBUG
-      =====================================================
-      */
+      
 
       console.log(
         "LIKE RESPONSE:",
@@ -222,11 +192,7 @@ export default function TripCard({
         data
       );
 
-      /*
-      =====================================================
-      REQUEST FAILED
-      =====================================================
-      */
+      
 
       if (!response.ok) {
 
@@ -238,31 +204,19 @@ export default function TripCard({
         return;
       }
 
-      /*
-      =====================================================
-      UPDATE LIKE STATE
-      =====================================================
-      */
+      
 
       setLiked(
         Boolean(data.liked)
       );
 
-      /*
-      =====================================================
-      UPDATE LIKE COUNT
-      =====================================================
-      */
+      
 
       setLikes(
         Number(data.count || 0)
       );
 
-      /*
-      =====================================================
-      FAVORITES
-      =====================================================
-      */
+      
 
       if (data.liked) {
 
@@ -288,11 +242,7 @@ export default function TripCard({
     }
   }
 
-  /*
-  =========================================================
-  RENDER
-  =========================================================
-  */
+  
 
   return (
     <div
@@ -318,9 +268,7 @@ export default function TripCard({
       "
     >
 
-      {/* =================================================
-          IMAGE SECTION
-      ================================================= */}
+      
 
       <div
         className="
@@ -360,9 +308,7 @@ export default function TripCard({
           "
         />
 
-        {/* =================================================
-            RATING
-        ================================================= */}
+        
 
         <div
           className="
@@ -404,9 +350,7 @@ export default function TripCard({
 
         </div>
 
-        {/* =================================================
-            LIKE BUTTON
-        ================================================= */}
+        
 
         <button
           type="button"
@@ -460,15 +404,11 @@ export default function TripCard({
 
       </div>
 
-      {/* =================================================
-          CONTENT
-      ================================================= */}
+      
 
       <div className="p-6">
 
-        {/* =================================================
-            TITLE
-        ================================================= */}
+        
 
         <h2
           className="
@@ -482,9 +422,7 @@ export default function TripCard({
           {title}
         </h2>
 
-        {/* =================================================
-            LOCATION
-        ================================================= */}
+        
 
         <p
           className="
@@ -501,9 +439,7 @@ export default function TripCard({
           📍 {location}
         </p>
 
-        {/* =================================================
-            PRICE + LIKES
-        ================================================= */}
+        
 
         <div
           className="
@@ -515,7 +451,7 @@ export default function TripCard({
           "
         >
 
-          {/* PRICE */}
+          
 
           <div>
 
@@ -541,7 +477,7 @@ export default function TripCard({
 
           </div>
 
-          {/* LIKES */}
+          
 
           <div className="text-right">
 
@@ -569,9 +505,7 @@ export default function TripCard({
 
         </div>
 
-        {/* =================================================
-            HOTELS + TRANSPORT
-        ================================================= */}
+        
 
         <div
           className="
@@ -583,7 +517,7 @@ export default function TripCard({
           "
         >
 
-          {/* HOTELS */}
+          
 
           <button
             type="button"
@@ -616,7 +550,7 @@ export default function TripCard({
             🏨 Hotels
           </button>
 
-          {/* TRANSPORT */}
+          
 
           <button
             type="button"
@@ -651,9 +585,7 @@ export default function TripCard({
 
         </div>
 
-        {/* =================================================
-            BOOK NOW
-        ================================================= */}
+        
 
         <button
           type="button"
@@ -698,9 +630,7 @@ export default function TripCard({
           Book Now →
         </button>
 
-        {/* =================================================
-            COMMENTS
-        ================================================= */}
+        
 
         <div
           className="

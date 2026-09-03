@@ -35,9 +35,7 @@ export default function ReelsSection({
 
   const [highlightTitle, setHighlightTitle] = useState("");
 
-  /* =====================================================
-     LOAD REELS
-  ===================================================== */
+  
 
   useEffect(() => {
     loadReels();
@@ -52,9 +50,7 @@ export default function ReelsSection({
     }
   }, [userId, currentUserId, isOwnProfile]);
 
-  /* =====================================================
-     GET USER REELS
-  ===================================================== */
+  
 
   const loadReels = async () => {
     try {
@@ -82,9 +78,7 @@ export default function ReelsSection({
     }
   };
 
-  /* =====================================================
-     LOAD LIKED REELS
-  ===================================================== */
+  
 
   const loadLikedReels = async () => {
     try {
@@ -110,9 +104,7 @@ export default function ReelsSection({
     }
   };
 
-  /* =====================================================
-     LOAD SAVED REELS
-  ===================================================== */
+  
 
   const loadSavedReels = async () => {
     try {
@@ -138,9 +130,7 @@ export default function ReelsSection({
     }
   };
 
-  /* =====================================================
-     LOAD HIGHLIGHTS
-  ===================================================== */
+  
 
   const loadHighlights = async () => {
     try {
@@ -166,9 +156,7 @@ export default function ReelsSection({
     }
   };
 
-  /* =====================================================
-     LIKE / UNLIKE
-  ===================================================== */
+  
 
   const handleLike = async (
     reel,
@@ -226,9 +214,7 @@ export default function ReelsSection({
     }
   };
 
-  /* =====================================================
-     SAVE / UNSAVE
-  ===================================================== */
+  
 
   const handleSave = async (
     reel,
@@ -286,25 +272,19 @@ export default function ReelsSection({
     }
   };
 
-  /* =====================================================
-     OPEN REEL
-  ===================================================== */
+  
 
   const openReel = (reel) => {
     setSelectedReel(reel);
   };
 
-  /* =====================================================
-     CLOSE REEL
-  ===================================================== */
+  
 
   const closeReel = () => {
     setSelectedReel(null);
   };
 
-  /* =====================================================
-     CREATE HIGHLIGHT
-  ===================================================== */
+  
 
   const createHighlight = async () => {
     if (!highlightTitle.trim()) {
@@ -354,9 +334,7 @@ export default function ReelsSection({
     }
   };
 
-  /* =====================================================
-     ADD REEL TO HIGHLIGHT
-  ===================================================== */
+  
 
   const addReelToHighlight = async (
     highlightId,
@@ -402,9 +380,7 @@ export default function ReelsSection({
     }
   };
 
-  /* =====================================================
-     LOADING
-  ===================================================== */
+  
 
   if (loading) {
     return (
@@ -416,16 +392,12 @@ export default function ReelsSection({
     );
   }
 
-  /* =====================================================
-     UI
-  ===================================================== */
+  
 
   return (
     <div className="w-full">
 
-      {/* =========================================
-          HEADER
-      ========================================= */}
+      
 
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
@@ -460,9 +432,7 @@ export default function ReelsSection({
 
       </div>
 
-      {/* =========================================
-          HIGHLIGHTS
-      ========================================= */}
+      
 
       {isOwnProfile && (
         <div className="mb-8">
@@ -535,9 +505,7 @@ export default function ReelsSection({
         </div>
       )}
 
-      {/* =========================================
-          NO REELS
-      ========================================= */}
+      
 
       {reels.length === 0 ? (
         <div className="rounded-3xl border border-dashed border-gray-300 bg-gray-50 py-16 text-center">
@@ -566,9 +534,7 @@ export default function ReelsSection({
         </div>
       ) : (
 
-        /* =========================================
-            REELS GRID
-        ========================================= */
+        
 
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
 
@@ -589,7 +555,7 @@ export default function ReelsSection({
                 className="group relative aspect-[9/16] cursor-pointer overflow-hidden rounded-2xl bg-black shadow-md transition duration-300 hover:-translate-y-1 hover:shadow-2xl"
               >
 
-                {/* Thumbnail */}
+                
 
                 {reel.thumbnail ? (
                   <img
@@ -613,17 +579,17 @@ export default function ReelsSection({
                   </div>
                 )}
 
-                {/* Overlay */}
+                
 
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
 
-                {/* Play */}
+                
 
                 <div className="absolute left-1/2 top-1/2 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-black shadow-lg transition group-hover:scale-110">
                   <FaPlay className="ml-1" />
                 </div>
 
-                {/* Bottom */}
+                
 
                 <div className="absolute bottom-0 left-0 right-0 p-3 text-white">
 
@@ -686,9 +652,7 @@ export default function ReelsSection({
         </div>
       )}
 
-      {/* =========================================
-          REEL MODAL
-      ========================================= */}
+      
 
       {selectedReel && (
         <div
@@ -703,7 +667,7 @@ export default function ReelsSection({
             className="relative flex max-h-[90vh] w-full max-w-4xl overflow-hidden rounded-3xl bg-white shadow-2xl"
           >
 
-            {/* Close */}
+            
 
             <button
               onClick={closeReel}
@@ -712,7 +676,7 @@ export default function ReelsSection({
               <FaTimes />
             </button>
 
-            {/* Video */}
+            
 
             <div className="flex min-h-[500px] flex-1 items-center justify-center bg-black">
 
@@ -741,7 +705,7 @@ export default function ReelsSection({
 
             </div>
 
-            {/* Desktop Details */}
+            
 
             <div className="hidden w-80 flex-col border-l p-6 md:flex">
 
@@ -846,7 +810,7 @@ export default function ReelsSection({
 
               </div>
 
-              {/* Add To Highlight */}
+              
 
               {isOwnProfile && (
                 <div className="mt-5">
@@ -888,9 +852,7 @@ export default function ReelsSection({
         </div>
       )}
 
-      {/* =========================================
-          CREATE HIGHLIGHT MODAL
-      ========================================= */}
+      
 
       {showHighlightModal && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 p-4">

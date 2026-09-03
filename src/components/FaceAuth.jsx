@@ -21,11 +21,6 @@ export default function FaceAuth({ onFaceDetected, onClose }) {
 
     const [processing, setProcessing] = useState(false);
 
-
-    // =====================================================
-    // LOAD MODELS
-    // =====================================================
-
     useEffect(() => {
 
         const loadModels = async () => {
@@ -79,11 +74,6 @@ export default function FaceAuth({ onFaceDetected, onClose }) {
         loadModels();
 
     }, []);
-
-
-    // =====================================================
-    // START CAMERA
-    // =====================================================
 
     useEffect(() => {
 
@@ -181,11 +171,6 @@ export default function FaceAuth({ onFaceDetected, onClose }) {
 
     }, [modelsLoaded]);
 
-
-    // =====================================================
-    // FACE POSITION CHECK
-    // =====================================================
-
     const checkFacePosition = async () => {
 
         if (
@@ -227,11 +212,6 @@ export default function FaceAuth({ onFaceDetected, onClose }) {
                 detections.length
             );
 
-
-            // =================================================
-            // NO FACE
-            // =================================================
-
             if (detections.length === 0) {
 
                 setFaceStatus("no-face");
@@ -245,11 +225,6 @@ export default function FaceAuth({ onFaceDetected, onClose }) {
                 return;
 
             }
-
-
-            // =================================================
-            // MORE THAN ONE FACE
-            // =================================================
 
             if (detections.length > 1) {
 
@@ -266,11 +241,6 @@ export default function FaceAuth({ onFaceDetected, onClose }) {
                 return;
 
             }
-
-
-            // =================================================
-            // ONE FACE
-            // =================================================
 
             const detection =
                 detections[0];
@@ -289,11 +259,6 @@ export default function FaceAuth({ onFaceDetected, onClose }) {
             const videoHeight =
                 video.videoHeight;
 
-
-            // =================================================
-            // FACE SIZE
-            // =================================================
-
             const faceWidth =
                 box.width;
 
@@ -309,21 +274,11 @@ export default function FaceAuth({ onFaceDetected, onClose }) {
                 box.y +
                 faceHeight / 2;
 
-
-            // =================================================
-            // FRAME CENTER
-            // =================================================
-
             const centerX =
                 videoWidth / 2;
 
             const centerY =
                 videoHeight / 2;
-
-
-            // =================================================
-            // POSITION TOLERANCE
-            // =================================================
 
             const allowedX =
                 videoWidth * 0.18;
@@ -340,11 +295,6 @@ export default function FaceAuth({ onFaceDetected, onClose }) {
                     faceCenterY - centerY
                 ) < allowedY;
 
-
-            // =================================================
-            // FACE SIZE CHECK
-            // =================================================
-
             const minimumFaceWidth =
                 videoWidth * 0.25;
 
@@ -357,11 +307,6 @@ export default function FaceAuth({ onFaceDetected, onClose }) {
                     minimumFaceWidth &&
                 faceWidth <=
                     maximumFaceWidth;
-
-
-            // =================================================
-            // FINAL CHECK
-            // =================================================
 
             if (
                 isCentered &&
@@ -397,11 +342,6 @@ export default function FaceAuth({ onFaceDetected, onClose }) {
 
     };
 
-
-    // =====================================================
-    // START FACE DETECTION LOOP
-    // =====================================================
-
     useEffect(() => {
 
         if (
@@ -436,11 +376,6 @@ export default function FaceAuth({ onFaceDetected, onClose }) {
         modelsLoaded,
         processing
     ]);
-
-
-    // =====================================================
-    // CAPTURE FACE
-    // =====================================================
 
     const handleFaceAuthentication =
         async () => {
@@ -493,18 +428,10 @@ export default function FaceAuth({ onFaceDetected, onClose }) {
 
                 }
 
-
-                // =================================================
-                // SEND FACE DESCRIPTOR TO LOGIN / REGISTER
-                // =================================================
-
                 const descriptor =
                     Array.from(
                         detection.descriptor
                     );
-
-
-                // Stop camera
                 if (streamRef.current) {
 
                     streamRef.current
@@ -519,9 +446,6 @@ export default function FaceAuth({ onFaceDetected, onClose }) {
                 setFaceMessage(
                     "Face authentication successful ✓"
                 );
-
-
-                // Give UI a moment to show success
                 setTimeout(() => {
 
                     if (onFaceDetected) {
@@ -556,11 +480,6 @@ export default function FaceAuth({ onFaceDetected, onClose }) {
 
         };
 
-
-    // =====================================================
-    // CLOSE
-    // =====================================================
-
     const handleClose = () => {
 
         if (intervalRef.current) {
@@ -591,11 +510,6 @@ export default function FaceAuth({ onFaceDetected, onClose }) {
 
     };
 
-
-    // =====================================================
-    // STATUS COLORS
-    // =====================================================
-
     const isReady =
         faceStatus === "ready";
 
@@ -605,11 +519,6 @@ export default function FaceAuth({ onFaceDetected, onClose }) {
         faceStatus === "multiple" ||
         faceStatus === "position" ||
         faceStatus === "error";
-
-
-    // =====================================================
-    // FACE BOX POSITION
-    // =====================================================
 
     const getFaceBoxStyle = () => {
 
@@ -674,9 +583,7 @@ export default function FaceAuth({ onFaceDetected, onClose }) {
             "
         >
 
-            {/* =================================================
-                MAIN CARD
-            ================================================= */}
+            
 
             <div
                 className="
@@ -691,9 +598,7 @@ export default function FaceAuth({ onFaceDetected, onClose }) {
                 "
             >
 
-                {/* =================================================
-                    HEADER
-                ================================================= */}
+                
 
                 <div
                     className="
@@ -781,9 +686,7 @@ export default function FaceAuth({ onFaceDetected, onClose }) {
                 </div>
 
 
-                {/* =================================================
-                    CAMERA AREA
-                ================================================= */}
+                
 
                 <div
                     className="
@@ -813,7 +716,7 @@ export default function FaceAuth({ onFaceDetected, onClose }) {
                     />
 
 
-                    {/* DARK OVERLAY */}
+                    
 
                     <div
                         className="
@@ -825,9 +728,7 @@ export default function FaceAuth({ onFaceDetected, onClose }) {
                     />
 
 
-                    {/* =================================================
-                        FACE GUIDE
-                    ================================================= */}
+                    
 
                     <div
                         className={`
@@ -851,7 +752,7 @@ export default function FaceAuth({ onFaceDetected, onClose }) {
                         `}
                     >
 
-                        {/* CORNER MARKERS */}
+                        
 
                         <span
                             className="
@@ -910,9 +811,7 @@ export default function FaceAuth({ onFaceDetected, onClose }) {
                         />
 
 
-                        {/* =================================================
-                            SCANNING LINE
-                        ================================================= */}
+                        
 
                         {isReady && !processing && (
 
@@ -934,9 +833,7 @@ export default function FaceAuth({ onFaceDetected, onClose }) {
                     </div>
 
 
-                    {/* =================================================
-                        DETECTED FACE BOX
-                    ================================================= */}
+                    
 
                     {faceBox && (
 
@@ -962,9 +859,7 @@ export default function FaceAuth({ onFaceDetected, onClose }) {
                     )}
 
 
-                    {/* =================================================
-                        TOP STATUS
-                    ================================================= */}
+                    
 
                     <div
                         className="
@@ -1018,9 +913,7 @@ export default function FaceAuth({ onFaceDetected, onClose }) {
                     </div>
 
 
-                    {/* =================================================
-                        FACE COUNT
-                    ================================================= */}
+                    
 
                     {faceCount > 0 && (
 
@@ -1051,9 +944,7 @@ export default function FaceAuth({ onFaceDetected, onClose }) {
                 </div>
 
 
-                {/* =================================================
-                    STATUS MESSAGE
-                ================================================= */}
+                
 
                 <div
                     className="
@@ -1093,9 +984,7 @@ export default function FaceAuth({ onFaceDetected, onClose }) {
                     </div>
 
 
-                    {/* =================================================
-                        INSTRUCTIONS
-                    ================================================= */}
+                    
 
                     {!isReady && (
 
@@ -1116,9 +1005,7 @@ export default function FaceAuth({ onFaceDetected, onClose }) {
                 </div>
 
 
-                {/* =================================================
-                    AUTHENTICATION BUTTON
-                ================================================= */}
+                
 
                 <div
                     className="
@@ -1212,9 +1099,7 @@ export default function FaceAuth({ onFaceDetected, onClose }) {
             </div>
 
 
-            {/* =================================================
-                ANIMATIONS
-            ================================================= */}
+            
 
             <style>
                 {`

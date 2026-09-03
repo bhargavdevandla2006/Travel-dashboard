@@ -1,4 +1,4 @@
-﻿import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import FaceTest from "./pages/FaceTest";
 import Travelers from "./pages/Travelers";
@@ -41,7 +41,7 @@ export default function App() {
         <BrowserRouter>
           <Routes>
 
-            {/* ================= AUTH ================= */}
+            
 
             <Route
               path="/login"
@@ -58,7 +58,7 @@ export default function App() {
     element={<FaceTest />}
 />
 
-            {/* ================= TRAVELERS ================= */}
+            
 
             <Route
               path="/travelers"
@@ -75,7 +75,7 @@ export default function App() {
             />
 
 
-            {/* ================= MESSAGES ================= */}
+            
 
             <Route
               path="/messages/:id"
@@ -87,7 +87,7 @@ export default function App() {
             />
 
 
-            {/* ================= DASHBOARD ================= */}
+            
 
             <Route
               path="/"
@@ -99,7 +99,7 @@ export default function App() {
             />
 
 
-            {/* ================= DESTINATIONS ================= */}
+            
 
             <Route
               path="/destinations"
@@ -120,7 +120,7 @@ export default function App() {
             />
 
 
-            {/* ================= TRIPS ================= */}
+            
 
             <Route
               path="/trips"
@@ -150,7 +150,7 @@ export default function App() {
             />
 
 
-            {/* ================= PROFILE ================= */}
+            
 
             <Route
               path="/profile"
@@ -162,7 +162,7 @@ export default function App() {
             />
 
 
-            {/* ================= FAVORITES ================= */}
+            
 
             <Route
               path="/favorites"
@@ -174,7 +174,7 @@ export default function App() {
             />
 
 
-            {/* ================= HOTELS ================= */}
+            
 
             <Route
               path="/hotels/:location?"
@@ -195,7 +195,7 @@ export default function App() {
             />
 
 
-            {/* ================= TRANSPORT ================= */}
+            
 
             <Route
               path="/transport/:location?"
@@ -207,7 +207,7 @@ export default function App() {
             />
 
 
-            {/* ================= BOOKING ================= */}
+            
 
             <Route
               path="/booking"
@@ -219,7 +219,7 @@ export default function App() {
             />
 
 
-            {/* ================= SETTINGS ================= */}
+            
 
             <Route
               path="/settings"
@@ -231,7 +231,7 @@ export default function App() {
             />
 
 
-            {/* ================= FALLBACK ================= */}
+            
 
             <Route
               path="*"
