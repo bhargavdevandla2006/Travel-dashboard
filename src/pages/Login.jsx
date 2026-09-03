@@ -1,6 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { loginUser, sendLoginOtp, verifyOtpLogin } from "../services/api";
 import { useNavigate, Link } from "react-router-dom";
+
+const isValidPhoneNumber = (value) => {
+    const cleaned = String(value).replace(/\s+/g, "").replace(/[()\-]/g, "");
+    return /^\+?[1-9]\d{8,14}$/.test(cleaned);
+};
 
 export default function Login() {
     const navigate = useNavigate();
@@ -9,6 +14,17 @@ export default function Login() {
     const [otp, setOtp] = useState("");
     const [otpSent, setOtpSent] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [countdown, setCountdown] = useState(0);
+
+    useEffect(() => {
+        if (countdown <= 0) return;
+
+        const timer = setTimeout(() => {
+            setCountdown((prev) => prev - 1);
+        }, 1000);
+
+        return () => clearTimeout(timer);
+    }, [countdown]);
 
     const handleSendOtp = async () => {
         if (!phone.trim()) {
@@ -16,10 +32,17 @@ export default function Login() {
             return;
         }
 
+        if (!isValidPhoneNumber(phone)) {
+            alert("Please enter a valid mobile number, for example +91 98765 43210");
+            return;
+        }
+
         try {
             setLoading(true);
             await sendLoginOtp({ phone });
             setOtpSent(true);
+            setOtp("");
+            setCountdown(30);
             alert("OTP sent to your mobile number");
         } catch (error) {
             alert(error.message || "Unable to send OTP");
@@ -160,7 +183,7 @@ export default function Login() {
                                 type="button"
                                 onClick={handleSendOtp}
                                 disabled={loading}
-                                className="group w-full h-14 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-bold text-lg shadow-lg shadow-blue-200 hover:shadow-xl hover:shadow-blue-300 hover:-translate-y-1 active:translate-y-0 transition-all duration-300"
+                                className="group w-full h-14 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-bold text-lg shadow-lg shadow-blue-200 hover:shadow-xl hover:shadow-blue-300 hover:-translate-y-1 active:translate-y-0 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
                             >
                                 {loading ? "Sending..." : "Send OTP"}
                             </button>
@@ -186,6 +209,15 @@ export default function Login() {
                                     className="group w-full h-14 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-bold text-lg shadow-lg shadow-blue-200 hover:shadow-xl hover:shadow-blue-300 hover:-translate-y-1 active:translate-y-0 transition-all duration-300"
                                 >
                                     {loading ? "Verifying..." : "Verify & Login"}
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onClick={handleSendOtp}
+                                    disabled={loading || countdown > 0}
+                                    className="mt-3 w-full h-11 rounded-2xl border border-slate-200 bg-slate-50 text-slate-700 font-semibold hover:bg-slate-100 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {countdown > 0 ? `Resend OTP in ${countdown}s` : "Resend OTP"}
                                 </button>
                             </>
                         )}
