@@ -360,6 +360,388 @@ img {
   }
 }
 
+.travel-page {
+  background:
+    radial-gradient(circle at 50% 45%, rgba(14, 165, 233, 0.14), transparent 28%),
+    linear-gradient(135deg, #020617 0%, #071a31 48%, #170d25 100%);
+}
+
+.travel-backdrop {
+  z-index: 0;
+  overflow: hidden;
+  opacity: 1;
+  background-image:
+    linear-gradient(rgba(125, 211, 252, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(125, 211, 252, 0.035) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: linear-gradient(to bottom, transparent, black 12%, black 88%, transparent);
+  animation: mapGridDrift 22s linear infinite;
+}
+
+.travel-flight-board {
+  position: absolute;
+  z-index: 1;
+  border-left: 2px solid rgba(125, 211, 252, 0.7);
+  padding: 0.65rem 0.9rem;
+  color: rgba(224, 242, 254, 0.62);
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  animation: boardFloat 5s ease-in-out infinite;
+}
+
+.travel-flight-board span {
+  display: block;
+  margin-top: 0.3rem;
+  color: #7dd3fc;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+}
+
+.travel-flight-board-one { top: 22%; left: 5%; }
+.travel-flight-board-two { right: 6%; bottom: 20%; border-color: rgba(253, 164, 175, 0.7); animation-delay: 1.4s; }
+.travel-flight-board-two span { color: #fda4af; }
+
+.travel-backdrop::before,
+.travel-backdrop::after {
+  position: absolute;
+  content: "";
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.travel-page > .relative {
+  z-index: 10;
+}
+
+.travel-shell {
+  animation: shellFloat 8s ease-in-out infinite;
+  isolation: isolate;
+}
+
+.travel-shell::before {
+  position: absolute;
+  z-index: -1;
+  inset: -2px;
+  content: "";
+  border-radius: 42px;
+  background: conic-gradient(from 180deg, transparent 0deg, rgba(56, 189, 248, 0.45) 75deg, transparent 145deg, rgba(251, 113, 133, 0.32) 230deg, transparent 310deg);
+  animation: shellBorder 9s linear infinite;
+}
+
+.travel-story {
+  animation: contentRise 0.8s ease-out both;
+}
+
+.travel-generator {
+  animation: contentRise 0.8s 0.16s ease-out both, generatorPulse 7s 1s ease-in-out infinite;
+}
+
+.travel-chip {
+  transition: transform 220ms ease, box-shadow 220ms ease;
+}
+
+.travel-chip:hover {
+  transform: translateY(-3px) rotate(-2deg);
+  box-shadow: 0 8px 18px rgba(125, 211, 252, 0.22);
+}
+
+.travel-backdrop::before {
+  width: 36rem;
+  height: 36rem;
+  top: -18rem;
+  left: -12rem;
+  border: 1px solid rgba(125, 211, 252, 0.28);
+  box-shadow: 0 0 90px rgba(14, 165, 233, 0.08);
+}
+
+.travel-backdrop::after {
+  width: 28rem;
+  height: 28rem;
+  right: -10rem;
+  bottom: -14rem;
+  background: rgba(244, 63, 94, 0.09);
+  filter: blur(45px);
+}
+
+.travel-route {
+  position: absolute;
+  width: 58vw;
+  height: 18rem;
+  border-top: 3px dashed rgba(125, 211, 252, 0.78);
+  border-radius: 50%;
+  transform: rotate(-14deg);
+  filter: drop-shadow(0 0 7px rgba(56, 189, 248, 0.35));
+  animation-name: routeShimmer;
+  animation-duration: 4s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+.travel-route-one {
+  top: 18%;
+  left: -8%;
+  animation: routeDrift 9s ease-in-out infinite, routeShimmer 4s ease-in-out infinite;
+}
+
+.travel-route-two {
+  right: -12%;
+  bottom: 18%;
+  border-color: rgba(251, 113, 133, 0.35);
+  transform: rotate(19deg);
+  animation: routeDrift 11s ease-in-out infinite reverse, routeShimmer 5s ease-in-out 1s infinite;
+}
+
+.travel-node {
+  position: absolute;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: #7dd3fc;
+  box-shadow: 0 0 0 5px rgba(125, 211, 252, 0.12), 0 0 22px 6px rgba(14, 165, 233, 0.5);
+  animation: nodePulse 2.8s ease-in-out infinite;
+}
+
+.travel-node-one { top: 23%; left: 18%; }
+.travel-node-two { top: 39%; right: 13%; animation-delay: 0.8s; background: #fda4af; box-shadow: 0 0 0 5px rgba(253, 164, 175, 0.12), 0 0 22px 6px rgba(244, 63, 94, 0.45); }
+.travel-node-three { bottom: 17%; left: 36%; animation-delay: 1.5s; }
+
+.travel-pin {
+  position: absolute;
+  z-index: 1;
+  color: #7dd3fc;
+  font-size: 1.35rem;
+  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.7));
+  animation: pinFloat 4s ease-in-out infinite;
+}
+
+.travel-pin::after {
+  position: absolute;
+  top: 0.2rem;
+  left: 0.22rem;
+  width: 0.9rem;
+  height: 0.9rem;
+  content: "";
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  animation: pinPing 2s ease-out infinite;
+}
+
+.travel-pin-one { top: 34%; left: 10%; }
+.travel-pin-two { right: 8%; bottom: 29%; color: #fda4af; animation-delay: 1.2s; }
+
+.travel-plane {
+  position: absolute;
+  color: #bae6fd;
+  filter: drop-shadow(0 0 12px rgba(56, 189, 248, 0.75));
+}
+
+.travel-plane-one {
+  top: 19%;
+  left: 32%;
+  font-size: 1.5rem;
+  animation: flightAcross 12s ease-in-out infinite;
+}
+
+.travel-plane-two {
+  right: 25%;
+  bottom: 23%;
+  color: #fecdd3;
+  font-size: 1.1rem;
+  transform: rotate(35deg);
+  animation: flightAcross 15s ease-in-out 2s infinite reverse;
+}
+
+.travel-plane-sweep {
+  position: absolute;
+  z-index: 2;
+  font-size: 4.25rem;
+  filter: drop-shadow(0 0 18px rgba(125, 211, 252, 1));
+}
+
+.travel-plane-sweep-forward {
+  top: 28%;
+  left: -4rem;
+  color: #bae6fd;
+  animation: planeSweepForward 18s linear infinite;
+}
+
+.travel-plane-sweep-return {
+  right: -4rem;
+  bottom: 31%;
+  color: #fecdd3;
+  filter: drop-shadow(0 0 14px rgba(251, 113, 133, 0.8));
+  transform: scaleX(-1);
+  animation: planeSweepReturn 22s linear 4s infinite;
+}
+
+.travel-compass {
+  position: absolute;
+  right: 8%;
+  top: 12%;
+  color: rgba(186, 230, 253, 0.3);
+  font-size: 5rem;
+  animation: compassFloat 8s ease-in-out infinite;
+}
+
+.travel-globe {
+  position: absolute;
+  right: 17%;
+  bottom: 12%;
+  color: rgba(125, 211, 252, 0.16);
+  font-size: 9rem;
+  animation: globeFloat 14s ease-in-out infinite;
+}
+
+.travel-suitcase {
+  position: absolute;
+  left: 8%;
+  bottom: 14%;
+  color: rgba(253, 164, 175, 0.3);
+  font-size: 3rem;
+  animation: suitcaseFloat 7s ease-in-out 1s infinite;
+}
+
+.travel-label {
+  position: absolute;
+  z-index: 1;
+  border: 1px solid rgba(186, 230, 253, 0.2);
+  border-radius: 999px;
+  background: rgba(2, 6, 23, 0.42);
+  padding: 0.55rem 0.8rem;
+  color: rgba(224, 242, 254, 0.7);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  backdrop-filter: blur(10px);
+  animation: labelFloat 6s ease-in-out infinite;
+}
+
+.travel-label span { color: #7dd3fc; }
+.travel-label-one { top: 13%; left: 12%; }
+.travel-label-two { right: 13%; bottom: 15%; color: rgba(255, 228, 230, 0.7); animation-delay: 1.5s; }
+.travel-label-two span { color: #fda4af; }
+
+@keyframes routeDrift {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-14deg); }
+  50% { transform: translate3d(2rem, 0.8rem, 0) rotate(-11deg); }
+}
+
+@keyframes mapGridDrift {
+  from { background-position: 0 0; }
+  to { background-position: 72px 72px; }
+}
+
+@keyframes shellFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-0.35rem); }
+}
+
+@keyframes shellBorder {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes contentRise {
+  from { opacity: 0; transform: translateY(1rem); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes generatorPulse {
+  0%, 100% { box-shadow: 0 25px 60px rgba(0, 0, 0, 0.38); }
+  50% { box-shadow: 0 30px 70px rgba(14, 165, 233, 0.16); }
+}
+
+@keyframes boardFloat {
+  0%, 100% { transform: translateY(0); opacity: 0.58; }
+  50% { transform: translateY(-0.7rem); opacity: 1; }
+}
+
+@keyframes routeShimmer {
+  0%, 100% { opacity: 0.38; stroke-dashoffset: 0; }
+  50% { opacity: 0.95; stroke-dashoffset: 20px; }
+}
+
+@keyframes nodePulse {
+  0%, 100% { transform: scale(0.85); opacity: 0.65; }
+  50% { transform: scale(1.25); opacity: 1; }
+}
+
+@keyframes pinFloat {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-0.7rem) scale(1.08); }
+}
+
+@keyframes pinPing {
+  0% { opacity: 0.7; transform: scale(0.65); }
+  100% { opacity: 0; transform: scale(2.4); }
+}
+
+@keyframes flightAcross {
+  0%, 100% { transform: translate3d(-1rem, 0.5rem, 0) rotate(18deg); }
+  50% { transform: translate3d(2rem, -1.5rem, 0) rotate(18deg); }
+}
+
+@keyframes planeSweepForward {
+  0% { transform: translate3d(0, 2rem, 0) rotate(14deg); opacity: 0; }
+  8% { opacity: 1; }
+  48% { transform: translate3d(54vw, -4rem, 0) rotate(8deg); }
+  92% { opacity: 1; }
+  100% { transform: translate3d(108vw, -8rem, 0) rotate(4deg); opacity: 0; }
+}
+
+@keyframes planeSweepReturn {
+  0% { transform: translate3d(0, -2rem, 0) scaleX(-1) rotate(12deg); opacity: 0; }
+  8% { opacity: 1; }
+  52% { transform: translate3d(-56vw, 4rem, 0) scaleX(-1) rotate(5deg); }
+  92% { opacity: 1; }
+  100% { transform: translate3d(-108vw, 8rem, 0) scaleX(-1) rotate(2deg); opacity: 0; }
+}
+
+@keyframes compassFloat {
+  0%, 100% { transform: translateY(0) rotate(-8deg); }
+  50% { transform: translateY(1rem) rotate(8deg); }
+}
+
+@keyframes suitcaseFloat {
+  0%, 100% { transform: translateY(0) rotate(-8deg); }
+  50% { transform: translateY(-0.8rem) rotate(4deg); }
+}
+
+@keyframes globeFloat {
+  0%, 100% { transform: translateY(0) rotate(-8deg); }
+  50% { transform: translateY(-1.2rem) rotate(8deg); }
+}
+
+@keyframes labelFloat {
+  0%, 100% { transform: translateY(0); opacity: 0.72; }
+  50% { transform: translateY(-0.45rem); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .travel-route,
+  .travel-node,
+  .travel-pin,
+  .travel-plane,
+  .travel-plane-sweep,
+  .travel-compass,
+  .travel-globe,
+  .travel-suitcase,
+  .travel-label,
+  .travel-backdrop,
+  .travel-flight-board {
+    animation: none;
+  }
+
+  .travel-shell,
+  .travel-shell::before,
+  .travel-story,
+  .travel-generator {
+    animation: none;
+  }
+}
+
 
 
 @media (max-width: 640px) {

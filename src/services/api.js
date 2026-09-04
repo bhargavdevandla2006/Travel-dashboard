@@ -153,6 +153,7 @@ export const createTrip = async (tripData) => {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify(tripData),
   });
 };
