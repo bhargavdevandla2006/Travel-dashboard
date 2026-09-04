@@ -14,6 +14,7 @@ import TripCard from "../components/TripCard";
 import MapView from "../components/MapView";
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 
 
@@ -140,6 +141,7 @@ const quickStart = [
 
 export default function Index() {
   const { darkMode } = useTheme();
+  const navigate = useNavigate();
 
   const [search, setSearch] = useState("");
 
@@ -297,6 +299,7 @@ export default function Index() {
 
                 <button
                   type="button"
+                  onClick={() => navigate("/add-trip")}
                   className="
                     mt-8
                     bg-white
