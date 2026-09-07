@@ -5,6 +5,7 @@ import { useMap } from "../context/MapContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useLanguage } from "../context/LanguageContext";
 import { useTheme } from "../context/ThemeContext";
+import { logoutUser } from "../services/api";
 
 export default function Settings() {
 
@@ -110,9 +111,13 @@ export default function Settings() {
   const location = useLocation();
 
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+    } finally {
+      localStorage.removeItem("token");
+      navigate("/login");
+    }
   };
 
   const handleResetSettings = () => {
