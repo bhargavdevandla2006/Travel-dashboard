@@ -41,13 +41,24 @@ export default function Register() {
             return;
         }
 
+        await completeRegistration();
+    };
+
+    const handleFaceRegistration = (e) => {
+        e.preventDefault();
+
+        if (!passwordValid) {
+            alert("Password must contain at least 8 characters, one alphabet and one number.");
+            return;
+        }
+
         setShowFaceAuth(true);
     };
 
-    const handleFaceDetected = async (faceDescriptor) => {
+    const completeRegistration = async (faceDescriptor) => {
         try {
             setIsRegistering(true);
-            await registerUser({ ...formData, faceDescriptor, browserId: getBrowserId() });
+            await registerUser({ ...formData, faceDescriptor, browserId: faceDescriptor ? getBrowserId() : undefined });
             setRegistrationComplete(true);
         } catch (error) {
             alert(error.message || "Register failed");
@@ -55,6 +66,10 @@ export default function Register() {
             setIsRegistering(false);
             setShowFaceAuth(false);
         }
+    };
+
+    const handleFaceDetected = async (faceDescriptor) => {
+        await completeRegistration(faceDescriptor);
     };
 
     if (registrationComplete) {
@@ -65,7 +80,7 @@ export default function Register() {
                         ✅
                     </div>
                     <h1 className="text-3xl font-bold tracking-tight text-slate-900">Registration complete!</h1>
-                    <p className="mt-3 text-slate-500">Your face and password are ready. Enter TravelHub to start planning your next trip.</p>
+                    <p className="mt-3 text-slate-500">Your account is ready. Enter TravelHub to start planning your next trip.</p>
                     <button
                         type="button"
                         onClick={() => navigate("/")}
@@ -395,8 +410,23 @@ export default function Register() {
                             disabled={isRegistering}
                             className="group w-full h-14 mt-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-bold text-lg shadow-lg shadow-blue-200 hover:shadow-xl hover:shadow-blue-300 hover:-translate-y-1 active:translate-y-0 transition-all duration-300 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            <span>{isRegistering ? "Creating account..." : "Verify Face & Register"}</span>
+                            <span>{isRegistering ? "Creating account..." : "Register"}</span>
                             <span className="text-2xl group-hover:translate-x-2 transition-transform duration-300">→</span>
+                        </button>
+
+                        <div className="my-5 flex items-center gap-3 text-xs uppercase tracking-wider text-slate-400">
+                            <span className="h-px flex-1 bg-slate-200" />
+                            <span>or</span>
+                            <span className="h-px flex-1 bg-slate-200" />
+                        </div>
+
+                        <button
+                            type="button"
+                            onClick={handleFaceRegistration}
+                            disabled={isRegistering}
+                            className="group w-full h-14 rounded-2xl border-2 border-blue-600 text-blue-700 font-bold text-lg hover:bg-blue-50 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
+                        >
+                            Register with Face ID
                         </button>
 
                         <p className="text-center text-slate-500 mt-8">
