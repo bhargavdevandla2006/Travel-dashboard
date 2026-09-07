@@ -16,6 +16,7 @@ export default function Register() {
     const [showPassword, setShowPassword] = useState(false);
     const [showFaceAuth, setShowFaceAuth] = useState(false);
     const [isRegistering, setIsRegistering] = useState(false);
+    const [registrationComplete, setRegistrationComplete] = useState(false);
 
     const hasLength = formData.password.length >= 8;
     const hasLetter = /[A-Za-z]/.test(formData.password);
@@ -47,8 +48,7 @@ export default function Register() {
         try {
             setIsRegistering(true);
             await registerUser({ ...formData, faceDescriptor, browserId: getBrowserId() });
-            alert("Registration successful!");
-            navigate("/");
+            setRegistrationComplete(true);
         } catch (error) {
             alert(error.message || "Register failed");
         } finally {
@@ -56,6 +56,27 @@ export default function Register() {
             setShowFaceAuth(false);
         }
     };
+
+    if (registrationComplete) {
+        return (
+            <div className="min-h-screen bg-black-50 flex items-center justify-center p-6">
+                <div className="w-full max-w-md rounded-[32px] bg-white p-8 text-center shadow-2xl sm:p-10">
+                    <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-green-50 text-5xl shadow-lg">
+                        ✅
+                    </div>
+                    <h1 className="text-3xl font-bold tracking-tight text-slate-900">Registration complete!</h1>
+                    <p className="mt-3 text-slate-500">Your face and password are ready. Enter TravelHub to start planning your next trip.</p>
+                    <button
+                        type="button"
+                        onClick={() => navigate("/")}
+                        className="mt-8 flex h-14 w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-lg font-bold text-white shadow-lg shadow-blue-200 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+                    >
+                        Enter Project <span className="text-2xl">→</span>
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-black-50 flex items-center justify-center p-6 relative overflow-hidden">
