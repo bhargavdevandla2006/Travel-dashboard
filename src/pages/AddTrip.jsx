@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { FaCompass, FaGlobeAmericas, FaMapMarkerAlt, FaPlane, FaSuitcaseRolling } from "react-icons/fa";
 import { createTrip } from "../services/api";
 
 export default function AddTrip() {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const [destination, setDestination] = useState("");
+  const [destination, setDestination] = useState(location.state?.destination || "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
