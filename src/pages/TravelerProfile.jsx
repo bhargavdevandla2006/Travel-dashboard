@@ -1738,8 +1738,18 @@ if (error || !user) {
 
                     <article
                       key={trip.id}
+                      role="link"
+                      tabIndex={0}
+                      onClick={() => navigate(`/trip/${trip.id}`, { state: trip })}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                          event.preventDefault();
+                          navigate(`/trip/${trip.id}`, { state: trip });
+                        }
+                      }}
                       className="
                         group
+                        cursor-pointer
                         bg-white
                         dark:bg-[#0f172a]
                         rounded-3xl
@@ -1749,6 +1759,13 @@ if (error || !user) {
                         border-gray-100
                         dark:border-gray-800
                         hover:-translate-y-2
+                        hover:border-blue-300
+                        dark:hover:border-blue-500/50
+                        focus:outline-none
+                        focus:ring-2
+                        focus:ring-blue-500
+                        focus:ring-offset-2
+                        dark:focus:ring-offset-[#020617]
                         transition-all
                         duration-300
                       "
@@ -1877,6 +1894,11 @@ if (error || !user) {
 
                           </div>
                         )}
+
+                        <div className="mt-5 flex items-center justify-between border-t border-gray-100 pt-4 text-sm font-bold text-blue-600 dark:border-gray-800 dark:text-cyan-300">
+                          <span>View itinerary</span>
+                          <FaExternalLinkAlt className="text-xs transition-transform group-hover:translate-x-1" />
+                        </div>
 
                       </div>
 

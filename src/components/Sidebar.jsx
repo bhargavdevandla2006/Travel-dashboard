@@ -1,6 +1,8 @@
-import { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useLanguage } from "../context/LanguageContext";
+import { createLocalNotification } from "../services/api";
+import { setActiveBudget } from "../utils/budget";
 import {
     FaBars,
     FaBell,
@@ -22,9 +24,44 @@ import {
 export default function Sidebar() {
     const [collapsed, setCollapsed] = useState(false);
     const [showSettingsMenu, setShowSettingsMenu] = useState(false);
+    const [isPremium, setIsPremium] = useState(() => {
+        if (typeof window === "undefined") return false;
+        return localStorage.getItem("travelhub-premium") === "true";
+    });
 
     const navigate = useNavigate();
+    const location = useLocation();
     const { t } = useLanguage();
+
+    const budgetMatch = location.pathname.match(/^\/budget\/(low|high|premium)$/);
+
+    const searchParams = new URLSearchParams(location.search);
+    const queryBudget = searchParams.get("budget");
+
+    const activeBudget = budgetMatch?.[1] || queryBudget || localStorage.getItem("travelhub-budget");
+
+    useEffect(() => {
+        localStorage.setItem("travelhub-premium", String(isPremium));
+    }, [isPremium]);
+
+    useEffect(() => {
+        if (budgetMatch?.[1]) {
+            localStorage.setItem("travelhub-budget", budgetMatch[1]);
+        }
+    }, [activeBudget]);
+
+    const handlePremiumToggle = () => {
+        const nextPremium = !isPremium;
+        setIsPremium(nextPremium);
+
+        createLocalNotification({
+            type: "premium",
+            title: nextPremium ? "Premium activated" : "Premium deactivated",
+            message: nextPremium
+                ? "Your TravelHub premium plan is now active. Enjoy unlimited bookings and exclusive discounts."
+                : "Your premium benefits were removed. Upgrade anytime to unlock more perks.",
+        });
+    };
 
     const menu = [
         { name: t("Favorites"), icon: <FaHeart />, path: "/favorites" },
@@ -34,6 +71,12 @@ export default function Sidebar() {
         { name: t("Travelers"), icon: <FaUsers />, path: "/travelers" },
         { name: t("Profile"), icon: <FaUserCircle />, path: "/profile" },
         { name: t("Settings"), icon: <FaCog />, path: "/settings" },
+    ];
+
+    const budgetOptions = [
+        { label: "Low", icon: "💰", path: "/budget/low" },
+        { label: "High", icon: "⭐", path: "/budget/high" },
+        { label: "Premium", icon: "👑", path: "/budget/premium" },
     ];
 
     const openSettingsSection = (section) => {
@@ -149,16 +192,24 @@ transition
                         }
 
                         return (
-                            <NavLink key={item.name} to={item.path}>
+                            <NavLink
+                                key={item.name}
+                                to={
+                                    activeBudget && item.path !== "/"
+                                        ? `${item.path}?budget=${activeBudget}`
+                                        : item.path
+                                }
+                            >
                                 {({ isActive }) => {
-                                    const activeStyle = isActive ? { background: 'linear-gradient(90deg, var(--accent-1), var(--accent-2))', boxShadow: '0 10px 30px rgba(0,0,0,0.08)', color: '#fff' } : {};
+                                    const menuIsActive = isActive;
+                                    const activeStyle = menuIsActive ? { background: 'linear-gradient(90deg, var(--accent-1), var(--accent-2))', boxShadow: '0 10px 30px rgba(0,0,0,0.08)', color: '#fff' } : {};
                                     return (
-                                        <div style={activeStyle} className={`relative group flex items-center ${collapsed ? "justify-center" : "justify-start"} ${collapsed ? "" : "gap-4"} ${collapsed ? "px-0" : "px-4"} py-3.5 mb-2 rounded-2xl transition-all duration-300 ${isActive ? "text-white" : "hover:bg-gray-100 dark:hover:bg-gray-800 hover:translate-x-1"}`}>
-                                            {!collapsed && isActive && <div style={{ background: 'linear-gradient(180deg, var(--accent-1), var(--accent-2))' }} className="absolute left-0 top-0 h-full w-1 rounded-r-2xl" />}
+                                        <div style={activeStyle} className={`relative group flex items-center ${collapsed ? "justify-center" : "justify-start"} ${collapsed ? "" : "gap-4"} ${collapsed ? "px-0" : "px-4"} py-3.5 mb-2 rounded-2xl transition-all duration-300 ${menuIsActive ? "text-white" : "hover:bg-gray-100 dark:hover:bg-gray-800 hover:translate-x-1"}`}>
+                                            {!collapsed && menuIsActive && <div style={{ background: 'linear-gradient(180deg, var(--accent-1), var(--accent-2))' }} className="absolute left-0 top-0 h-full w-1 rounded-r-2xl" />}
 
-                                            <span className={`text-[20px] ${isActive ? "text-white" : "text-slate-700 dark:text-gray-200"}`}>{item.icon}</span>
+                                            <span className={`text-[20px] ${menuIsActive ? "text-white" : "text-slate-700 dark:text-gray-200"}`}>{item.icon}</span>
 
-                                            {!collapsed && <span className={`font-medium tracking-wide ${isActive ? "text-white" : "text-slate-700 dark:text-gray-200"}`}>{item.name}</span>}
+                                            {!collapsed && <span className={`font-medium tracking-wide ${menuIsActive ? "text-white" : "text-slate-700 dark:text-gray-200"}`}>{item.name}</span>}
                                         </div>
                                     );
                                 }}
@@ -169,54 +220,71 @@ transition
 
                 {!collapsed && (
                     <div className="px-5 mt-8">
-                        <h2 className="text-xs uppercase tracking-[3px] text-slate-400 dark:text-slate-300 mb-4">Recent Trips</h2>
+                        <h2 className="text-xs uppercase tracking-[3px] text-slate-400 dark:text-slate-300 mb-4">Travel Budget</h2>
 
-                        <div className="space-y-3">
-                            <div className="bg-gray-100 dark:bg-[#111827] hover:bg-gray-200 dark:hover:bg-[#111827] rounded-2xl p-4 transition cursor-pointer">
-                                <p className="font-semibold">🏝 Bali</p>
-                                <p className="text-xs text-slate-400 dark:text-slate-300">Indonesia</p>
-                            </div>
-
-                            <div className="bg-gray-100 dark:bg-[#111827] hover:bg-gray-200 dark:hover:bg-[#111827] rounded-2xl p-4 transition cursor-pointer">
-                                <p className="font-semibold">🗼 Paris</p>
-                                <p className="text-xs text-slate-400 dark:text-slate-300">France</p>
-                            </div>
-
-                            <div className="bg-gray-100 dark:bg-[#111827] hover:bg-gray-200 dark:hover:bg-[#111827] rounded-2xl p-4 transition cursor-pointer">
-                                <p className="font-semibold">🗻 Tokyo</p>
-                                <p className="text-xs text-slate-400 dark:text-slate-300">Japan</p>
-                            </div>
-
+                        <div className="space-y-2">
+                            {(activeBudget
+                                ? budgetOptions.filter(
+                                    (option) =>
+                                        option.label.toLowerCase() === activeBudget
+                                )
+                                : budgetOptions
+                            ).map((option) => (
+                                <button
+                                    key={option.label}
+                                    type="button"
+                                    onClick={() => {
+                                        setActiveBudget(option.label.toLowerCase());
+                                        navigate(option.path);
+                                    }}
+                                    className="flex w-full items-center justify-between rounded-2xl border border-white/10 bg-slate-100/80 px-3 py-2.5 text-left text-sm font-semibold text-slate-700 transition duration-200 hover:border-cyan-400 hover:bg-cyan-500/10 hover:text-cyan-300 dark:bg-[#111827] dark:text-slate-200 dark:hover:border-cyan-400 dark:hover:text-cyan-300"
+                                >
+                                    <span className="flex items-center gap-2">
+                                        <span>{option.icon}</span>
+                                        <span>{option.label}</span>
+                                    </span>
+                                </button>
+                            ))}
                         </div>
-
                     </div>
                 )}
             </div>
 
             {!collapsed && (
                 <div className="m-5">
-                    <div className="rounded-3xl p-6 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, var(--accent-1), var(--accent-2))' }}>
+                    <div className="rounded-3xl p-6 relative overflow-hidden" style={{ background: isPremium ? 'linear-gradient(135deg, #1d4ed8, #0ea5e9)' : 'linear-gradient(135deg, var(--accent-1), var(--accent-2))' }}>
                         <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full" style={{ background: 'rgba(255,255,255,0.08)' }}></div>
                         <div className="absolute -left-10 bottom-0 h-20 w-20 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}></div>
 
                         <div className="relative text-white">
-                            <h2 className="text-xl font-bold">Premium</h2>
+                            <div className="flex items-center justify-between gap-2">
+                                <h2 className="text-xl font-bold">Premium</h2>
+                                {isPremium && (
+                                    <span className="rounded-full bg-white/15 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-emerald-100">
+                                        Active
+                                    </span>
+                                )}
+                            </div>
 
                             <p className="text-sm text-blue-100 mt-3 leading-6">
-                                Unlimited Bookings
+                                {isPremium ? "Unlock your full travel benefits" : "Unlimited Bookings"}
                                 <br />
-                                Hotel Discounts
+                                {isPremium ? "Priority support included" : "Hotel Discounts"}
                                 <br />
-                                Priority Support
+                                {isPremium ? "No booking limits" : "Priority Support"}
                             </p>
 
-                            <button className="mt-6 w-full rounded-2xl bg-white/10 text-white py-3 font-semibold hover:scale-105 transition">Upgrade →</button>
-
+                            <button
+                                onClick={handlePremiumToggle}
+                                className="mt-6 w-full rounded-2xl bg-white/10 text-white py-3 font-semibold hover:scale-105 transition disabled:opacity-70"
+                            >
+                                {isPremium ? "Premium Active →" : "Upgrade →"}
+                            </button>
                         </div>
-
                     </div>
                 </div>
             )}
+
         </div>
     );
 }

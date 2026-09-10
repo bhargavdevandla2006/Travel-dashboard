@@ -24,6 +24,7 @@ import DestinationDetails from "./pages/DestinationDetails";
 import TravelerProfile from "./pages/TravelerProfile";
 import Favorites from "./pages/Favorites";
 import Messages from "./pages/Messages";
+import BudgetResults from "./pages/BudgetResults";
 
 import { useTheme } from "./context/ThemeContext";
 
@@ -230,8 +231,14 @@ export default function App() {
               }
             />
 
-
-            
+            <Route
+              path="/budget/:budget"
+              element={
+                <ProtectedRoute>
+                  <BudgetResults />
+                </ProtectedRoute>
+              }
+            />
 
             <Route
               path="*"

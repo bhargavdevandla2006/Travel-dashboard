@@ -15,6 +15,7 @@ import MapView from "../components/MapView";
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useTheme } from "../context/ThemeContext";
 
 
@@ -144,10 +145,13 @@ export default function Index() {
   const navigate = useNavigate();
 
   const [search, setSearch] = useState("");
+  const [activeTrip, setActiveTrip] = useState(0);
+  const [hiddenTripIds, setHiddenTripIds] = useState([]);
 
   
 
   const filteredTrips = trips.filter((item) => {
+    if (hiddenTripIds.includes(item.id)) return false;
     return (
       item.title
         .toLowerCase()
@@ -158,6 +162,18 @@ export default function Index() {
         .includes(search.toLowerCase())
     );
   });
+
+  const visibleTrips = filteredTrips.slice(activeTrip, activeTrip + 3);
+
+  function changeSearch(value) {
+    setSearch(value);
+    setActiveTrip(0);
+  }
+
+  function removeTrip(tripId) {
+    setHiddenTripIds((current) => [...current, tripId]);
+    setActiveTrip(0);
+  }
 
   
 
@@ -198,7 +214,7 @@ export default function Index() {
 
           <Navbar
             search={search}
-            setSearch={setSearch}
+            setSearch={changeSearch}
           />
 
           
@@ -727,36 +743,21 @@ export default function Index() {
                 Your Trips
               </h1>
 
-              <div
-                className="
-                  grid
-                  grid-cols-1
-                  md:grid-cols-2
-                  xl:grid-cols-4
-                  gap-6
-                "
-              >
-
-                {filteredTrips.map((item) => (
-
-                  <TripCard
-                    key={item.id}
-
-                    
-
-                    id={item.id}
-
-                    title={item.title}
-
-                    location={item.location}
-
-                    price={item.price}
-
-                    image={item.image}
-                  />
-
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-semibold text-slate-500 dark:text-slate-300">
+                  {filteredTrips.length ? `${activeTrip + 1}-${Math.min(activeTrip + 3, filteredTrips.length)} of ${filteredTrips.length}` : "No matching trips"}
+                </p>
+                <div className="flex gap-2">
+                  <button type="button" onClick={() => setActiveTrip((current) => Math.max(0, current - 3))} disabled={activeTrip === 0} aria-label="Previous trips" className="carousel-arrow rounded-xl bg-slate-200 p-3 text-slate-700 transition hover:bg-blue-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-40 dark:bg-white/10 dark:text-white"><FaChevronLeft /></button>
+                  <button type="button" onClick={() => setActiveTrip((current) => Math.min(Math.max(0, filteredTrips.length - 3), current + 3))} disabled={!filteredTrips.length || activeTrip + 3 >= filteredTrips.length} aria-label="Next trips" className="carousel-arrow rounded-xl bg-slate-200 p-3 text-slate-700 transition hover:bg-blue-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-40 dark:bg-white/10 dark:text-white"><FaChevronRight /></button>
+                </div>
+              </div>
+              <div className="mt-5 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+                {visibleTrips.map((trip, index) => (
+                  <div key={trip.id} className="trip-page-item" style={{ "--delay": `${index * 90}ms` }}>
+                    <TripCard {...trip} onRemove={removeTrip} />
+                  </div>
                 ))}
-
               </div>
 
             </div>

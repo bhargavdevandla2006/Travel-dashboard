@@ -5,6 +5,7 @@ import { useMap } from "../context/MapContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useLanguage } from "../context/LanguageContext";
 import { useTheme } from "../context/ThemeContext";
+import { createLocalNotification } from "../services/api";
 import { logoutUser } from "../services/api";
 
 export default function Settings() {
@@ -45,6 +46,15 @@ export default function Settings() {
 
   const [profile, setProfile] = useState(defaultProfile);
   const [profileImage, setProfileImage] = useState(null);
+  const [isPremium, setIsPremium] = useState(() => localStorage.getItem("travelhub-premium") === "true");
+
+  useEffect(() => {
+    const syncPremium = () => setIsPremium(localStorage.getItem("travelhub-premium") === "true");
+    syncPremium();
+    window.addEventListener("travelhub-premium-change", syncPremium);
+
+    return () => window.removeEventListener("travelhub-premium-change", syncPremium);
+  }, []);
 
   useEffect(() => {
     const savedSettings = JSON.parse(localStorage.getItem(SETTINGS_STORAGE_KEY) || "{}");
@@ -136,6 +146,11 @@ export default function Settings() {
   };
 
   const handleSaveSettings = () => {
+    createLocalNotification({
+      type: "settings",
+      title: "Settings updated",
+      message: "Your TravelHub preferences were saved.",
+    });
     setShowToast(true);
     setTimeout(() => setShowToast(false), 2500);
   };
@@ -312,9 +327,11 @@ export default function Settings() {
                     {profile.name}
                   </h2>
 
-                  <span className="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm font-semibold">
-                    ⭐ Premium
-                  </span>
+                  {isPremium && (
+                    <span className="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm font-semibold">
+                      ⭐ Premium
+                    </span>
+                  )}
 
                 </div>
 

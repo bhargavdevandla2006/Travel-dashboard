@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaCompass, FaGlobeAmericas, FaMapMarkerAlt, FaPlane, FaSuitcaseRolling } from "react-icons/fa";
-import { createTrip } from "../services/api";
+import { createLocalNotification, createTrip } from "../services/api";
 
 export default function AddTrip() {
   const navigate = useNavigate();
@@ -33,6 +33,11 @@ export default function AddTrip() {
       };
 
       await createTrip(tripData);
+      createLocalNotification({
+        type: "trip",
+        title: "Trip added",
+        message: `${tripData.title} was added to your trips.`,
+      });
       navigate("/trips");
     } catch (error) {
       setError(error.message || "Could not add this trip. Please try again.");
@@ -145,14 +150,14 @@ export default function AddTrip() {
               </p>
             </div>
 
-            <label className="block text-center text-sm text-slate-200">
+            <label className="block text-center text-sm font-semibold text-slate-100">
               Destination
               <input
                 type="text"
                 placeholder="Enter a destination"
                 value={destination}
                 onChange={(e) => setDestination(e.target.value)}
-                className="mt-4 w-full rounded-[26px] border border-white/10 bg-white px-5 py-4 text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-sky-400 focus:ring-4 focus:ring-sky-400/20"
+                className="mt-4 w-full rounded-[26px] border border-white/10 bg-white px-5 py-4 font-semibold text-slate-950 outline-none transition placeholder:text-slate-500 placeholder:opacity-100 focus:border-sky-400 focus:ring-4 focus:ring-sky-400/20"
               />
             </label>
 

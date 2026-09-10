@@ -15,6 +15,7 @@ import {
   FaTimes,
 } from "react-icons/fa";
 import { getDestinations } from "../services/api";
+import { getActiveBudget, getBudgetForCountry } from "../utils/budget";
 
 export default function Destinations() {
   const navigate = useNavigate();
@@ -23,19 +24,34 @@ export default function Destinations() {
   const [search, setSearch] = useState("");
   const [country, setCountry] = useState("All regions");
   const [sort, setSort] = useState("Curated");
+  const [costFilter, setCostFilter] = useState(() => getActiveBudget());
   const [savedIds, setSavedIds] = useState(() => getSavedIds());
   const [showAdd, setShowAdd] = useState(false);
   const [placeName, setPlaceName] = useState("");
   const [adding, setAdding] = useState(false);
   const [error, setError] = useState("");
 
+  const costOptions = [
+    { key: "low", label: "Low Cost" },
+    { key: "high", label: "High Cost" },
+    { key: "premium", label: "Premium" },
+  ];
+
+  function getTierForCountry(country) {
+    return getBudgetForCountry(country);
+  }
+
   useEffect(() => {
     async function loadDestinations() {
       try {
         const data = await getDestinations();
         const places = Array.isArray(data) ? data : [];
-        setDestinations(places);
-        setSelected(places[0] || null);
+        const mappedPlaces = places.map((place) => ({
+          ...place,
+          costTier: place.costTier || getTierForCountry(place.country),
+        }));
+        setDestinations(mappedPlaces);
+        setSelected(mappedPlaces[0] || null);
       } catch (loadError) {
         console.error("Failed to load destinations:", loadError);
         setError("We could not load destinations right now.");
@@ -43,6 +59,14 @@ export default function Destinations() {
     }
 
     loadDestinations();
+  }, []);
+
+  useEffect(() => {
+    const savedTier = getActiveBudget();
+    setCostFilter(savedTier);
+    const syncBudget = () => setCostFilter(getActiveBudget());
+    window.addEventListener("travelhub-budget-change", syncBudget);
+    return () => window.removeEventListener("travelhub-budget-change", syncBudget);
   }, []);
 
   const countries = useMemo(
@@ -55,7 +79,9 @@ export default function Destinations() {
     const visible = destinations.filter((place) => {
       const matchesSearch = !query || `${place.name} ${place.country}`.toLowerCase().includes(query);
       const matchesCountry = country === "All regions" || place.country === country;
-      return matchesSearch && matchesCountry;
+      const costTier = place.costTier || getTierForCountry(place.country);
+      const matchesCost = costFilter === "all" || costTier === costFilter;
+      return matchesSearch && matchesCountry && matchesCost;
     });
 
     return [...visible].sort((first, second) => {
@@ -63,7 +89,7 @@ export default function Destinations() {
       if (sort === "Saved") return Number(savedIds.has(second.id)) - Number(savedIds.has(first.id));
       return first.id - second.id;
     });
-  }, [country, destinations, savedIds, search, sort]);
+  }, [country, costFilter, destinations, savedIds, search, sort]);
 
   function getSavedIds() {
     try {
@@ -94,6 +120,20 @@ export default function Destinations() {
 
     localStorage.setItem("favorites", JSON.stringify(nextFavorites));
     setSavedIds(getSavedIds());
+
+    const localNotifications = JSON.parse(localStorage.getItem("travelhub-local-notifications") || "[]");
+    localNotifications.unshift({
+      id: `favorite-${place.id}-${Date.now()}`,
+      type: "favorite",
+      title: alreadySaved ? "Place removed" : "Place saved",
+      message: alreadySaved
+        ? `${place.name}, ${place.country} was removed from your favorites.`
+        : `${place.name}, ${place.country} was added to your favorites.`,
+      is_read: 0,
+      created_at: new Date().toISOString(),
+    });
+    localStorage.setItem("travelhub-local-notifications", JSON.stringify(localNotifications.slice(0, 30)));
+    window.dispatchEvent(new Event("travelhub-notification"));
   }
 
   function surpriseMe() {
@@ -134,7 +174,7 @@ export default function Destinations() {
   }
 
   return (
-    <div className="destination-shell min-h-screen p-4 text-slate-900 dark:text-white md:p-6">
+    <div className={`destination-shell budget-filtered-page budget-theme-${costFilter} min-h-screen p-4 text-slate-900 dark:text-white md:p-6`}>
       <div className="destination-layout flex overflow-hidden rounded-[32px] bg-white dark:bg-[#111827]">
         <Sidebar />
         <main className="destination-main flex-1 p-6 md:p-10 xl:p-12">
@@ -178,9 +218,22 @@ export default function Destinations() {
                 </div>
               </div>
 
+              <div className="mb-5 flex flex-wrap gap-2">
+                {costOptions.map((option) => (
+                  <button
+                    key={option.key}
+                    type="button"
+                    onClick={() => setCostFilter(option.key)}
+                    className={`rounded-full px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] transition ${costFilter === option.key ? "bg-cyan-500 text-white shadow-lg shadow-cyan-500/25" : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-white/10 dark:text-slate-200 dark:hover:bg-white/15"}`}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+
               <div className="mb-5 flex items-center justify-between border-b border-slate-200 pb-4 dark:border-white/10">
                 <p className="text-sm text-slate-500 dark:text-slate-400">{filteredDestinations.length} places</p>
-                <select value={sort} onChange={(event) => setSort(event.target.value)} className="rounded-xl border-0 bg-slate-100 px-3 py-2 text-xs font-bold text-slate-600 outline-none dark:bg-white/10 dark:text-slate-200">
+                <select value={sort} onChange={(event) => setSort(event.target.value)} className="destination-sort-select rounded-xl border-0 bg-slate-100 px-3 py-2 text-xs font-bold text-slate-600 outline-none dark:bg-white/10 dark:text-slate-200">
                   <option>Curated</option>
                   <option>A-Z</option>
                   <option>Saved</option>
@@ -201,7 +254,7 @@ export default function Destinations() {
                     return (
                       <article id={`destination-${place.id}`} key={place.id} className={`destination-card group relative overflow-hidden rounded-3xl bg-slate-100 dark:bg-[#172033] ${selected?.id === place.id ? "destination-card-selected" : ""}`} style={{ "--delay": `${index * 70}ms` }}>
                         <button type="button" onClick={() => setSelected(place)} className="block w-full text-left">
-                          {place.image ? <img src={place.image} alt={place.name} className="h-52 w-full object-cover transition duration-700 group-hover:scale-105" /> : <div className="h-52 w-full bg-gradient-to-br from-cyan-300 to-slate-800" />}
+                          {place.image ? <img src={place.image} alt={place.name} onError={(event) => { event.currentTarget.style.display = "none"; event.currentTarget.parentElement.classList.add("destination-image-fallback"); }} className="h-52 w-full object-cover transition duration-700 group-hover:scale-105" /> : <div className="h-52 w-full bg-gradient-to-br from-cyan-300 to-slate-800" />}
                           <div className="p-5">
                             <div className="flex items-start justify-between gap-3">
                               <div><p className="text-lg font-black">{place.name}</p><p className="mt-1 flex items-center gap-1 text-xs font-semibold text-slate-500 dark:text-slate-400"><FaMapMarkerAlt /> {place.country}</p></div>
@@ -210,7 +263,7 @@ export default function Destinations() {
                           </div>
                         </button>
                         <div className="flex items-center gap-3 px-5 pb-5">
-                          <button type="button" onClick={() => navigate(`/destinations/${place.id}`)} className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-cyan-600 dark:bg-cyan-300 dark:text-slate-950"><span>Open guide</span><FaArrowRight /></button>
+                          <button type="button" onClick={() => navigate(`/destinations/${place.id}`)} className="inline-flex items-center gap-2 rounded-xl bg-cyan-300 px-4 py-2.5 text-xs font-bold text-slate-950 transition hover:bg-cyan-200"><span>Open guide</span><FaArrowRight /></button>
                           <button type="button" aria-label={isSaved ? `Remove ${place.name} from favorites` : `Save ${place.name}`} onClick={() => toggleSaved(place)} className={`rounded-xl p-3 transition ${isSaved ? "bg-rose-100 text-rose-500 dark:bg-rose-500/20" : "bg-white text-slate-400 hover:text-rose-500 dark:bg-white/10"}`}>{isSaved ? <FaHeart /> : <FaRegHeart />}</button>
                         </div>
                       </article>
@@ -227,7 +280,7 @@ export default function Destinations() {
                 <h3 className="mt-5 text-2xl font-black">{selected.name}</h3>
                 <p className="mt-1 text-sm text-slate-300">{selected.country}</p>
                 <div className="mt-5 flex items-center gap-3 text-xs font-bold uppercase tracking-[0.15em] text-slate-400"><span className="h-2 w-2 rounded-full bg-cyan-300" /> {selected.description ? "Live brief" : "Ready to explore"}</div>
-                <button type="button" onClick={() => navigate(`/destinations/${selected.id}`)} className="mt-5 flex w-full items-center justify-between rounded-2xl bg-white/10 px-4 py-3 text-sm font-bold transition hover:bg-cyan-300 hover:text-slate-950"><span>Open guide</span><FaArrowRight /></button>
+                <button type="button" onClick={() => navigate(`/destinations/${selected.id}`)} className="mt-5 flex w-full items-center justify-between rounded-2xl bg-white/10 px-4 py-3 text-sm font-bold transition hover:bg-cyan-200 hover:text-slate-950"><span>Open guide</span><FaArrowRight /></button>
               </> : <p className="mt-6 text-sm text-slate-400">Choose a place to see its signal.</p>}
               <div className="mt-6 grid grid-cols-2 gap-3 border-t border-white/10 pt-5"><div><p className="text-2xl font-black">{destinations.length}</p><p className="text-xs text-slate-400">in discovery</p></div><div><p className="text-2xl font-black">{savedIds.size}</p><p className="text-xs text-slate-400">saved for later</p></div></div>
             </aside>
