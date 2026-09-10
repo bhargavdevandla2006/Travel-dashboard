@@ -10,7 +10,7 @@ import {
   FaPaperPlane,
 } from "react-icons/fa";
 
-import { apiUrl } from "../services/api";
+import { apiUrl, createLocalNotification } from "../services/api";
 
 export default function CreateReel() {
   const navigate = useNavigate();
@@ -72,6 +72,11 @@ export default function CreateReel() {
       }
 
       setMessage("Reel created successfully 🎉");
+      createLocalNotification({
+        type: "reel",
+        title: "Reel published",
+        message: `${title} is now available in your reels.`,
+      });
 
       setTimeout(() => {
         navigate("/reels");

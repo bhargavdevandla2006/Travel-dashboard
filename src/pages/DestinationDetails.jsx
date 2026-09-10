@@ -65,12 +65,27 @@ export default function DestinationDetails() {
     if (!destination) return;
     const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
     const key = getDestinationKey(destination);
+    const nextSaved = !saved;
     const nextFavorites = saved
       ? favorites.filter((place) => getDestinationKey(place) !== key)
       : [...favorites, { id: destination.id, name: destination.name, country: destination.country, image: destination.image }];
 
     localStorage.setItem("favorites", JSON.stringify(nextFavorites));
-    setSaved(!saved);
+    setSaved(nextSaved);
+
+    const localNotifications = JSON.parse(localStorage.getItem("travelhub-local-notifications") || "[]");
+    localNotifications.unshift({
+      id: `favorite-${destination.id}-${Date.now()}`,
+      type: "favorite",
+      title: nextSaved ? "Place saved" : "Place removed",
+      message: nextSaved
+        ? `${destination.name}, ${destination.country} was added to your favorites.`
+        : `${destination.name}, ${destination.country} was removed from your favorites.`,
+      is_read: 0,
+      created_at: new Date().toISOString(),
+    });
+    localStorage.setItem("travelhub-local-notifications", JSON.stringify(localNotifications.slice(0, 30)));
+    window.dispatchEvent(new Event("travelhub-notification"));
   }
 
   async function shareDestination() {

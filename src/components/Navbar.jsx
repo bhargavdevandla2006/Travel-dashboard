@@ -8,6 +8,7 @@ import {
   FaHeart,
   FaUserPlus,
   FaCheck,
+  FaTimes,
   FaSun,
 } from "react-icons/fa";
 
@@ -41,13 +42,6 @@ export default function Navbar({ search = "", setSearch }) {
 
   const { t } = useLanguage();
 
-  useEffect(() => {
-
-    loadUser();
-
-  }, []);
-
-
   async function loadUser() {
 
     try {
@@ -64,26 +58,6 @@ export default function Navbar({ search = "", setSearch }) {
 
   }
 
-  useEffect(() => {
-
-    loadNotifications();
-
-    const interval = setInterval(() => {
-
-      loadNotifications();
-
-    }, 5000);
-
-
-    return () => {
-
-      clearInterval(interval);
-
-    };
-
-  }, []);
-
-
   async function loadNotifications() {
 
     try {
@@ -97,12 +71,9 @@ export default function Navbar({ search = "", setSearch }) {
 
       const data = await response.json();
 
-
-      if (Array.isArray(data)) {
-
-        setNotifications(data);
-
-      }
+      const serverNotifications = Array.isArray(data) ? data : data.notifications || [];
+      const localNotifications = JSON.parse(localStorage.getItem("travelhub-local-notifications") || "[]");
+      setNotifications([...localNotifications, ...serverNotifications]);
 
     } catch (error) {
 
@@ -114,6 +85,71 @@ export default function Navbar({ search = "", setSearch }) {
     }
 
   }
+
+  async function markAllNotificationsRead() {
+    try {
+      await fetch(`${apiUrl}/notifications/read-all`, {
+        method: "POST",
+        credentials: "include",
+      });
+      const localNotifications = JSON.parse(localStorage.getItem("travelhub-local-notifications") || "[]");
+      localStorage.setItem("travelhub-local-notifications", JSON.stringify(localNotifications.map((notification) => ({ ...notification, is_read: 1 }))));
+      setNotifications((current) => current.map((notification) => ({ ...notification, is_read: 1 })));
+    } catch (error) {
+      console.error("Notification update error:", error);
+    }
+  }
+
+  async function dismissNotification(notification) {
+    setNotifications((current) => current.filter((item) => item.id !== notification.id));
+
+    if (typeof notification.id === "number") {
+      try {
+        await fetch(`${apiUrl}/notifications/${notification.id}`, {
+          method: "DELETE",
+          credentials: "include",
+        });
+      } catch (error) {
+        console.error("Notification removal error:", error);
+      }
+      return;
+    }
+
+    const localNotifications = JSON.parse(localStorage.getItem("travelhub-local-notifications") || "[]");
+    localStorage.setItem(
+      "travelhub-local-notifications",
+      JSON.stringify(localNotifications.filter((item) => item.id !== notification.id))
+    );
+  }
+
+  useEffect(() => {
+    const initialLoad = window.setTimeout(() => {
+      void loadUser();
+    }, 0);
+
+    return () => window.clearTimeout(initialLoad);
+  }, []);
+
+  useEffect(() => {
+    const initialLoad = window.setTimeout(() => {
+      void loadNotifications();
+    }, 0);
+
+    const interval = setInterval(() => {
+      loadNotifications();
+    }, 5000);
+
+    const handleLocalNotification = () => {
+      void loadNotifications();
+    };
+    window.addEventListener("travelhub-notification", handleLocalNotification);
+
+    return () => {
+      window.clearTimeout(initialLoad);
+      clearInterval(interval);
+      window.removeEventListener("travelhub-notification", handleLocalNotification);
+    };
+  }, []);
 
   function getTimeAgo(date) {
 
@@ -200,6 +236,9 @@ export default function Navbar({ search = "", setSearch }) {
 
     <div
       className="
+        relative
+        z-50
+
         bg-white/60
         dark:bg-[#0f172a]/80
 
@@ -360,7 +399,7 @@ export default function Navbar({ search = "", setSearch }) {
             <FaBell className="text-lg" />
 
 
-            {notifications.length > 0 && (
+            {notifications.filter((notification) => !notification.is_read).length > 0 && (
 
               <span
                 className="
@@ -386,7 +425,7 @@ export default function Navbar({ search = "", setSearch }) {
                   font-bold
                 "
               >
-                {notifications.length}
+                {notifications.filter((notification) => !notification.is_read).length}
               </span>
 
             )}
@@ -483,12 +522,14 @@ export default function Navbar({ search = "", setSearch }) {
                 </div>
 
 
-                <FaCheck
-                  className="
-                    text-blue-500
-                    text-lg
-                  "
-                />
+                <div className="flex items-center gap-1">
+                  <button type="button" onClick={markAllNotificationsRead} className="rounded-lg p-2 text-blue-500 transition hover:bg-blue-50 dark:hover:bg-white/10" title="Mark all notifications read" aria-label="Mark all notifications read">
+                    <FaCheck />
+                  </button>
+                  <button type="button" onClick={() => setNotificationOpen(false)} className="rounded-lg p-2 text-gray-400 transition hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-500/10" title="Close notifications" aria-label="Close notifications">
+                    <FaTimes />
+                  </button>
+                </div>
 
               </div>
 
@@ -598,7 +639,7 @@ export default function Navbar({ search = "", setSearch }) {
                             group-hover:scale-110
 
                             ${
-                              notification.type === "like"
+                              ["like", "favorite"].includes(notification.type)
                                 ? `
                                   bg-pink-500/10
                                   text-pink-500
@@ -611,8 +652,7 @@ export default function Navbar({ search = "", setSearch }) {
                           `}
                         >
 
-                          {notification.type ===
-                          "like"
+                          {["like", "favorite"].includes(notification.type)
 
                             ? <FaHeart />
 
@@ -667,8 +707,7 @@ export default function Navbar({ search = "", setSearch }) {
                               font-medium
 
                               ${
-                                notification.type ===
-                                "like"
+                                ["like", "favorite"].includes(notification.type)
 
                                   ? "text-pink-500"
 
@@ -684,6 +723,16 @@ export default function Navbar({ search = "", setSearch }) {
                           </p>
 
                         </div>
+
+                        <button
+                          type="button"
+                          onClick={() => dismissNotification(notification)}
+                          className="self-start rounded-lg p-2 text-gray-400 transition hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-500/10"
+                          title="Remove notification"
+                          aria-label={`Remove ${notification.title} notification`}
+                        >
+                          <FaTimes />
+                        </button>
 
                       </div>
 

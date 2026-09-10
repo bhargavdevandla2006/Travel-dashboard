@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { FaTimes } from "react-icons/fa";
 import Comments from "./Comments";
 import apiUrl from "../services/api";
 
@@ -9,6 +10,7 @@ export default function TripCard({
   title,
   location,
   price,
+  onRemove,
 }) {
   const navigate = useNavigate();
 
@@ -247,7 +249,12 @@ export default function TripCard({
   return (
     <div
       className="
+        trip-card-animate
+            trip-like-button
         group
+        h-full
+        flex
+        flex-col
         bg-white
         dark:bg-gray-900
 
@@ -296,9 +303,14 @@ export default function TripCard({
         <img
           src={image}
           alt={title}
+          onError={(event) => {
+            event.currentTarget.style.display = "none";
+            event.currentTarget.parentElement.classList.add("trip-image-fallback");
+          }}
           className="
+            trip-card-image
             w-full
-            h-56
+            h-40
             object-cover
 
             group-hover:scale-110
@@ -402,17 +414,29 @@ export default function TripCard({
 
         </button>
 
+        {onRemove && (
+          <button
+            type="button"
+            onClick={() => onRemove(id)}
+            aria-label={`Remove ${title}`}
+            title="Remove trip"
+            className="absolute right-20 top-4 flex h-12 w-12 items-center justify-center rounded-full bg-white text-gray-600 shadow-lg transition hover:bg-red-500 hover:text-white"
+          >
+            <FaTimes />
+          </button>
+        )}
+
       </div>
 
       
 
-      <div className="p-6">
+      <div className="flex flex-1 flex-col p-4">
 
         
 
         <h2
           className="
-            text-2xl
+            text-xl
             font-bold
 
             text-gray-900
@@ -433,7 +457,7 @@ export default function TripCard({
             text-gray-500
             dark:text-gray-300
 
-            mt-3
+            mt-2
           "
         >
           📍 {location}
@@ -447,7 +471,7 @@ export default function TripCard({
             items-center
             justify-between
 
-            mt-5
+            mt-3
           "
         >
 
@@ -467,7 +491,7 @@ export default function TripCard({
 
             <h2
               className="
-                text-3xl
+                text-2xl
                 font-extrabold
                 text-blue-600
               "
@@ -513,7 +537,7 @@ export default function TripCard({
             grid-cols-2
             gap-3
 
-            mt-6
+            mt-4
           "
         >
 
@@ -535,7 +559,7 @@ export default function TripCard({
               text-green-700
               dark:text-green-300
 
-              py-3
+              py-2
 
               rounded-xl
 
@@ -607,7 +631,7 @@ export default function TripCard({
 
           className="
             w-full
-            mt-5
+            mt-4
 
             bg-gradient-to-r
             from-blue-600
@@ -615,7 +639,7 @@ export default function TripCard({
 
             text-white
 
-            py-3
+            py-2
 
             rounded-2xl
 
@@ -634,7 +658,8 @@ export default function TripCard({
 
         <div
           className="
-            mt-6
+            mt-auto
+            pt-4
 
             border-t
             border-gray-200

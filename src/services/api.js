@@ -1,5 +1,23 @@
 export const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
+export function createLocalNotification({ type, title, message }) {
+  try {
+    const notifications = JSON.parse(localStorage.getItem("travelhub-local-notifications") || "[]");
+    notifications.unshift({
+      id: `${type}-${Date.now()}`,
+      type,
+      title,
+      message,
+      is_read: 0,
+      created_at: new Date().toISOString(),
+    });
+    localStorage.setItem("travelhub-local-notifications", JSON.stringify(notifications.slice(0, 30)));
+    window.dispatchEvent(new Event("travelhub-notification"));
+  } catch (error) {
+    console.error("Local notification error:", error);
+  }
+}
+
 async function parseJsonResponse(response) {
   const text = await response.text();
   if (!text) return null;

@@ -47,8 +47,8 @@ export default function Register() {
     const handleFaceRegistration = (e) => {
         e.preventDefault();
 
-        if (!passwordValid) {
-            alert("Password must contain at least 8 characters, one alphabet and one number.");
+        if (!formData.name.trim() || !formData.email.trim()) {
+            alert("Enter your name and email before registering with Face ID.");
             return;
         }
 

@@ -22,10 +22,13 @@ export default function Login() {
             });
             navigate("/");
         } catch (error) {
-            alert(error.message || "Face login failed");
+            const message = error.message === "Face authentication is not registered"
+                ? "Please enter your registered email and password to continue with face authentication."
+                : error.message || "Face login failed";
+            alert(message);
+            setShowFaceAuth(false);
         } finally {
             setLoading(false);
-            setShowFaceAuth(false);
         }
     };
 
