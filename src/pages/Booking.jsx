@@ -189,9 +189,7 @@ export default function Booking() {
       // RAZORPAY KEY
       // =================================================
 
-      const razorpayKey =
-        import.meta.env.VITE_RAZORPAY_KEY_ID;
-
+ 
 
       console.log(
         "🔑 Razorpay Key:",

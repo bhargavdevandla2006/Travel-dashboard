@@ -1,5 +1,9 @@
 export const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
+export async function getRazorpayKey() {
+  return request("/razorpay-key");
+}
+
 export function createLocalNotification({ type, title, message }) {
   try {
     const notifications = JSON.parse(localStorage.getItem("travelhub-local-notifications") || "[]");
