@@ -185,13 +185,35 @@ export const getDestinationById = async (id) => {
 };
 
 export const createOrder = async (amount) => {
-  return request("/create-order", {
+
+  console.log("💰 Creating order with amount:", amount);
+
+  const result = await request("/create-order", {
     method: "POST",
+
     headers: {
       "Content-Type": "application/json",
     },
+
+    credentials: "include",
+
     body: JSON.stringify({ amount }),
   });
+
+  console.log("✅ Create order result:", result);
+
+  return result;
 };
+
+export async function verifyPayment(paymentData) {
+    return request("/verify-payment", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(paymentData),
+    });
+}
 
 export default apiUrl;

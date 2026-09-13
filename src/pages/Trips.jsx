@@ -10,27 +10,48 @@ import { getTrips } from "../services/api";
 import { getActiveBudget, getBudgetForTrip } from "../utils/budget";
 
 export default function Trips() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const [searchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
-    const [trips, setTrips] = useState([]);
-    const [activeTrip, setActiveTrip] = useState(0);
+  // ============================================================
+  // STATE
+  // ============================================================
 
-    const activeBudget =
-        searchParams.get("budget") || getActiveBudget();
+  // ALL trips are stored here
+  const [trips, setTrips] = useState([]);
 
-    const budgetTrips = trips.filter(
-        (trip) => getBudgetForTrip(trip) === activeBudget
-    );
+  // Which slide are we currently viewing?
+  // 0 = first slide
+  // 1 = second slide
+  // 2 = third slide
+  const [activeSlide, setActiveSlide] = useState(0);
 
-  
+  // ============================================================
+  // ACTIVE BUDGET
+  // ============================================================
+
+  const activeBudget =
+    searchParams.get("budget") || getActiveBudget();
+
+  // ============================================================
+  // FILTER TRIPS BY BUDGET
+  // ============================================================
+
+  const budgetTrips = trips.filter(
+    (trip) => getBudgetForTrip(trip) === activeBudget
+  );
+
+  // ============================================================
+  // LOAD ALL TRIPS
+  // ============================================================
 
   useEffect(() => {
     async function loadTrips() {
       try {
         const data = await getTrips();
 
+        // Keep ALL trips
         setTrips(
           Array.isArray(data)
             ? data
@@ -49,25 +70,104 @@ export default function Trips() {
     loadTrips();
   }, []);
 
-  
+  // ============================================================
+  // RESET SLIDE WHEN BUDGET CHANGES
+  // ============================================================
+
+  useEffect(() => {
+    setActiveSlide(0);
+  }, [activeBudget]);
+
+  // ============================================================
+  // TOTAL NUMBER OF SLIDES
+  // ============================================================
+
+  // 3 trips per slide
+  //
+  // Example:
+  // 3 trips  = 1 slide
+  // 4 trips  = 2 slides
+  // 6 trips  = 2 slides
+  // 7 trips  = 3 slides
+  // 10 trips = 4 slides
+
+  const totalSlides = Math.ceil(
+    budgetTrips.length / 3
+  );
+
+  // ============================================================
+  // CURRENT SLIDE START INDEX
+  // ============================================================
+
+  // Slide 0 → starts at 0
+  // Slide 1 → starts at 3
+  // Slide 2 → starts at 6
+  // Slide 3 → starts at 9
+
+  const startIndex = activeSlide * 3;
+
+  // ============================================================
+  // SHOW ONLY 3 TRIPS
+  // ============================================================
+
+  const visibleTrips = budgetTrips.slice(
+    startIndex,
+    startIndex + 3
+  );
+
+  // ============================================================
+  // ADD NEW TRIP BUTTON
+  // ============================================================
 
   function tripsBtn() {
     navigate("/add-trip");
   }
 
+  // ============================================================
+  // REMOVE TRIP
+  // ============================================================
+
   function removeTrip(tripId) {
-    setTrips((current) => {
-      const nextTrips = current.filter((trip) => trip.id !== tripId);
-      if (activeTrip >= nextTrips.length && activeTrip > 0) {
-        setActiveTrip(Math.max(0, activeTrip - 3));
-      }
+    setTrips((currentTrips) => {
+      const nextTrips = currentTrips.filter(
+        (trip) => trip.id !== tripId
+      );
+
       return nextTrips;
     });
   }
 
-  const visibleTrips = budgetTrips.slice(activeTrip, activeTrip + 3);
+  // ============================================================
+  // NEXT SLIDE
+  // ============================================================
 
-  
+  function nextSlide() {
+    setActiveSlide((current) => {
+      if (current < totalSlides - 1) {
+        return current + 1;
+      }
+
+      return current;
+    });
+  }
+
+  // ============================================================
+  // PREVIOUS SLIDE
+  // ============================================================
+
+  function previousSlide() {
+    setActiveSlide((current) => {
+      if (current > 0) {
+        return current - 1;
+      }
+
+      return current;
+    });
+  }
+
+  // ============================================================
+  // RENDER
+  // ============================================================
 
   return (
     <div
@@ -85,7 +185,7 @@ export default function Trips() {
       "
     >
       <div
-          className="
+        className="
           trips-shell
           relative
           z-10
@@ -102,11 +202,15 @@ export default function Trips() {
           duration-300
         "
       >
-        
+        {/* =====================================================
+            SIDEBAR
+        ===================================================== */}
 
         <Sidebar />
 
-        
+        {/* =====================================================
+            MAIN CONTENT
+        ===================================================== */}
 
         <div
           className="
@@ -114,11 +218,15 @@ export default function Trips() {
             p-12
           "
         >
-          
+          {/* ===================================================
+              NAVBAR
+          =================================================== */}
 
           <Navbar />
 
-          
+          {/* ===================================================
+              PAGE HEADER
+          =================================================== */}
 
           <div
             className="
@@ -163,7 +271,9 @@ export default function Trips() {
               </p>
             </div>
 
-            
+            {/* =================================================
+                ADD NEW TRIP
+            ================================================= */}
 
             <button
               type="button"
@@ -192,23 +302,144 @@ export default function Trips() {
             </button>
           </div>
 
-          
+          {/* ===================================================
+              TRIPS SECTION
+          =================================================== */}
 
           <div className="mt-16">
-            <div className="mb-5 flex items-center justify-between">
-              <p className="text-sm font-semibold text-gray-500 dark:text-gray-300">
-                {budgetTrips.length ? `${activeTrip + 1}-${Math.min(activeTrip + 3, budgetTrips.length)} of ${budgetTrips.length}` : `No ${activeBudget} trips`}
+
+            {/* =================================================
+                COUNTER + ARROWS
+            ================================================= */}
+
+            <div
+              className="
+                mb-5
+                flex
+                items-center
+                justify-between
+              "
+            >
+              {/* =================================================
+                  TRIP COUNTER
+              ================================================= */}
+
+              <p
+                className="
+                  text-sm
+                  font-semibold
+                  text-gray-500
+                  dark:text-gray-300
+                "
+              >
+                {budgetTrips.length > 0
+                  ? `${startIndex + 1}-${Math.min(
+                      startIndex + 3,
+                      budgetTrips.length
+                    )} of ${budgetTrips.length}`
+                  : `No ${activeBudget} trips`}
               </p>
+
+              {/* =================================================
+                  ARROWS
+              ================================================= */}
+
               <div className="flex gap-2">
-                <button type="button" onClick={() => setActiveTrip((current) => Math.max(0, current - 3))} disabled={activeTrip === 0} aria-label="Previous trips" className="carousel-arrow rounded-xl bg-gray-200 p-3 text-gray-700 transition hover:bg-blue-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-40 dark:bg-white/10 dark:text-white"><FaChevronLeft /></button>
-                <button type="button" onClick={() => setActiveTrip((current) => Math.min(Math.max(0, budgetTrips.length - 3), current + 3))} disabled={!budgetTrips.length || activeTrip + 3 >= budgetTrips.length} aria-label="Next trips" className="carousel-arrow rounded-xl bg-gray-200 p-3 text-gray-700 transition hover:bg-blue-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-40 dark:bg-white/10 dark:text-white"><FaChevronRight /></button>
+
+                {/* PREVIOUS */}
+
+                <button
+                  type="button"
+                  onClick={previousSlide}
+                  disabled={activeSlide === 0}
+                  aria-label="Previous trips"
+                  className="
+                    carousel-arrow
+
+                    rounded-xl
+
+                    bg-gray-200
+
+                    p-3
+
+                    text-gray-700
+
+                    transition
+
+                    hover:bg-blue-600
+                    hover:text-white
+
+                    disabled:cursor-not-allowed
+                    disabled:opacity-40
+
+                    dark:bg-white/10
+                    dark:text-white
+                  "
+                >
+                  <FaChevronLeft />
+                </button>
+
+                {/* NEXT */}
+
+                <button
+                  type="button"
+                  onClick={nextSlide}
+                  disabled={
+                    budgetTrips.length === 0 ||
+                    activeSlide >= totalSlides - 1
+                  }
+                  aria-label="Next trips"
+                  className="
+                    carousel-arrow
+
+                    rounded-xl
+
+                    bg-gray-200
+
+                    p-3
+
+                    text-gray-700
+
+                    transition
+
+                    hover:bg-blue-600
+                    hover:text-white
+
+                    disabled:cursor-not-allowed
+                    disabled:opacity-40
+
+                    dark:bg-white/10
+                    dark:text-white
+                  "
+                >
+                  <FaChevronRight />
+                </button>
+
               </div>
             </div>
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
+
+            {/* =================================================
+                TRIP CARDS
+            ================================================= */}
+
+            <div
+              className="
+                grid
+                grid-cols-1
+                gap-8
+                md:grid-cols-2
+                xl:grid-cols-3
+              "
+            >
               {visibleTrips.map((trip) => (
-                <TripCard key={trip.id} {...trip} onRemove={removeTrip} />
+                <TripCard
+                  key={trip.id}
+                  {...trip}
+                  onRemove={removeTrip}
+                />
               ))}
             </div>
+
           </div>
         </div>
       </div>

@@ -1,6 +1,5 @@
 import {
   FaSuitcase,
-  FaPlane,
   FaCalendarAlt,
   FaDollarSign,
   FaLightbulb,
@@ -13,78 +12,11 @@ import StatsCard from "../components/StatsCard";
 import TripCard from "../components/TripCard";
 import MapView from "../components/MapView";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useTheme } from "../context/ThemeContext";
-
-
-
-const stats = [
-  {
-    title: "Total Trips",
-    value: "12",
-    color: "bg-blue-600",
-    icon: <FaSuitcase />,
-  },
-  {
-    title: "Upcoming Flights",
-    value: "5",
-    color: "bg-green-500",
-    icon: <FaPlane />,
-  },
-  {
-    title: "Bookings",
-    value: "18",
-    color: "bg-purple-500",
-    icon: <FaCalendarAlt />,
-  },
-  {
-    title: "Total Spent",
-    value: "₹2450",
-    color: "bg-yellow-400",
-    icon: <FaDollarSign />,
-  },
-];
-
-
-
-const trips = [
-  {
-    id: 1,
-    title: "Bali Getaway",
-    location: "Bali, Indonesia",
-    price: "₹850",
-    image:
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
-  },
-
-  {
-    id: 2,
-    title: "Paris Vacation",
-    location: "Paris, France",
-    price: "₹1200",
-    image:
-      "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80",
-  },
-
-  {
-    id: 3,
-    title: "Venice Trip",
-    location: "Venice, Italy",
-    price: "₹950",
-    image: "https://venicelover.com/images/venice.jpg",
-  },
-
-  {
-    id: 4,
-    title: "Switzerland Tour",
-    location: "Switzerland",
-    price: "₹1500",
-    image:
-      "https://images.unsplash.com/photo-1526772662000-3f88f10405ff?auto=format&fit=crop&w=800&q=80",
-  },
-];
+import { getDestinations, getTrips } from "../services/api";
 
 
 
@@ -145,8 +77,44 @@ export default function Index() {
   const navigate = useNavigate();
 
   const [search, setSearch] = useState("");
+  const [trips, setTrips] = useState([]);
+  const [destinationCount, setDestinationCount] = useState(0);
   const [activeTrip, setActiveTrip] = useState(0);
   const [hiddenTripIds, setHiddenTripIds] = useState([]);
+
+  useEffect(() => {
+    async function loadDashboardData() {
+      const [tripData, destinationData] = await Promise.allSettled([
+        getTrips(),
+        getDestinations(),
+      ]);
+
+      setTrips(
+        tripData.status === "fulfilled" && Array.isArray(tripData.value)
+          ? tripData.value
+          : []
+      );
+      setDestinationCount(
+        destinationData.status === "fulfilled" && Array.isArray(destinationData.value)
+          ? destinationData.value.length
+          : 0
+      );
+    }
+
+    loadDashboardData();
+  }, []);
+
+  const stats = [
+    { title: "Total Trips", value: trips.length, color: "bg-blue-600", icon: <FaSuitcase /> },
+    { title: "Destinations", value: destinationCount, color: "bg-green-500", icon: <FaMapMarkerAlt /> },
+    { title: "Saved Places", value: JSON.parse(localStorage.getItem("favorites") || "[]").length, color: "bg-purple-500", icon: <FaCalendarAlt /> },
+    {
+      title: "Trip Budget",
+      value: `₹${trips.reduce((total, trip) => total + (Number.parseInt(String(trip.price || "0").replace(/[^0-9]/g, ""), 10) || 0), 0)}`,
+      color: "bg-yellow-400",
+      icon: <FaDollarSign />,
+    },
+  ];
 
   
 
