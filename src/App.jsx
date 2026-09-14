@@ -12,7 +12,7 @@ import Destinations from "./pages/Destinations";
 import Settings from "./pages/Settings";
 import AddTrip from "./pages/AddTrip";
 import ProtectedRoute from "./components/ProtectedRoute";
-
+import Mailbox from "./pages/Mailbox";
 import Hotels from "./pages/Hotel";
 import Transport from "./pages/Transport";
 
@@ -58,8 +58,12 @@ export default function App() {
     path="/face-test"
     element={<FaceTest />}
 />
+           
 
-            
+           <Route
+  path="/mailbox"
+  element={<Mailbox />}
+/> 
 
             <Route
               path="/travelers"

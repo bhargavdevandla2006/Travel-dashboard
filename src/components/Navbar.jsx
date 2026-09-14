@@ -10,6 +10,8 @@ import {
   FaCheck,
   FaTimes,
   FaSun,
+  FaHotel,
+  FaCreditCard,
 } from "react-icons/fa";
 
 import { useState, useEffect } from "react";
@@ -18,62 +20,140 @@ import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../context/LanguageContext";
 import { useTheme } from "../context/ThemeContext";
 
-import apiUrl, {
+import {
+  apiUrl,
   getProfile,
   logoutUser,
 } from "../services/api";
 
 
-export default function Navbar({ search = "", setSearch }) {
+export default function Navbar({
+  search = "",
+  setSearch,
+}) {
 
-  const [open, setOpen] = useState(false);
-
-  const [notificationOpen, setNotificationOpen] =
+  const [open, setOpen] =
     useState(false);
 
-  const [notifications, setNotifications] =
-    useState([]);
+  const [
+    notificationOpen,
+    setNotificationOpen
+  ] = useState(false);
 
-  const [user, setUser] = useState(null);
+  const [
+    notifications,
+    setNotifications
+  ] = useState([]);
 
-  const navigate = useNavigate();
+  const [user, setUser] =
+    useState(null);
 
-  const { darkMode, toggleTheme } = useTheme();
+  const navigate =
+    useNavigate();
 
-  const { t } = useLanguage();
+  const {
+    darkMode,
+    toggleTheme,
+  } = useTheme();
+
+  const { t } =
+    useLanguage();
+
+
+  // =====================================================
+  // LOAD USER
+  // =====================================================
 
   async function loadUser() {
 
     try {
 
-      const data = await getProfile();
+      const data =
+        await getProfile();
 
       setUser(data);
 
     } catch (error) {
 
-      console.error("User loading error:", error);
+      console.error(
+        "User loading error:",
+        error
+      );
 
     }
 
   }
 
+
+  // =====================================================
+  // LOAD NOTIFICATIONS
+  // =====================================================
+
   async function loadNotifications() {
 
     try {
 
-      const response = await fetch(
-        `${apiUrl}/notifications`,
-        {
-          credentials: "include",
-        }
-      );
+      const response =
+        await fetch(
+          `${apiUrl}/notifications`,
+          {
+            credentials:
+              "include",
+          }
+        );
 
-      const data = await response.json();
 
-      const serverNotifications = Array.isArray(data) ? data : data.notifications || [];
-      const localNotifications = JSON.parse(localStorage.getItem("travelhub-local-notifications") || "[]");
-      setNotifications([...localNotifications, ...serverNotifications]);
+      const data =
+        await response.json();
+
+
+      if (!response.ok) {
+
+        throw new Error(
+          data.message ||
+          "Failed to load notifications"
+        );
+
+      }
+
+
+      const serverNotifications =
+        Array.isArray(data)
+          ? data
+          : data.notifications || [];
+
+
+      /*
+       * Keep old local notifications
+       * for your existing features.
+       */
+
+      let localNotifications = [];
+
+      try {
+
+        localNotifications =
+          JSON.parse(
+            localStorage.getItem(
+              "travelhub-local-notifications"
+            ) || "[]"
+          );
+
+      } catch {
+
+        localNotifications = [];
+
+      }
+
+
+      /*
+       * Server notifications come first.
+       */
+
+      setNotifications([
+        ...serverNotifications,
+        ...localNotifications,
+      ]);
 
     } catch (error) {
 
@@ -86,130 +166,336 @@ export default function Navbar({ search = "", setSearch }) {
 
   }
 
+
+  // =====================================================
+  // MARK ALL READ
+  // =====================================================
+
   async function markAllNotificationsRead() {
+
     try {
-      await fetch(`${apiUrl}/notifications/read-all`, {
-        method: "POST",
-        credentials: "include",
-      });
-      const localNotifications = JSON.parse(localStorage.getItem("travelhub-local-notifications") || "[]");
-      localStorage.setItem("travelhub-local-notifications", JSON.stringify(localNotifications.map((notification) => ({ ...notification, is_read: 1 }))));
-      setNotifications((current) => current.map((notification) => ({ ...notification, is_read: 1 })));
+
+      await fetch(
+        `${apiUrl}/notifications/read-all`,
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      );
+
+
+      let localNotifications = [];
+
+      try {
+
+        localNotifications =
+          JSON.parse(
+            localStorage.getItem(
+              "travelhub-local-notifications"
+            ) || "[]"
+          );
+
+      } catch {
+
+        localNotifications = [];
+
+      }
+
+
+      localStorage.setItem(
+        "travelhub-local-notifications",
+        JSON.stringify(
+          localNotifications.map(
+            (notification) => ({
+              ...notification,
+              is_read: 1,
+            })
+          )
+        )
+      );
+
+
+      setNotifications(
+        (current) =>
+          current.map(
+            (notification) => ({
+              ...notification,
+              is_read: 1,
+            })
+          )
+      );
+
+
     } catch (error) {
-      console.error("Notification update error:", error);
+
+      console.error(
+        "Notification update error:",
+        error
+      );
+
     }
+
   }
 
-  async function dismissNotification(notification) {
-    setNotifications((current) => current.filter((item) => item.id !== notification.id));
 
-    if (typeof notification.id === "number") {
+  // =====================================================
+  // DISMISS NOTIFICATION
+  // =====================================================
+
+  async function dismissNotification(
+    notification
+  ) {
+
+    setNotifications(
+      (current) =>
+        current.filter(
+          (item) =>
+            item.id !==
+            notification.id
+        )
+    );
+
+
+    /*
+     * Database notification
+     */
+
+    if (
+      typeof notification.id ===
+      "number"
+    ) {
+
       try {
-        await fetch(`${apiUrl}/notifications/${notification.id}`, {
-          method: "DELETE",
-          credentials: "include",
-        });
+
+        await fetch(
+          `${apiUrl}/notifications/${notification.id}`,
+          {
+            method: "DELETE",
+            credentials: "include",
+          }
+        );
+
       } catch (error) {
-        console.error("Notification removal error:", error);
+
+        console.error(
+          "Notification removal error:",
+          error
+        );
+
       }
+
       return;
+
     }
 
-    const localNotifications = JSON.parse(localStorage.getItem("travelhub-local-notifications") || "[]");
+
+    /*
+     * Local notification
+     */
+
+    let localNotifications = [];
+
+    try {
+
+      localNotifications =
+        JSON.parse(
+          localStorage.getItem(
+            "travelhub-local-notifications"
+          ) || "[]"
+        );
+
+    } catch {
+
+      localNotifications = [];
+
+    }
+
+
     localStorage.setItem(
       "travelhub-local-notifications",
-      JSON.stringify(localNotifications.filter((item) => item.id !== notification.id))
+      JSON.stringify(
+        localNotifications.filter(
+          (item) =>
+            item.id !==
+            notification.id
+        )
+      )
     );
+
   }
 
-  useEffect(() => {
-    const initialLoad = window.setTimeout(() => {
-      void loadUser();
-    }, 0);
 
-    return () => window.clearTimeout(initialLoad);
-  }, []);
-
-  useEffect(() => {
-    const initialLoad = window.setTimeout(() => {
-      void loadNotifications();
-    }, 0);
-
-    const interval = setInterval(() => {
-      loadNotifications();
-    }, 5000);
-
-    const handleLocalNotification = () => {
-      void loadNotifications();
-    };
-    window.addEventListener("travelhub-notification", handleLocalNotification);
-
-    return () => {
-      window.clearTimeout(initialLoad);
-      clearInterval(interval);
-      window.removeEventListener("travelhub-notification", handleLocalNotification);
-    };
-  }, []);
+  // =====================================================
+  // NOTIFICATION TIME
+  // =====================================================
 
   function getTimeAgo(date) {
 
-    if (!date) return "Just now";
+    if (!date) {
+
+      return "Just now";
+
+    }
 
 
-    const now = new Date();
-    const notificationDate = new Date(
-      date.includes("T")
-        ? date
-        : date.replace(" ", "T") + "Z"
-    );
+    const now =
+      new Date();
 
 
-    const difference = Math.max(
-      0,
-      Math.floor(
-        (now - notificationDate) / 1000
-      )
-    );
+    const notificationDate =
+      new Date(
+        date.includes("T")
+          ? date
+          : date.replace(
+              " ",
+              "T"
+            ) + "Z"
+      );
+
+
+    const difference =
+      Math.max(
+        0,
+        Math.floor(
+          (
+            now -
+            notificationDate
+          ) / 1000
+        )
+      );
+
+
     if (difference < 5) {
 
       return "Just now";
 
     }
+
+
     if (difference < 60) {
 
-      return `${difference} sec${difference === 1 ? "" : "s"} ago`;
+      return `${difference} sec${
+        difference === 1
+          ? ""
+          : "s"
+      } ago`;
 
     }
 
 
-    const minutes = Math.floor(
-      difference / 60
-    );
+    const minutes =
+      Math.floor(
+        difference / 60
+      );
+
+
     if (minutes < 60) {
 
-      return `${minutes} min${minutes === 1 ? "" : "s"} ago`;
+      return `${minutes} min${
+        minutes === 1
+          ? ""
+          : "s"
+      } ago`;
 
     }
 
 
-    const hours = Math.floor(
-      minutes / 60
-    );
+    const hours =
+      Math.floor(
+        minutes / 60
+      );
+
+
     if (hours < 24) {
 
-      return `${hours} hour${hours === 1 ? "" : "s"} ago`;
+      return `${hours} hour${
+        hours === 1
+          ? ""
+          : "s"
+      } ago`;
 
     }
 
 
-    const days = Math.floor(
-      hours / 24
+    const days =
+      Math.floor(
+        hours / 24
+      );
+
+
+    return `${days} day${
+      days === 1
+        ? ""
+        : "s"
+    } ago`;
+
+  }
+
+
+  // =====================================================
+  // LOAD USER ONCE
+  // =====================================================
+
+  useEffect(() => {
+
+    loadUser();
+
+  }, []);
+
+
+  // =====================================================
+  // LOAD NOTIFICATIONS EVERY 5 SECONDS
+  // =====================================================
+
+  useEffect(() => {
+
+    loadNotifications();
+
+
+    const interval =
+      setInterval(
+        () => {
+
+          loadNotifications();
+
+        },
+        5000
+      );
+
+
+    const handleLocalNotification =
+      () => {
+
+        loadNotifications();
+
+      };
+
+
+    window.addEventListener(
+      "travelhub-notification",
+      handleLocalNotification
     );
 
 
-    return `${days} day${days === 1 ? "" : "s"} ago`;
+    return () => {
 
-  }
+      clearInterval(
+        interval
+      );
+
+      window.removeEventListener(
+        "travelhub-notification",
+        handleLocalNotification
+      );
+
+    };
+
+  }, []);
+
+
+  // =====================================================
+  // LOGOUT
+  // =====================================================
 
   async function handleLogout() {
 
@@ -231,6 +517,58 @@ export default function Navbar({ search = "", setSearch }) {
     }
 
   }
+
+
+  // =====================================================
+  // NOTIFICATION CLICK
+  // =====================================================
+
+  function handleNotificationClick(
+    notification
+  ) {
+
+    /*
+     * If it is a booking notification
+     * and backend provided booking_id,
+     * open the booking page.
+     */
+
+    if (
+      notification.type ===
+        "hotel_booking" &&
+      notification.booking_id
+    ) {
+
+      setNotificationOpen(
+        false
+      );
+
+
+      navigate(
+        `/booking-confirmation/${notification.booking_id}`
+      );
+
+      return;
+
+    }
+
+  }
+
+
+  // =====================================================
+  // UNREAD COUNT
+  // =====================================================
+
+  const unreadCount =
+    notifications.filter(
+      (notification) =>
+        !notification.is_read
+    ).length;
+
+
+  // =====================================================
+  // UI
+  // =====================================================
 
   return (
 
@@ -265,7 +603,9 @@ export default function Navbar({ search = "", setSearch }) {
     >
 
 
-      
+      {/* =================================================
+          TITLE
+      ================================================= */}
 
       <div>
 
@@ -277,7 +617,9 @@ export default function Navbar({ search = "", setSearch }) {
             dark:text-white
           "
         >
+
           {t("Dashboard")}
+
         </h1>
 
 
@@ -289,14 +631,17 @@ export default function Navbar({ search = "", setSearch }) {
             text-sm
           "
         >
+
           {t("WelcomeBack")}
+
         </p>
 
       </div>
 
 
-
-      
+      {/* =================================================
+          SEARCH
+      ================================================= */}
 
       <div className="hidden lg:block relative w-[420px]">
 
@@ -313,7 +658,10 @@ export default function Navbar({ search = "", setSearch }) {
         <input
           value={search}
           onChange={(e) =>
-            setSearch && setSearch(e.target.value)
+            setSearch &&
+            setSearch(
+              e.target.value
+            )
           }
           type="text"
           placeholder={t("SearchPlaceholder")}
@@ -344,8 +692,9 @@ export default function Navbar({ search = "", setSearch }) {
       </div>
 
 
-
-      
+      {/* =================================================
+          RIGHT SIDE
+      ================================================= */}
 
       <div
         className="
@@ -356,10 +705,11 @@ export default function Navbar({ search = "", setSearch }) {
       >
 
 
-        
+        {/* =================================================
+            NOTIFICATIONS
+        ================================================= */}
 
         <div className="relative">
-
 
           <button
             onClick={() => {
@@ -399,7 +749,7 @@ export default function Navbar({ search = "", setSearch }) {
             <FaBell className="text-lg" />
 
 
-            {notifications.filter((notification) => !notification.is_read).length > 0 && (
+            {unreadCount > 0 && (
 
               <span
                 className="
@@ -425,7 +775,9 @@ export default function Navbar({ search = "", setSearch }) {
                   font-bold
                 "
               >
-                {notifications.filter((notification) => !notification.is_read).length}
+
+                {unreadCount}
+
               </span>
 
             )}
@@ -433,8 +785,9 @@ export default function Navbar({ search = "", setSearch }) {
           </button>
 
 
-
-          
+          {/* =================================================
+              NOTIFICATION DROPDOWN
+          ================================================= */}
 
           {notificationOpen && (
 
@@ -444,8 +797,8 @@ export default function Navbar({ search = "", setSearch }) {
                 right-0
                 mt-4
 
-                w-[370px]
-                max-h-[500px]
+                w-[400px]
+                max-h-[560px]
 
                 overflow-y-auto
 
@@ -465,13 +818,11 @@ export default function Navbar({ search = "", setSearch }) {
                 overflow-hidden
 
                 origin-top-right
-
-                animate-[fadeIn_.25s_ease-out]
               "
             >
 
 
-              
+              {/* HEADER */}
 
               <div
                 className="
@@ -499,7 +850,9 @@ export default function Navbar({ search = "", setSearch }) {
                       dark:text-white
                     "
                   >
+
                     Notifications
+
                   </h2>
 
 
@@ -513,37 +866,75 @@ export default function Navbar({ search = "", setSearch }) {
                       mt-1
                     "
                   >
+
                     {notifications.length} notification
                     {notifications.length !== 1
                       ? "s"
                       : ""}
+
                   </p>
 
                 </div>
 
 
                 <div className="flex items-center gap-1">
-                  <button type="button" onClick={markAllNotificationsRead} className="rounded-lg p-2 text-blue-500 transition hover:bg-blue-50 dark:hover:bg-white/10" title="Mark all notifications read" aria-label="Mark all notifications read">
+
+                  <button
+                    type="button"
+                    onClick={
+                      markAllNotificationsRead
+                    }
+                    className="
+                      rounded-lg
+                      p-2
+                      text-blue-500
+
+                      transition
+
+                      hover:bg-blue-50
+                      dark:hover:bg-white/10
+                    "
+                    title="Mark all as read"
+                  >
+
                     <FaCheck />
+
                   </button>
-                  <button type="button" onClick={() => setNotificationOpen(false)} className="rounded-lg p-2 text-gray-400 transition hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-500/10" title="Close notifications" aria-label="Close notifications">
+
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setNotificationOpen(
+                        false
+                      )
+                    }
+                    className="
+                      rounded-lg
+                      p-2
+                      text-gray-400
+
+                      transition
+
+                      hover:bg-red-50
+                      hover:text-red-500
+
+                      dark:hover:bg-red-500/10
+                    "
+                  >
+
                     <FaTimes />
+
                   </button>
+
                 </div>
 
               </div>
 
 
+              {/* NOTIFICATION LIST */}
 
-              
-
-              <div
-                className="
-                  p-3
-                  space-y-2
-                "
-              >
-
+              <div className="p-3 space-y-2">
 
                 {notifications.length === 0 ? (
 
@@ -566,23 +957,15 @@ export default function Navbar({ search = "", setSearch }) {
                       "
                     />
 
-
                     <p className="font-medium">
 
                       No notifications yet
 
                     </p>
 
+                    <p className="text-xs mt-1">
 
-                    <p
-                      className="
-                        text-xs
-                        mt-1
-                        opacity-70
-                      "
-                    >
-
-                      Your updates will appear here
+                      Your booking updates will appear here
 
                     </p>
 
@@ -590,153 +973,212 @@ export default function Navbar({ search = "", setSearch }) {
 
                 ) : (
 
-
                   notifications.map(
-                    (notification) => (
+                    (notification) => {
 
-                      <div
-                        key={notification.id}
-
-                        className="
-                          group
-
-                          flex
-                          gap-4
-
-                          p-4
-
-                          rounded-2xl
-
-                          hover:bg-blue-50
-                          dark:hover:bg-white/5
-
-                          hover:translate-x-1
-
-                          transition-all
-                          duration-300
-                        "
-                      >
+                      const isBooking =
+                        notification.type ===
+                        "hotel_booking";
 
 
-                        
+                      return (
 
                         <div
+                          key={`${notification.id}-${notification.type}`}
+
+                          onClick={() =>
+                            handleNotificationClick(
+                              notification
+                            )
+                          }
+
                           className={`
-                            w-11
-                            h-11
-
-                            shrink-0
-
-                            rounded-xl
+                            group
 
                             flex
-                            items-center
-                            justify-center
+                            gap-4
+
+                            p-4
+
+                            rounded-2xl
 
                             transition-all
                             duration-300
 
-                            group-hover:scale-110
-
                             ${
-                              ["like", "favorite"].includes(notification.type)
-                                ? `
-                                  bg-pink-500/10
-                                  text-pink-500
-                                `
-                                : `
-                                  bg-blue-500/10
-                                  text-blue-500
-                                `
+                              isBooking
+                                ? "cursor-pointer bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-100 dark:hover:bg-emerald-500/20"
+                                : "hover:bg-blue-50 dark:hover:bg-white/5 hover:translate-x-1"
                             }
                           `}
                         >
 
-                          {["like", "favorite"].includes(notification.type)
 
-                            ? <FaHeart />
+                          {/* ICON */}
 
-                            : <FaUserPlus />
-
-                          }
-
-                        </div>
-
-
-
-                        
-
-                        <div className="flex-1">
-
-
-                          <h3
-                            className="
-                              text-sm
-                              font-bold
-
-                              text-slate-900
-                              dark:text-white
-                            "
-                          >
-                            {notification.title}
-                          </h3>
-
-
-                          <p
-                            className="
-                              text-xs
-
-                              mt-1
-
-                              text-gray-500
-                              dark:text-gray-400
-
-                              leading-5
-                            "
-                          >
-                            {notification.message}
-                          </p>
-
-
-                          
-
-                          <p
+                          <div
                             className={`
-                              text-xs
-                              mt-2
-                              font-medium
+                              w-11
+                              h-11
+
+                              shrink-0
+
+                              rounded-xl
+
+                              flex
+                              items-center
+                              justify-center
+
+                              transition-all
+                              duration-300
+
+                              group-hover:scale-110
 
                               ${
-                                ["like", "favorite"].includes(notification.type)
-
-                                  ? "text-pink-500"
-
-                                  : "text-blue-500"
+                                isBooking
+                                  ? "bg-emerald-500/10 text-emerald-500"
+                                  : ["like", "favorite"].includes(
+                                      notification.type
+                                    )
+                                  ? "bg-pink-500/10 text-pink-500"
+                                  : "bg-blue-500/10 text-blue-500"
                               }
                             `}
                           >
 
-                            {getTimeAgo(
-                              notification.created_at
+                            {isBooking ? (
+
+                              <FaHotel />
+
+                            ) : ["like", "favorite"].includes(
+                                notification.type
+                              ) ? (
+
+                              <FaHeart />
+
+                            ) : (
+
+                              <FaUserPlus />
+
                             )}
 
-                          </p>
+                          </div>
+
+
+                          {/* CONTENT */}
+
+                          <div className="flex-1 min-w-0">
+
+                            <h3
+                              className="
+                                text-sm
+                                font-bold
+
+                                text-slate-900
+                                dark:text-white
+                              "
+                            >
+
+                              {notification.title}
+
+                            </h3>
+
+
+                            <p
+                              className="
+                                text-xs
+
+                                mt-1
+
+                                text-gray-500
+                                dark:text-gray-400
+
+                                leading-5
+
+                                whitespace-pre-line
+                              "
+                            >
+
+                              {notification.message}
+
+                            </p>
+
+
+                            {isBooking && (
+
+                              <div className="mt-3 flex items-center gap-2 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+
+                                <FaCreditCard />
+
+                                Booking confirmed
+
+                              </div>
+
+                            )}
+
+
+                            <p
+                              className={`
+                                text-xs
+                                mt-2
+                                font-medium
+
+                                ${
+                                  isBooking
+                                    ? "text-emerald-500"
+                                    : "text-blue-500"
+                                }
+                              `}
+                            >
+
+                              {getTimeAgo(
+                                notification.created_at
+                              )}
+
+                            </p>
+
+                          </div>
+
+
+                          {/* DELETE */}
+
+                          <button
+                            type="button"
+                            onClick={(event) => {
+
+                              event.stopPropagation();
+
+                              dismissNotification(
+                                notification
+                              );
+
+                            }}
+                            className="
+                              self-start
+
+                              rounded-lg
+                              p-2
+
+                              text-gray-400
+
+                              transition
+
+                              hover:bg-red-50
+                              hover:text-red-500
+
+                              dark:hover:bg-red-500/10
+                            "
+                          >
+
+                            <FaTimes />
+
+                          </button>
 
                         </div>
 
-                        <button
-                          type="button"
-                          onClick={() => dismissNotification(notification)}
-                          className="self-start rounded-lg p-2 text-gray-400 transition hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-500/10"
-                          title="Remove notification"
-                          aria-label={`Remove ${notification.title} notification`}
-                        >
-                          <FaTimes />
-                        </button>
+                      );
 
-                      </div>
-
-                    )
+                    }
                   )
 
                 )}
@@ -750,15 +1192,14 @@ export default function Navbar({ search = "", setSearch }) {
         </div>
 
 
-
-        
+        {/* =================================================
+            MESSAGES
+        ================================================= */}
 
         <button
-          onClick={() => {
-
-            navigate("/messages");
-
-          }}x
+          onClick={() =>
+            navigate("/messages")
+          }
           className="
             relative
 
@@ -789,8 +1230,9 @@ export default function Navbar({ search = "", setSearch }) {
         </button>
 
 
-
-        
+        {/* =================================================
+            THEME
+        ================================================= */}
 
         <button
           onClick={toggleTheme}
@@ -829,18 +1271,20 @@ export default function Navbar({ search = "", setSearch }) {
         </button>
 
 
-
-        
+        {/* =================================================
+            PROFILE
+        ================================================= */}
 
         <div className="relative">
-
 
           <button
             onClick={() => {
 
               setOpen(!open);
 
-              setNotificationOpen(false);
+              setNotificationOpen(
+                false
+              );
 
             }}
             className="
@@ -864,15 +1308,12 @@ export default function Navbar({ search = "", setSearch }) {
             "
           >
 
-
             <img
               src={
                 user?.photo ||
                 "https://i.pravatar.cc/150"
               }
-
               alt="Profile"
-
               className="
                 w-12
                 h-12
@@ -887,14 +1328,7 @@ export default function Navbar({ search = "", setSearch }) {
             />
 
 
-            <div
-              className="
-                hidden
-                xl:block
-
-                text-left
-              "
-            >
+            <div className="hidden xl:block text-left">
 
               <h2
                 className="
@@ -905,7 +1339,8 @@ export default function Navbar({ search = "", setSearch }) {
                 "
               >
 
-                {user?.name || "Traveler"}
+                {user?.name ||
+                  "Traveler"}
 
               </h2>
 
@@ -927,8 +1362,7 @@ export default function Navbar({ search = "", setSearch }) {
           </button>
 
 
-
-          
+          {/* PROFILE MENU */}
 
           {open && (
 
@@ -956,9 +1390,6 @@ export default function Navbar({ search = "", setSearch }) {
                 z-[100]
               "
             >
-
-
-              
 
               <button
                 onClick={() => {
@@ -994,9 +1425,6 @@ export default function Navbar({ search = "", setSearch }) {
               </button>
 
 
-
-              
-
               <button
                 onClick={() => {
 
@@ -1031,12 +1459,8 @@ export default function Navbar({ search = "", setSearch }) {
               </button>
 
 
-
               <hr className="dark:border-gray-700" />
 
-
-
-              
 
               <button
                 onClick={handleLogout}

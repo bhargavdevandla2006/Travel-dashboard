@@ -1,9 +1,10 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import {
   createOrder,
   verifyPayment,
   getProfile,
+  getRazorpayKey,
 } from "../services/api";
 
 import { useEffect, useState } from "react";
@@ -11,6 +12,7 @@ import { useEffect, useState } from "react";
 export default function Booking() {
 
   const { state } = useLocation();
+  const navigate = useNavigate();
 
   const [user, setUser] = useState(null);
 
@@ -89,7 +91,7 @@ export default function Booking() {
       );
 
       console.log(
-        "🚀 PAYMENT STARTED"
+        "🚀 HOTEL PAYMENT STARTED"
       );
 
       console.log(
@@ -113,37 +115,7 @@ export default function Booking() {
 
 
       // =================================================
-      // CHECK DATES
-      // =================================================
-
-      if (!checkIn || !checkOut) {
-
-        alert(
-          "Please select check-in and check-out dates."
-        );
-
-        return;
-
-      }
-
-
-      // =================================================
-      // CHECK DATE ORDER
-      // =================================================
-
-      if (checkIn >= checkOut) {
-
-        alert(
-          "Check-out date must be after check-in date."
-        );
-
-        return;
-
-      }
-
-
-      // =================================================
-      // CUSTOMER DETAILS
+      // CHECK EMAIL
       // =================================================
 
       const customerName =
@@ -161,53 +133,11 @@ export default function Booking() {
         "";
 
 
-      // =================================================
-      // HOTEL DETAILS
-      // =================================================
-
-      const hotelName =
-        state.name ||
-        "Hotel";
-
-      const hotelLocation =
-        state.vicinity ||
-        state.location ||
-        "N/A";
-
-
-      // =================================================
-      // BOOKING AMOUNT
-      // =================================================
-
-      const bookingAmount = 4500;
-
-
-      setLoading(true);
-
-
-      // =================================================
-      // RAZORPAY KEY
-      // =================================================
-
- 
-
-      console.log(
-        "🔑 Razorpay Key:",
-        razorpayKey
-      );
-
-
-      if (!razorpayKey) {
-
-        console.error(
-          "❌ Razorpay key is missing"
-        );
+      if (!customerEmail) {
 
         alert(
-          "Razorpay key is missing.\n\nCheck VITE_RAZORPAY_KEY_ID in frontend .env"
+          "Please add your email address to your profile before booking."
         );
-
-        setLoading(false);
 
         return;
 
@@ -215,24 +145,102 @@ export default function Booking() {
 
 
       // =================================================
-      // RAZORPAY SCRIPT
+      // CHECK DATES
+      // =================================================
+
+      if (!checkIn || !checkOut) {
+
+        alert(
+          "Please select check-in and check-out dates."
+        );
+
+        return;
+
+      }
+
+
+      if (checkIn >= checkOut) {
+
+        alert(
+          "Check-out date must be after check-in date."
+        );
+
+        return;
+
+      }
+
+
+      // =================================================
+      // HOTEL DETAILS
+      // =================================================
+
+      const hotelName =
+        state.name ||
+        state.title ||
+        "Hotel";
+
+      const hotelLocation =
+        state.vicinity ||
+        state.location ||
+        state.address ||
+        "N/A";
+
+
+      // =================================================
+      // BOOKING AMOUNT
+      // =================================================
+
+      const bookingAmount =
+        4500;
+
+
+      setLoading(true);
+
+
+      // =================================================
+      // GET RAZORPAY KEY
       // =================================================
 
       console.log(
-        "Razorpay object:",
-        window.Razorpay
+        "🔑 Getting Razorpay key..."
       );
 
 
-      if (!window.Razorpay) {
+      const razorpayKeyResponse =
+        await getRazorpayKey();
 
-        alert(
-          "Razorpay checkout failed to load.\n\nPlease refresh the page."
+
+      if (
+        !razorpayKeyResponse ||
+        !razorpayKeyResponse.success ||
+        !razorpayKeyResponse.key
+      ) {
+
+        throw new Error(
+          "Razorpay key could not be loaded."
         );
 
-        setLoading(false);
+      }
 
-        return;
+
+      const razorpayKey =
+        razorpayKeyResponse.key;
+
+
+      console.log(
+        "✅ Razorpay key loaded"
+      );
+
+
+      // =================================================
+      // CHECK RAZORPAY SCRIPT
+      // =================================================
+
+      if (!window.Razorpay) {
+
+        throw new Error(
+          "Razorpay checkout failed to load. Please refresh the page."
+        );
 
       }
 
@@ -253,7 +261,7 @@ export default function Booking() {
 
 
       console.log(
-        "✅ CREATE ORDER RESPONSE:",
+        "✅ ORDER RESPONSE:",
         orderResponse
       );
 
@@ -265,19 +273,10 @@ export default function Booking() {
         !orderResponse.order.id
       ) {
 
-        console.error(
-          "❌ Order creation failed:",
-          orderResponse
-        );
-
-        alert(
+        throw new Error(
           orderResponse?.message ||
           "Unable to create Razorpay order."
         );
-
-        setLoading(false);
-
-        return;
 
       }
 
@@ -287,18 +286,8 @@ export default function Booking() {
 
 
       console.log(
-        "🆔 Razorpay Order ID:",
+        "🆔 Order ID:",
         order.id
-      );
-
-      console.log(
-        "💰 Razorpay Amount:",
-        order.amount
-      );
-
-      console.log(
-        "💱 Razorpay Currency:",
-        order.currency
       );
 
 
@@ -308,9 +297,11 @@ export default function Booking() {
 
       const options = {
 
-        key: razorpayKey,
+        key:
+          razorpayKey,
 
-        amount: order.amount,
+        amount:
+          order.amount,
 
         currency:
           order.currency || "INR",
@@ -324,6 +315,11 @@ export default function Booking() {
         order_id:
           order.id,
 
+
+        // =================================================
+        // REAL CUSTOMER DETAILS
+        // =================================================
+
         prefill: {
 
           name:
@@ -336,6 +332,11 @@ export default function Booking() {
             customerContact,
 
         },
+
+
+        // =================================================
+        // BOOKING DETAILS
+        // =================================================
 
         notes: {
 
@@ -353,6 +354,7 @@ export default function Booking() {
 
         },
 
+
         theme: {
 
           color:
@@ -365,176 +367,158 @@ export default function Booking() {
         // PAYMENT SUCCESS
         // =================================================
 
-        handler: async function (
-          response
-        ) {
-
-          console.log(
-            "================================"
-          );
-
-          console.log(
-            "✅ RAZORPAY PAYMENT SUCCESS"
-          );
-
-          console.log(
-            "Payment ID:",
-            response?.razorpay_payment_id
-          );
-
-          console.log(
-            "Order ID:",
-            response?.razorpay_order_id
-          );
-
-          console.log(
-            "Signature:",
-            response?.razorpay_signature
-          );
-
-          console.log(
-            "================================"
-          );
-
-
-          try {
-
-            // ---------------------------------------------
-            // VERIFY PAYMENT
-            // ---------------------------------------------
+        handler:
+          async function(response) {
 
             console.log(
-              "🔐 Sending payment to /verify-payment..."
+              "================================"
+            );
+
+            console.log(
+              "✅ RAZORPAY PAYMENT SUCCESS"
+            );
+
+            console.log(
+              "Payment ID:",
+              response.razorpay_payment_id
+            );
+
+            console.log(
+              "Order ID:",
+              response.razorpay_order_id
+            );
+
+            console.log(
+              "================================"
             );
 
 
-            const verification =
-              await verifyPayment({
+            try {
 
-                razorpay_order_id:
-                  response.razorpay_order_id,
+              // =================================================
+              // VERIFY PAYMENT
+              // =================================================
 
-                razorpay_payment_id:
-                  response.razorpay_payment_id,
-
-                razorpay_signature:
-                  response.razorpay_signature,
-
-                customerName:
-                  customerName,
-
-                customerEmail:
-                  customerEmail,
-
-                customerContact:
-                  customerContact,
-
-                hotelName:
-                  hotelName,
-
-                hotelLocation:
-                  hotelLocation,
-
-                checkIn:
-                  checkIn,
-
-                checkOut:
-                  checkOut,
-
-                amount:
-                  bookingAmount,
-
-              });
-
-
-            console.log(
-              "✅ VERIFY PAYMENT RESPONSE:",
-              verification
-            );
-
-
-            // ---------------------------------------------
-            // BOOKING SUCCESS
-            // ---------------------------------------------
-
-            if (
-              verification &&
-              verification.success
-            ) {
-
-              alert(
-                "🎉 Hotel booked successfully!\n\n" +
-                "Confirmation emails have been sent."
+              console.log(
+                "🔐 Sending payment to /verify-payment..."
               );
 
-            } else {
 
-              console.error(
-                "❌ Verification failed:",
+              const verification =
+                await verifyPayment({
+
+                  razorpay_order_id:
+                    response.razorpay_order_id,
+
+                  razorpay_payment_id:
+                    response.razorpay_payment_id,
+
+                  razorpay_signature:
+                    response.razorpay_signature,
+
+
+                  // CUSTOMER
+                  customerName:
+                    customerName,
+
+                  customerEmail:
+                    customerEmail,
+
+                  customerContact:
+                    customerContact,
+
+
+                  // HOTEL
+                  hotelName:
+                    hotelName,
+
+                  hotelLocation:
+                    hotelLocation,
+
+
+                  // DATES
+                  checkIn:
+                    checkIn,
+
+                  checkOut:
+                    checkOut,
+
+
+                  // PAYMENT
+                  amount:
+                    bookingAmount,
+
+                });
+
+
+              console.log(
+                "✅ VERIFY RESPONSE:",
                 verification
               );
 
+
+              // =================================================
+              // SUCCESS
+              // =================================================
+
+              if (
+                verification &&
+                verification.success
+              ) {
+
+                alert(
+                  "🎉 Hotel Booking Confirmed!\n\n" +
+                  `Hotel: ${hotelName}\n` +
+                  `Location: ${hotelLocation}\n` +
+                  `Check-in: ${checkIn}\n` +
+                  `Check-out: ${checkOut}\n` +
+                  `Amount Paid: ₹${bookingAmount}\n\n` +
+                  "Confirmation email has been sent to your email."
+                );
+
+
+                // Optional:
+                // if your booking details page exists,
+                // navigate to it here.
+                //
+                // navigate(`/booking/${verification.bookingId}`);
+
+              } else {
+
+                alert(
+                  verification?.message ||
+                  "Payment was successful, but booking verification failed."
+                );
+
+              }
+
+
+            } catch (error) {
+
+              console.error(
+                "❌ VERIFY PAYMENT ERROR:",
+                error
+              );
+
               alert(
-                verification?.message ||
-                "Payment was successful, but booking verification failed."
+                "⚠️ Payment was successful,\n" +
+                "but booking verification failed.\n\n" +
+                error?.message
               );
 
             }
 
 
-          } catch (error) {
+            setLoading(false);
 
-            console.error(
-              "================================"
-            );
-
-            console.error(
-              "❌ VERIFY PAYMENT ERROR"
-            );
-
-            console.error(
-              "FULL ERROR:",
-              error
-            );
-
-            console.error(
-              "MESSAGE:",
-              error?.message
-            );
-
-            console.error(
-              "================================"
-            );
-
-
-            alert(
-              "⚠️ Payment was successful,\n" +
-              "but booking verification failed.\n\n" +
-              "Error: " +
-              (
-                error?.message ||
-                "Unknown error"
-              )
-            );
-
-          }
-
-
-          setLoading(false);
-
-        },
+          },
 
       };
 
 
       // =================================================
-      // CREATE RAZORPAY INSTANCE
+      // CREATE RAZORPAY
       // =================================================
-
-      console.log(
-        "🔵 Creating Razorpay checkout..."
-      );
-
 
       const razorpay =
         new window.Razorpay(
@@ -548,94 +532,20 @@ export default function Booking() {
 
       razorpay.on(
         "payment.failed",
-        function (response) {
+        function(response) {
 
           console.error(
-            "================================"
-          );
-
-          console.error(
-            "❌ RAZORPAY PAYMENT FAILED"
-          );
-
-          console.error(
-            "FULL RESPONSE:",
+            "❌ PAYMENT FAILED:",
             response
           );
 
-          console.error(
-            "ERROR:",
-            response?.error
-          );
-
-          console.error(
-            "CODE:",
-            response?.error?.code
-          );
-
-          console.error(
-            "DESCRIPTION:",
-            response?.error?.description
-          );
-
-          console.error(
-            "SOURCE:",
-            response?.error?.source
-          );
-
-          console.error(
-            "STEP:",
-            response?.error?.step
-          );
-
-          console.error(
-            "REASON:",
-            response?.error?.reason
-          );
-
-          console.error(
-            "================================"
-          );
-
-
-          const errorCode =
-            response?.error?.code ||
-            "Unknown";
-
-          const errorDescription =
-            response?.error?.description ||
-            "No description provided";
-
-          const errorSource =
-            response?.error?.source ||
-            "Unknown";
-
-          const errorStep =
-            response?.error?.step ||
-            "Unknown";
-
-          const errorReason =
-            response?.error?.reason ||
-            "Unknown";
-
 
           alert(
-            "❌ RAZORPAY PAYMENT FAILED\n\n" +
-
-            "Code: " +
-            errorCode +
-
-            "\n\nDescription: " +
-            errorDescription +
-
-            "\n\nSource: " +
-            errorSource +
-
-            "\n\nStep: " +
-            errorStep +
-
-            "\n\nReason: " +
-            errorReason
+            "❌ Payment Failed\n\n" +
+            (
+              response?.error?.description ||
+              "Payment could not be completed."
+            )
           );
 
 
@@ -659,48 +569,17 @@ export default function Booking() {
 
     } catch (error) {
 
-      // =================================================
-      // PAYMENT FLOW ERROR
-      // =================================================
-
       console.error(
-        "================================"
-      );
-
-      console.error(
-        "❌ PAYMENT FLOW ERROR"
-      );
-
-      console.error(
-        "FULL ERROR:",
+        "❌ PAYMENT FLOW ERROR:",
         error
-      );
-
-      console.error(
-        "MESSAGE:",
-        error?.message
-      );
-
-      console.error(
-        "NAME:",
-        error?.name
-      );
-
-      console.error(
-        "STACK:",
-        error?.stack
-      );
-
-      console.error(
-        "================================"
       );
 
 
       alert(
-        "❌ Payment Flow Error\n\n" +
+        "❌ Payment Error\n\n" +
         (
           error?.message ||
-          "Unknown error"
+          "Something went wrong."
         )
       );
 
@@ -726,7 +605,9 @@ export default function Booking() {
         {/* TITLE */}
 
         <h1 className="text-3xl font-bold mb-6">
+
           Booking Confirmation
+
         </h1>
 
 
@@ -735,17 +616,25 @@ export default function Booking() {
         <div className="space-y-2">
 
           <h2 className="text-2xl font-semibold">
+
             {state.name}
+
           </h2>
 
+
           <p className="text-gray-500">
+
             {state.vicinity ||
               state.location ||
               "N/A"}
+
           </p>
 
+
           <h3 className="text-2xl font-bold text-orange-500 mt-4">
+
             ₹4500 / Night
+
           </h3>
 
         </div>
@@ -756,8 +645,11 @@ export default function Booking() {
         <div className="mt-8">
 
           <label className="block mb-2 font-medium">
+
             Check In
+
           </label>
+
 
           <input
             type="date"
@@ -778,8 +670,11 @@ export default function Booking() {
         <div className="mt-5">
 
           <label className="block mb-2 font-medium">
+
             Check Out
+
           </label>
+
 
           <input
             type="date"
@@ -802,21 +697,48 @@ export default function Booking() {
           <div className="mt-6 p-4 bg-gray-50 rounded-lg">
 
             <h3 className="font-semibold mb-2">
+
               Customer Details
+
             </h3>
 
+
             <p>
+
               <strong>Name:</strong>{" "}
+
               {user.name ||
                 user.username ||
                 "Customer"}
+
             </p>
 
+
             <p>
+
               <strong>Email:</strong>{" "}
+
               {user.email ||
                 "N/A"}
+
             </p>
+
+
+            {(
+              user.phone ||
+              user.contact
+            ) && (
+
+              <p>
+
+                <strong>Contact:</strong>{" "}
+
+                {user.phone ||
+                  user.contact}
+
+              </p>
+
+            )}
 
           </div>
 
@@ -836,7 +758,6 @@ export default function Booking() {
             : "Pay ₹4500"}
 
         </button>
-
 
       </div>
 

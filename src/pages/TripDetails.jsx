@@ -9,6 +9,7 @@ import {
   createOrder,
   verifyPayment,
   getRazorpayKey,
+  getProfile,
 } from "../services/api";
 
 import {
@@ -35,6 +36,8 @@ export default function TripDetails() {
   const [trip, setTrip] = useState(state || null);
   const [loading, setLoading] = useState(!state);
   const [error, setError] = useState("");
+
+  const [user, setUser] = useState(null);
 
   const [saved, setSaved] = useState(
     () => localStorage.getItem(`saved-trip-${id}`) === "true"
@@ -105,6 +108,41 @@ export default function TripDetails() {
 
 
   // ==========================================
+  // LOAD LOGGED-IN USER
+  // ==========================================
+
+  useEffect(() => {
+
+    async function loadUser() {
+
+      try {
+
+        const data = await getProfile();
+
+        console.log(
+          "👤 Logged-in user:",
+          data
+        );
+
+        setUser(data);
+
+      } catch (userError) {
+
+        console.error(
+          "❌ Failed to load logged-in user:",
+          userError
+        );
+
+      }
+
+    }
+
+    loadUser();
+
+  }, []);
+
+
+  // ==========================================
   // LOAD TRIP
   // ==========================================
 
@@ -160,10 +198,12 @@ export default function TripDetails() {
   useEffect(() => {
 
     if (id) {
+
       localStorage.setItem(
         `trip-checklist-${id}`,
         JSON.stringify(checklist)
       );
+
     }
 
   }, [checklist, id]);
@@ -176,10 +216,12 @@ export default function TripDetails() {
   useEffect(() => {
 
     if (id) {
+
       localStorage.setItem(
         `trip-items-${id}`,
         JSON.stringify(customItems)
       );
+
     }
 
   }, [customItems, id]);
@@ -192,8 +234,12 @@ export default function TripDetails() {
   function toggleChecklist(item) {
 
     setChecklist((current) => ({
+
       ...current,
-      [item]: !current[item],
+
+      [item]:
+        !current[item],
+
     }));
 
   }
@@ -207,22 +253,31 @@ export default function TripDetails() {
 
     event.preventDefault();
 
-    const label = newItem.trim();
+    const label =
+      newItem.trim();
 
     if (!label) {
       return;
     }
 
     setCustomItems((items) => [
+
       ...items,
+
       {
-        id: `${Date.now()}-${label}`,
+        id:
+          `${Date.now()}-${label}`,
+
         label,
-        done: false,
+
+        done:
+          false,
       },
+
     ]);
 
     setNewItem("");
+
   }
 
 
@@ -233,14 +288,21 @@ export default function TripDetails() {
   function toggleCustomItem(itemId) {
 
     setCustomItems((items) =>
+
       items.map((item) =>
+
         item.id === itemId
+
           ? {
               ...item,
-              done: !item.done,
+              done:
+                !item.done,
             }
+
           : item
+
       )
+
     );
 
   }
@@ -253,9 +315,12 @@ export default function TripDetails() {
   function removeCustomItem(itemId) {
 
     setCustomItems((items) =>
+
       items.filter(
-        (item) => item.id !== itemId
+        (item) =>
+          item.id !== itemId
       )
+
     );
 
   }
@@ -267,7 +332,8 @@ export default function TripDetails() {
 
   function toggleSaved() {
 
-    const nextSaved = !saved;
+    const nextSaved =
+      !saved;
 
     setSaved(nextSaved);
 
@@ -287,7 +353,8 @@ export default function TripDetails() {
 
     const shareData = {
 
-      title: trip.title,
+      title:
+        trip.title,
 
       text:
         `Explore ${trip.title} in ${trip.location}.`,
@@ -321,23 +388,31 @@ export default function TripDetails() {
 
       }
 
-      setShareStatus("Link ready");
+      setShareStatus(
+        "Link ready"
+      );
 
       window.setTimeout(
-        () => setShareStatus(""),
+        () =>
+          setShareStatus(""),
         2200
       );
 
     } catch (shareError) {
 
       if (
-        shareError.name !== "AbortError"
+        shareError.name !==
+        "AbortError"
       ) {
 
-        setShareStatus("Try again");
+        setShareStatus(
+          "Try again"
+        );
+
       }
 
     }
+
   }
 
 
@@ -367,8 +442,11 @@ export default function TripDetails() {
     setSavedNotes((notes) => {
 
       const nextNotes = [
+
         ...notes,
+
         note,
+
       ];
 
       localStorage.setItem(
@@ -381,12 +459,18 @@ export default function TripDetails() {
     });
 
     setTripNote("");
-    setSelectedNoteId(null);
 
-    setNoteStatus("Note saved");
+    setSelectedNoteId(
+      null
+    );
+
+    setNoteStatus(
+      "Note saved"
+    );
 
     window.setTimeout(
-      () => setNoteStatus(""),
+      () =>
+        setNoteStatus(""),
       2200
     );
 
@@ -399,9 +483,13 @@ export default function TripDetails() {
 
   function selectTripNote(note) {
 
-    setTripNote(note.text);
+    setTripNote(
+      note.text
+    );
 
-    setSelectedNoteId(note.id);
+    setSelectedNoteId(
+      note.id
+    );
 
   }
 
@@ -429,10 +517,16 @@ export default function TripDetails() {
 
     });
 
-    if (selectedNoteId === noteId) {
+    if (
+      selectedNoteId ===
+      noteId
+    ) {
 
       setTripNote("");
-      setSelectedNoteId(null);
+
+      setSelectedNoteId(
+        null
+      );
 
     }
 
@@ -447,9 +541,32 @@ export default function TripDetails() {
 
     try {
 
-      console.log("================================");
-      console.log("🚀 PAYMENT STARTED");
-      console.log("================================");
+      console.log(
+        "================================"
+      );
+
+      console.log(
+        "🚀 PAYMENT STARTED"
+      );
+
+      console.log(
+        "================================"
+      );
+
+
+      // ------------------------------------------
+      // CHECK USER
+      // ------------------------------------------
+
+      if (!user) {
+
+        alert(
+          "Please login first."
+        );
+
+        return;
+
+      }
 
 
       // ------------------------------------------
@@ -459,14 +576,73 @@ export default function TripDetails() {
       if (!window.Razorpay) {
 
         alert(
-          "Razorpay checkout failed to load.\n\nPlease refresh the page and try again."
+          "Razorpay checkout failed to load.\n\n" +
+          "Please refresh the page and try again."
         );
 
         return;
+
       }
 
 
-      setPaymentLoading(true);
+      setPaymentLoading(
+        true
+      );
+
+
+      // ------------------------------------------
+      // CUSTOMER DETAILS
+      // ------------------------------------------
+
+      const customerName =
+        user.name ||
+        user.username ||
+        "Customer";
+
+      const customerEmail =
+        user.email ||
+        "";
+
+      const customerContact =
+        user.phone ||
+        user.contact ||
+        "";
+
+
+      console.log(
+        "👤 Customer Name:",
+        customerName
+      );
+
+      console.log(
+        "📧 Customer Email:",
+        customerEmail
+      );
+
+      console.log(
+        "📱 Customer Contact:",
+        customerContact
+      );
+
+
+      // ------------------------------------------
+      // CHECK CUSTOMER EMAIL
+      // ------------------------------------------
+
+      if (!customerEmail) {
+
+        alert(
+          "Your account does not have an email address.\n\n" +
+          "Please add an email before making a payment."
+        );
+
+        setPaymentLoading(
+          false
+        );
+
+        return;
+
+      }
 
 
       // ------------------------------------------
@@ -476,6 +652,7 @@ export default function TripDetails() {
       console.log(
         "🔑 Getting Razorpay Key from backend..."
       );
+
 
       const keyResponse =
         await getRazorpayKey();
@@ -502,9 +679,12 @@ export default function TripDetails() {
           "Razorpay Key ID could not be loaded."
         );
 
-        setPaymentLoading(false);
+        setPaymentLoading(
+          false
+        );
 
         return;
+
       }
 
 
@@ -519,15 +699,26 @@ export default function TripDetails() {
 
 
       // ------------------------------------------
+      // BOOKING AMOUNT
+      // ------------------------------------------
+
+      const bookingAmount =
+        850;
+
+
+      console.log(
+        "💰 Booking Amount:",
+        bookingAmount
+      );
+
+
+      // ------------------------------------------
       // CREATE ORDER
       // ------------------------------------------
 
       console.log(
         "💰 Creating Razorpay order..."
       );
-
-
-      const bookingAmount = 850;
 
 
       const orderResponse =
@@ -559,9 +750,12 @@ export default function TripDetails() {
           "Unable to create Razorpay order."
         );
 
-        setPaymentLoading(false);
+        setPaymentLoading(
+          false
+        );
 
         return;
+
       }
 
 
@@ -591,10 +785,6 @@ export default function TripDetails() {
 
       const options = {
 
-        // IMPORTANT:
-        // Key comes from backend
-        // No hardcoded Razorpay Key ID
-
         key:
           razorpayKey,
 
@@ -602,10 +792,11 @@ export default function TripDetails() {
           order.amount,
 
         currency:
-          order.currency || "INR",
+          order.currency ||
+          "INR",
 
         name:
-          "Travel Dashboard",
+          "TravelHub",
 
         description:
           trip.title,
@@ -621,10 +812,13 @@ export default function TripDetails() {
         prefill: {
 
           name:
-            "Bhargav",
+            customerName,
 
           email:
-            "test@gmail.com",
+            customerEmail,
+
+          contact:
+            customerContact,
 
         },
 
@@ -648,6 +842,18 @@ export default function TripDetails() {
 
 
         // ----------------------------------------
+        // THEME
+        // ----------------------------------------
+
+        theme: {
+
+          color:
+            "#f97316",
+
+        },
+
+
+        // ----------------------------------------
         // PAYMENT SUCCESS
         // ----------------------------------------
 
@@ -664,17 +870,17 @@ export default function TripDetails() {
 
             console.log(
               "Payment ID:",
-              response.razorpay_payment_id
+              response?.razorpay_payment_id
             );
 
             console.log(
               "Order ID:",
-              response.razorpay_order_id
+              response?.razorpay_order_id
             );
 
             console.log(
               "Signature:",
-              response.razorpay_signature
+              response?.razorpay_signature
             );
 
             console.log(
@@ -685,7 +891,25 @@ export default function TripDetails() {
             try {
 
               // --------------------------------
-              // VERIFY PAYMENT ON BACKEND
+              // CHECK RESPONSE
+              // --------------------------------
+
+              if (
+                !response ||
+                !response.razorpay_order_id ||
+                !response.razorpay_payment_id ||
+                !response.razorpay_signature
+              ) {
+
+                throw new Error(
+                  "Incomplete Razorpay payment response."
+                );
+
+              }
+
+
+              // --------------------------------
+              // VERIFY PAYMENT
               // --------------------------------
 
               console.log(
@@ -705,27 +929,35 @@ export default function TripDetails() {
                   razorpay_signature:
                     response.razorpay_signature,
 
+
+                  // CUSTOMER
                   customerName:
-                    "Bhargav",
+                    customerName,
 
                   customerEmail:
-                    "test@gmail.com",
+                    customerEmail,
 
                   customerContact:
-                    "",
+                    customerContact,
 
+
+                  // TRIP / HOTEL
                   hotelName:
                     trip.title,
 
                   hotelLocation:
                     trip.location,
 
+
+                  // TRIP DOES NOT USE HOTEL DATES
                   checkIn:
                     "",
 
                   checkOut:
                     "",
 
+
+                  // PAYMENT
                   amount:
                     bookingAmount,
 
@@ -738,6 +970,10 @@ export default function TripDetails() {
               );
 
 
+              // --------------------------------
+              // SUCCESS
+              // --------------------------------
+
               if (
                 verification &&
                 verification.success
@@ -745,7 +981,8 @@ export default function TripDetails() {
 
                 alert(
                   "🎉 Payment Successful!\n\n" +
-                  "Payment verified successfully."
+                  "Your payment has been verified.\n\n" +
+                  "Confirmation emails have been sent."
                 );
 
               } else {
@@ -762,7 +999,9 @@ export default function TripDetails() {
 
               }
 
-            } catch (verificationError) {
+            } catch (
+              verificationError
+            ) {
 
               console.error(
                 "================================"
@@ -800,7 +1039,9 @@ export default function TripDetails() {
             }
 
 
-            setPaymentLoading(false);
+            setPaymentLoading(
+              false
+            );
 
           },
 
@@ -923,7 +1164,9 @@ export default function TripDetails() {
           );
 
 
-          setPaymentLoading(false);
+          setPaymentLoading(
+            false
+          );
 
         }
       );
@@ -980,7 +1223,9 @@ export default function TripDetails() {
       );
 
 
-      setPaymentLoading(false);
+      setPaymentLoading(
+        false
+      );
 
     }
 
@@ -994,11 +1239,13 @@ export default function TripDetails() {
   if (loading) {
 
     return (
+
       <div className="min-h-screen bg-white p-10 text-center text-gray-500 dark:bg-[#0f172a] dark:text-gray-300">
 
         Loading trip...
 
       </div>
+
     );
 
   }
@@ -1011,11 +1258,14 @@ export default function TripDetails() {
   if (!trip) {
 
     return (
+
       <div className="min-h-screen bg-white p-10 text-center text-gray-500 dark:bg-[#0f172a] dark:text-gray-300">
 
-        {error || "Trip not found"}
+        {error ||
+          "Trip not found"}
 
       </div>
+
     );
 
   }
@@ -1042,7 +1292,9 @@ export default function TripDetails() {
 
           <button
             type="button"
-            onClick={() => navigate(-1)}
+            onClick={() =>
+              navigate(-1)
+            }
             className="mb-5 inline-flex items-center gap-2 rounded-2xl border border-slate-300 px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:-translate-x-1 hover:border-blue-500 hover:text-blue-600 dark:border-slate-600 dark:text-slate-200"
             aria-label="Go back"
           >
@@ -1122,7 +1374,8 @@ export default function TripDetails() {
 
                   <FaShareAlt />
 
-                  {shareStatus || "Share trip"}
+                  {shareStatus ||
+                    "Share trip"}
 
                 </button>
 
@@ -1277,25 +1530,40 @@ export default function TripDetails() {
             <div className="mt-5 grid gap-3 md:grid-cols-3">
 
               {[
+
                 {
-                  key: "route",
-                  label: "Pick your route",
+                  key:
+                    "route",
+
+                  label:
+                    "Pick your route",
                 },
+
                 {
-                  key: "stay",
-                  label: "Save a stay",
+                  key:
+                    "stay",
+
+                  label:
+                    "Save a stay",
                 },
+
                 {
-                  key: "essentials",
-                  label: "Pack essentials",
+                  key:
+                    "essentials",
+
+                  label:
+                    "Pack essentials",
                 },
+
               ].map((item) => (
 
                 <button
                   key={item.key}
                   type="button"
                   onClick={() =>
-                    toggleChecklist(item.key)
+                    toggleChecklist(
+                      item.key
+                    )
                   }
                   className={`flex items-center justify-between rounded-2xl border px-4 py-3 text-left text-sm font-bold transition ${
                     checklist[item.key]
@@ -1333,7 +1601,9 @@ export default function TripDetails() {
               <input
                 value={newItem}
                 onChange={(event) =>
-                  setNewItem(event.target.value)
+                  setNewItem(
+                    event.target.value
+                  )
                 }
                 maxLength={80}
                 placeholder="Add a custom stop or task..."
@@ -1361,66 +1631,72 @@ export default function TripDetails() {
 
               <div className="mt-4 grid gap-2">
 
-                {customItems.map((item) => (
+                {customItems.map(
+                  (item) => (
 
-                  <div
-                    key={item.id}
-                    className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3"
-                  >
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        toggleCustomItem(item.id)
-                      }
-                      aria-label={
-                        item.done
-                          ? `Mark ${item.label} incomplete`
-                          : `Mark ${item.label} complete`
-                      }
-                      className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-xs ${
-                        item.done
-                          ? "border-emerald-400 bg-emerald-400 text-slate-950"
-                          : "border-slate-500 text-transparent"
-                      }`}
+                    <div
+                      key={item.id}
+                      className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3"
                     >
 
-                      <FaCheck />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          toggleCustomItem(
+                            item.id
+                          )
+                        }
+                        aria-label={
+                          item.done
+                            ? `Mark ${item.label} incomplete`
+                            : `Mark ${item.label} complete`
+                        }
+                        className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-xs ${
+                          item.done
+                            ? "border-emerald-400 bg-emerald-400 text-slate-950"
+                            : "border-slate-500 text-transparent"
+                        }`}
+                      >
 
-                    </button>
+                        <FaCheck />
+
+                      </button>
 
 
-                    <span
-                      className={`flex-1 text-sm ${
-                        item.done
-                          ? "text-slate-500 line-through"
-                          : "text-slate-200"
-                      }`}
-                    >
+                      <span
+                        className={`flex-1 text-sm ${
+                          item.done
+                            ? "text-slate-500 line-through"
+                            : "text-slate-200"
+                        }`}
+                      >
 
-                      {item.label}
+                        {item.label}
 
-                    </span>
+                      </span>
 
 
-                    <button
-                      type="button"
-                      onClick={() =>
-                        removeCustomItem(item.id)
-                      }
-                      aria-label={
-                        `Delete ${item.label}`
-                      }
-                      className="p-2 text-slate-500 transition hover:text-rose-300"
-                    >
+                      <button
+                        type="button"
+                        onClick={() =>
+                          removeCustomItem(
+                            item.id
+                          )
+                        }
+                        aria-label={
+                          `Delete ${item.label}`
+                        }
+                        className="p-2 text-slate-500 transition hover:text-rose-300"
+                      >
 
-                      <FaTrash />
+                        <FaTrash />
 
-                    </button>
+                      </button>
 
-                  </div>
+                    </div>
 
-                ))}
+                  )
+                )}
 
               </div>
 
@@ -1467,7 +1743,9 @@ export default function TripDetails() {
               value={tripNote}
               maxLength={240}
               onChange={(event) =>
-                setTripNote(event.target.value)
+                setTripNote(
+                  event.target.value
+                )
               }
               placeholder="Add a hotel, food spot, or moment to remember..."
               className="mt-5 min-h-28 w-full resize-y rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
@@ -1512,60 +1790,70 @@ export default function TripDetails() {
                   {savedNotes.map(
                     (note, index) => (
 
-                    <div
-                      key={note.id}
-                      className="flex items-start gap-3 rounded-2xl border border-cyan-200/70 bg-white/70 p-3 dark:border-cyan-300/10 dark:bg-slate-950/20"
-                    >
+                      <div
+                        key={note.id}
+                        className="flex items-start gap-3 rounded-2xl border border-cyan-200/70 bg-white/70 p-3 dark:border-cyan-300/10 dark:bg-slate-950/20"
+                      >
 
-                      <span className="mt-0.5 text-xs font-bold text-cyan-700 dark:text-cyan-300">
+                        <span className="mt-0.5 text-xs font-bold text-cyan-700 dark:text-cyan-300">
 
-                        {String(index + 1).padStart(2, "0")}
+                          {String(
+                            index + 1
+                          ).padStart(
+                            2,
+                            "0"
+                          )}
 
-                      </span>
-
-
-                      <p className="flex-1 whitespace-pre-wrap text-sm font-semibold leading-6 text-slate-800 dark:text-slate-100">
-
-                        {note.text}
-
-                      </p>
+                        </span>
 
 
-                      <div className="flex shrink-0 gap-2">
+                        <p className="flex-1 whitespace-pre-wrap text-sm font-semibold leading-6 text-slate-800 dark:text-slate-100">
 
-                        <button
-                          type="button"
-                          onClick={() =>
-                            selectTripNote(note)
-                          }
-                          className="rounded-lg bg-cyan-100 px-2.5 py-1.5 text-xs font-bold text-cyan-800 transition hover:bg-cyan-200 dark:bg-cyan-300/10 dark:text-cyan-200"
-                        >
+                          {note.text}
 
-                          Select
-
-                        </button>
+                        </p>
 
 
-                        <button
-                          type="button"
-                          onClick={() =>
-                            deleteTripNote(note.id)
-                          }
-                          aria-label={
-                            `Delete note ${index + 1}`
-                          }
-                          className="rounded-lg bg-rose-100 px-2.5 py-1.5 text-xs font-bold text-rose-700 transition hover:bg-rose-200 dark:bg-rose-400/10 dark:text-rose-300"
-                        >
+                        <div className="flex shrink-0 gap-2">
 
-                          <FaTrash />
+                          <button
+                            type="button"
+                            onClick={() =>
+                              selectTripNote(
+                                note
+                              )
+                            }
+                            className="rounded-lg bg-cyan-100 px-2.5 py-1.5 text-xs font-bold text-cyan-800 transition hover:bg-cyan-200 dark:bg-cyan-300/10 dark:text-cyan-200"
+                          >
 
-                        </button>
+                            Select
+
+                          </button>
+
+
+                          <button
+                            type="button"
+                            onClick={() =>
+                              deleteTripNote(
+                                note.id
+                              )
+                            }
+                            aria-label={
+                              `Delete note ${index + 1}`
+                            }
+                            className="rounded-lg bg-rose-100 px-2.5 py-1.5 text-xs font-bold text-rose-700 transition hover:bg-rose-200 dark:bg-rose-400/10 dark:text-rose-300"
+                          >
+
+                            <FaTrash />
+
+                          </button>
+
+                        </div>
 
                       </div>
 
-                    </div>
-
-                  ))}
+                    )
+                  )}
 
                 </div>
 
