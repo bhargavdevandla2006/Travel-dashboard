@@ -461,29 +461,19 @@ export default function Booking() {
               // SUCCESS
               // =================================================
 
-              if (
-                verification &&
-                verification.success
-              ) {
+              if (verification && verification.success) {
+  alert(
+    "🎉 Hotel Booking Confirmed!\n\n" +
+      `Hotel: ${hotelName}\n` +
+      `Location: ${hotelLocation}\n` +
+      `Check-in: ${checkIn}\n` +
+      `Check-out: ${checkOut}\n` +
+      `Amount Paid: ₹${bookingAmount}\n\n` +
+      "Your booking has been added to your Mailbox."
+  );
 
-                alert(
-                  "🎉 Hotel Booking Confirmed!\n\n" +
-                  `Hotel: ${hotelName}\n` +
-                  `Location: ${hotelLocation}\n` +
-                  `Check-in: ${checkIn}\n` +
-                  `Check-out: ${checkOut}\n` +
-                  `Amount Paid: ₹${bookingAmount}\n\n` +
-                  "Confirmation email has been sent to your email."
-                );
-
-
-                // Optional:
-                // if your booking details page exists,
-                // navigate to it here.
-                //
-                // navigate(`/booking/${verification.bookingId}`);
-
-              } else {
+  navigate("/mailbox");
+} else {
 
                 alert(
                   verification?.message ||

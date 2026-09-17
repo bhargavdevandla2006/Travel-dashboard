@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import {
+    NavLink,
+    useLocation,
+    useNavigate,
+} from "react-router-dom";
 
 import { useLanguage } from "../context/LanguageContext";
 
@@ -27,21 +31,36 @@ import {
     FaUsers,
     FaHeart,
     FaUser,
+    FaInbox,
 } from "react-icons/fa";
+
 
 export default function Sidebar() {
 
-    const [collapsed, setCollapsed] = useState(false);
+    const [collapsed, setCollapsed] =
+        useState(false);
 
-    const [showSettingsMenu, setShowSettingsMenu] = useState(false);
+    const [showSettingsMenu, setShowSettingsMenu] =
+        useState(false);
 
-    const [isPremium, setIsPremium] = useState(() => {
-        if (typeof window === "undefined") return false;
+    const [isPremium, setIsPremium] =
+        useState(() => {
 
-        return localStorage.getItem("travelhub-premium") === "true";
-    });
+            if (typeof window === "undefined") {
+                return false;
+            }
+
+            return (
+                localStorage.getItem(
+                    "travelhub-premium"
+                ) === "true"
+            );
+
+        });
+
 
     const navigate = useNavigate();
+
     const location = useLocation();
 
     const { t } = useLanguage();
@@ -57,7 +76,9 @@ export default function Sidebar() {
         );
 
     const searchParams =
-        new URLSearchParams(location.search);
+        new URLSearchParams(
+            location.search
+        );
 
     const queryBudget =
         searchParams.get("budget");
@@ -86,7 +107,7 @@ export default function Sidebar() {
 
 
     // ============================================================
-    // SAVE BUDGET WHEN ON /budget/low
+    // SAVE BUDGET
     // ============================================================
 
     useEffect(() => {
@@ -112,7 +133,9 @@ export default function Sidebar() {
         const nextPremium =
             !isPremium;
 
-        setIsPremium(nextPremium);
+        setIsPremium(
+            nextPremium
+        );
 
         createLocalNotification({
 
@@ -169,6 +192,16 @@ export default function Sidebar() {
             path: "/travelers",
         },
 
+        // ========================================================
+        // MAILBOX
+        // ========================================================
+
+        {
+            name: "Mailbox",
+            icon: <FaInbox />,
+            path: "/mailbox",
+        },
+
         {
             name: t("Profile"),
             icon: <FaUserCircle />,
@@ -212,31 +245,36 @@ export default function Sidebar() {
 
 
     // ============================================================
-    // IMPORTANT:
-    // KEEP BUDGET WHILE NAVIGATING
+    // GET MENU PATH
     // ============================================================
 
     const getMenuPath = (path) => {
 
-        // --------------------------------------------
-        // If there is NO active budget
-        // use normal routes
-        // --------------------------------------------
+        // --------------------------------------------------------
+        // MAILBOX SHOULD NEVER KEEP BUDGET FILTER
+        // --------------------------------------------------------
 
-        if (!activeBudget) {
-            return path;
+        if (path === "/mailbox") {
+
+            return "/mailbox";
+
         }
 
 
-        // --------------------------------------------
-        // If Dashboard is clicked while budget is active
-        //
-        // /budget/low
-        //     ↓ Dashboard
-        // /budget/low
-        //
-        // NOT /
-        // --------------------------------------------
+        // --------------------------------------------------------
+        // NO ACTIVE BUDGET
+        // --------------------------------------------------------
+
+        if (!activeBudget) {
+
+            return path;
+
+        }
+
+
+        // --------------------------------------------------------
+        // DASHBOARD
+        // --------------------------------------------------------
 
         if (path === "/") {
 
@@ -245,17 +283,9 @@ export default function Sidebar() {
         }
 
 
-        // --------------------------------------------
-        // Other pages keep the budget
-        //
-        // /budget/low
-        //     ↓ Trips
-        // /trips?budget=low
-        //
-        // /budget/low
-        //     ↓ Favorites
-        // /favorites?budget=low
-        // --------------------------------------------
+        // --------------------------------------------------------
+        // OTHER PAGES
+        // --------------------------------------------------------
 
         return `${path}?budget=${activeBudget}`;
 
@@ -293,21 +323,32 @@ export default function Sidebar() {
 
         <div
             className={`
-                ${collapsed ? "w-20" : "w-[290px]"}
+                ${collapsed
+                    ? "w-20"
+                    : "w-[290px]"
+                }
+
                 min-h-screen
+
                 bg-white
                 dark:bg-[#0f172a]
+
                 border-r
                 border-gray-200
                 dark:border-gray-800
+
                 text-slate-900
                 dark:text-white
+
                 flex
                 flex-col
                 justify-between
+
                 transition-all
                 duration-300
+
                 ease-in-out
+
                 overflow-visible
             `}
         >
@@ -323,13 +364,17 @@ export default function Sidebar() {
                         border-b
                         border-gray-200
                         dark:border-gray-800
+
                         py-6
                         px-4
+
                         flex
                         items-center
-                        ${collapsed
-                            ? "justify-center flex-col gap-4"
-                            : "justify-between"
+
+                        ${
+                            collapsed
+                                ? "justify-center flex-col gap-4"
+                                : "justify-between"
                         }
                     `}
                 >
@@ -395,7 +440,9 @@ export default function Sidebar() {
 
                     <button
                         onClick={() =>
-                            setCollapsed(!collapsed)
+                            setCollapsed(
+                                !collapsed
+                            )
                         }
                         className="
                             h-10
@@ -425,11 +472,14 @@ export default function Sidebar() {
 
                     {menu.map((item) => {
 
-                        {/* =================================================
-                            SETTINGS
-                        ================================================= */}
+                        // =================================================
+                        // SETTINGS
+                        // =================================================
 
-                        if (item.path === "/settings") {
+                        if (
+                            item.path ===
+                            "/settings"
+                        ) {
 
                             return (
 
@@ -452,21 +502,29 @@ export default function Sidebar() {
                                             group
                                             flex
                                             items-center
-                                            ${collapsed
-                                                ? "justify-center"
-                                                : "justify-start gap-4"
+
+                                            ${
+                                                collapsed
+                                                    ? "justify-center"
+                                                    : "justify-start gap-4"
                                             }
-                                            ${collapsed
-                                                ? "px-0"
-                                                : "px-4"
+
+                                            ${
+                                                collapsed
+                                                    ? "px-0"
+                                                    : "px-4"
                                             }
+
                                             py-3.5
                                             mb-2
                                             rounded-2xl
+
                                             transition-all
                                             duration-300
+
                                             hover:bg-gray-100
                                             dark:hover:bg-gray-800
+
                                             hover:translate-x-1
                                         `}
                                     >
@@ -508,16 +566,23 @@ export default function Sidebar() {
                                                     top-0
                                                     ml-4
                                                     w-72
+
                                                     bg-white
                                                     dark:bg-[#1e293b]
+
                                                     rounded-3xl
+
                                                     shadow-2xl
+
                                                     border
                                                     border-gray-200
                                                     dark:border-gray-800
+
                                                     text-gray-900
                                                     dark:text-white
+
                                                     z-[9999]
+
                                                     overflow-hidden
                                                 "
                                             >
@@ -540,7 +605,10 @@ export default function Sidebar() {
                                                             font-bold
                                                         "
                                                     >
-                                                        ⚙️ {t("Settings")}
+                                                        ⚙️{" "}
+                                                        {t(
+                                                            "Settings"
+                                                        )}
                                                     </h2>
 
                                                     <p
@@ -549,7 +617,9 @@ export default function Sidebar() {
                                                             text-blue-100
                                                         "
                                                     >
-                                                        {t("ChooseYourLanguage")}
+                                                        {t(
+                                                            "ChooseYourLanguage"
+                                                        )}
                                                     </p>
 
                                                 </div>
@@ -570,22 +640,31 @@ export default function Sidebar() {
                                                             flex
                                                             items-center
                                                             gap-4
+
                                                             text-gray-800
                                                             dark:text-white
+
                                                             hover:bg-blue-50
                                                             dark:hover:bg-gray-700
+
                                                             hover:text-blue-600
+
                                                             transition
                                                             duration-200
                                                         "
                                                     >
+
                                                         <FaUser
                                                             style={{
                                                                 color:
                                                                     "var(--accent-1)",
                                                             }}
                                                         />
-                                                        {t("Profile")}
+
+                                                        {t(
+                                                            "Profile"
+                                                        )}
+
                                                     </button>
 
 
@@ -602,22 +681,31 @@ export default function Sidebar() {
                                                             flex
                                                             items-center
                                                             gap-4
+
                                                             text-gray-800
                                                             dark:text-white
+
                                                             hover:bg-blue-50
                                                             dark:hover:bg-gray-700
+
                                                             hover:text-blue-600
+
                                                             transition
                                                             duration-200
                                                         "
                                                     >
+
                                                         <FaPalette
                                                             style={{
                                                                 color:
                                                                     "var(--accent-5)",
                                                             }}
                                                         />
-                                                        {t("Theme")}
+
+                                                        {t(
+                                                            "Theme"
+                                                        )}
+
                                                     </button>
 
 
@@ -634,22 +722,31 @@ export default function Sidebar() {
                                                             flex
                                                             items-center
                                                             gap-4
+
                                                             text-gray-800
                                                             dark:text-white
+
                                                             hover:bg-blue-50
                                                             dark:hover:bg-gray-700
+
                                                             hover:text-blue-600
+
                                                             transition
                                                             duration-200
                                                         "
                                                     >
+
                                                         <FaBell
                                                             style={{
                                                                 color:
                                                                     "var(--accent-3)",
                                                             }}
                                                         />
-                                                        {t("TripAlerts")}
+
+                                                        {t(
+                                                            "TripAlerts"
+                                                        )}
+
                                                     </button>
 
 
@@ -666,22 +763,31 @@ export default function Sidebar() {
                                                             flex
                                                             items-center
                                                             gap-4
+
                                                             text-gray-800
                                                             dark:text-white
+
                                                             hover:bg-blue-50
                                                             dark:hover:bg-gray-700
+
                                                             hover:text-blue-600
+
                                                             transition
                                                             duration-200
                                                         "
                                                     >
+
                                                         <FaShieldAlt
                                                             style={{
                                                                 color:
                                                                     "var(--accent-4)",
                                                             }}
                                                         />
-                                                        {t("Security")}
+
+                                                        {t(
+                                                            "Security"
+                                                        )}
+
                                                     </button>
 
 
@@ -698,22 +804,31 @@ export default function Sidebar() {
                                                             flex
                                                             items-center
                                                             gap-4
+
                                                             text-gray-800
                                                             dark:text-white
+
                                                             hover:bg-blue-50
                                                             dark:hover:bg-gray-700
+
                                                             hover:text-blue-600
+
                                                             transition
                                                             duration-200
                                                         "
                                                     >
+
                                                         <FaGlobe
                                                             style={{
                                                                 color:
                                                                     "var(--accent-2)",
                                                             }}
                                                         />
-                                                        {t("TravelStyle")}
+
+                                                        {t(
+                                                            "TravelStyle"
+                                                        )}
+
                                                     </button>
 
 
@@ -730,22 +845,31 @@ export default function Sidebar() {
                                                             flex
                                                             items-center
                                                             gap-4
+
                                                             text-gray-800
                                                             dark:text-white
+
                                                             hover:bg-blue-50
                                                             dark:hover:bg-gray-700
+
                                                             hover:text-blue-600
+
                                                             transition
                                                             duration-200
                                                         "
                                                     >
+
                                                         <FaMapMarkerAlt
                                                             style={{
                                                                 color:
                                                                     "var(--accent-5)",
                                                             }}
                                                         />
-                                                        {t("HomeLocation")}
+
+                                                        {t(
+                                                            "HomeLocation"
+                                                        )}
+
                                                     </button>
 
 
@@ -757,22 +881,29 @@ export default function Sidebar() {
                                                             flex
                                                             items-center
                                                             gap-4
+
                                                             text-gray-800
                                                             dark:text-white
+
                                                             hover:bg-blue-50
                                                             dark:hover:bg-gray-700
+
                                                             hover:text-blue-600
+
                                                             transition
                                                             duration-200
                                                         "
                                                     >
+
                                                         <FaCreditCard
                                                             style={{
                                                                 color:
                                                                     "var(--accent-2)",
                                                             }}
                                                         />
+
                                                         Payments
+
                                                     </button>
 
 
@@ -784,22 +915,31 @@ export default function Sidebar() {
                                                             flex
                                                             items-center
                                                             gap-4
+
                                                             text-gray-800
                                                             dark:text-white
+
                                                             hover:bg-blue-50
                                                             dark:hover:bg-gray-700
+
                                                             hover:text-blue-600
+
                                                             transition
                                                             duration-200
                                                         "
                                                     >
+
                                                         <FaLanguage
                                                             style={{
                                                                 color:
                                                                     "var(--accent-5)",
                                                             }}
                                                         />
-                                                        {t("Language")}
+
+                                                        {t(
+                                                            "Language"
+                                                        )}
+
                                                     </button>
 
 
@@ -816,22 +956,29 @@ export default function Sidebar() {
                                                             flex
                                                             items-center
                                                             gap-4
+
                                                             text-gray-800
                                                             dark:text-white
+
                                                             hover:bg-blue-50
                                                             dark:hover:bg-gray-700
+
                                                             hover:text-blue-600
+
                                                             transition
                                                             duration-200
                                                         "
                                                     >
+
                                                         <FaMapMarkerAlt
                                                             style={{
                                                                 color:
                                                                     "var(--accent-3)",
                                                             }}
                                                         />
+
                                                         Danger Zone
+
                                                     </button>
 
                                                 </div>
@@ -847,47 +994,31 @@ export default function Sidebar() {
                         }
 
 
-                        {/* =================================================
-                            NORMAL MENU ITEM
-                        ================================================= */}
+                        // =================================================
+                        // NORMAL MENU ITEM
+                        // =================================================
 
                         const menuPath =
-                            getMenuPath(item.path);
+                            getMenuPath(
+                                item.path
+                            );
 
 
                         return (
 
                             <NavLink
                                 key={item.name}
-                                to={
-                                    isBudgetPage
-                                        ? `/budget/${activeBudget}${item.name === "Dashboard"
-                                            ? ""
-                                            : `?section=${item.name.toLowerCase()}`
-                                        }`
-                                        : item.path
+                                to={menuPath}
+                                end={
+                                    item.path === "/"
                                 }
-                                end={!isBudgetPage && item.path === "/"}
                             >
 
                                 {({ isActive }) => {
 
-                                    /*
-                                     * Dashboard is active when:
-                                     *
-                                     * /dashboard
-                                     *
-                                     * OR
-                                     *
-                                     * /budget/low
-                                     *
-                                     * because budget page is the
-                                     * budget version of dashboard.
-                                     */
-
                                     const menuIsActive =
                                         isBudgetPage &&
-                                            item.path === "/"
+                                        item.path === "/"
                                             ? true
                                             : isActive;
 
@@ -901,7 +1032,8 @@ export default function Sidebar() {
                                                 boxShadow:
                                                     "0 10px 30px rgba(0,0,0,0.08)",
 
-                                                color: "#fff",
+                                                color:
+                                                    "#fff",
                                             }
                                             : {};
 
@@ -909,28 +1041,39 @@ export default function Sidebar() {
                                     return (
 
                                         <div
-                                            style={activeStyle}
+                                            style={
+                                                activeStyle
+                                            }
                                             className={`
                                                 relative
                                                 group
+
                                                 flex
                                                 items-center
-                                                ${collapsed
-                                                    ? "justify-center"
-                                                    : "justify-start gap-4"
+
+                                                ${
+                                                    collapsed
+                                                        ? "justify-center"
+                                                        : "justify-start gap-4"
                                                 }
-                                                ${collapsed
-                                                    ? "px-0"
-                                                    : "px-4"
+
+                                                ${
+                                                    collapsed
+                                                        ? "px-0"
+                                                        : "px-4"
                                                 }
+
                                                 py-3.5
                                                 mb-2
                                                 rounded-2xl
+
                                                 transition-all
                                                 duration-300
-                                                ${menuIsActive
-                                                    ? "text-white"
-                                                    : "hover:bg-gray-100 dark:hover:bg-gray-800 hover:translate-x-1"
+
+                                                ${
+                                                    menuIsActive
+                                                        ? "text-white"
+                                                        : "hover:bg-gray-100 dark:hover:bg-gray-800 hover:translate-x-1"
                                                 }
                                             `}
                                         >
@@ -959,9 +1102,11 @@ export default function Sidebar() {
                                             <span
                                                 className={`
                                                     text-[20px]
-                                                    ${menuIsActive
-                                                        ? "text-white"
-                                                        : "text-slate-700 dark:text-gray-200"
+
+                                                    ${
+                                                        menuIsActive
+                                                            ? "text-white"
+                                                            : "text-slate-700 dark:text-gray-200"
                                                     }
                                                 `}
                                             >
@@ -975,9 +1120,11 @@ export default function Sidebar() {
                                                     className={`
                                                         font-medium
                                                         tracking-wide
-                                                        ${menuIsActive
-                                                            ? "text-white"
-                                                            : "text-slate-700 dark:text-gray-200"
+
+                                                        ${
+                                                            menuIsActive
+                                                                ? "text-white"
+                                                                : "text-slate-700 dark:text-gray-200"
                                                         }
                                                     `}
                                                 >
@@ -1025,13 +1172,14 @@ export default function Sidebar() {
 
                         <div className="space-y-2">
 
-                            {(activeBudget
-                                ? budgetOptions.filter(
-                                    (option) =>
-                                        option.label.toLowerCase() ===
-                                        activeBudget
-                                )
-                                : budgetOptions
+                            {(
+                                activeBudget
+                                    ? budgetOptions.filter(
+                                        (option) =>
+                                            option.label.toLowerCase() ===
+                                            activeBudget
+                                    )
+                                    : budgetOptions
                             ).map((option) => (
 
                                 <button
@@ -1056,23 +1204,32 @@ export default function Sidebar() {
                                         w-full
                                         items-center
                                         justify-between
+
                                         rounded-2xl
+
                                         border
                                         border-white/10
+
                                         bg-slate-100/80
+
                                         px-3
                                         py-2.5
+
                                         text-left
                                         text-sm
                                         font-semibold
                                         text-slate-700
+
                                         transition
                                         duration-200
+
                                         hover:border-cyan-400
                                         hover:bg-cyan-500/10
                                         hover:text-cyan-300
+
                                         dark:bg-[#111827]
                                         dark:text-slate-200
+
                                         dark:hover:border-cyan-400
                                         dark:hover:text-cyan-300
                                     "
@@ -1146,6 +1303,7 @@ export default function Sidebar() {
                                     "rgba(255,255,255,0.08)",
                             }}
                         />
+
 
                         <div
                             className="
@@ -1257,9 +1415,11 @@ export default function Sidebar() {
                                     disabled:opacity-70
                                 "
                             >
+
                                 {isPremium
                                     ? "Premium Active →"
                                     : "Upgrade →"}
+
                             </button>
 
                         </div>
