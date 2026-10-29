@@ -7,6 +7,8 @@ const containerStyle = {
   height: "500px",
 };
 
+const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+
 export default function GoogleMapView() {
   const { location } = useMap();
   const mapRef = useRef(null);
@@ -39,8 +41,19 @@ export default function GoogleMapView() {
     mapRef.current = map;
   };
 
+  if (!apiKey) {
+    return (
+      <div
+        className="flex h-[500px] items-center justify-center rounded-xl bg-slate-100 p-6 text-center text-sm text-slate-600 dark:bg-slate-800 dark:text-slate-300"
+        role="status"
+      >
+        Add VITE_GOOGLE_MAPS_API_KEY to the client environment to enable this map.
+      </div>
+    );
+  }
+
   return (
-    <LoadScript googleMapsApiKey="AIzaSyC50_dwVpnUWv3Kk15Nh_MFvgNj0fEnuDM" libraries={["marker"]}>
+    <LoadScript googleMapsApiKey={apiKey} libraries={["marker"]}>
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={location}

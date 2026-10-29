@@ -8,7 +8,7 @@ const dotenv = require("dotenv");
 const Razorpay = require("razorpay");
 const cookieParser = require("cookie-parser");
 const crypto = require("crypto");
-
+const { getUniqueHotelPhotos } = require("./hotelImages");
 // Load environment variables
 dotenv.config();
 
@@ -5065,6 +5065,27 @@ app.delete(
     }
 );
 
+app.get("/api/hotel-images", async (req, res) => {
+    try {
+        const city = req.query.city || "hotel";
+        const count = Number(req.query.count) || 15;
+
+        const photos = await getUniqueHotelPhotos(city, count);
+
+        res.json({
+            success: true,
+            photos: photos
+        });
+
+    } catch (error) {
+        console.error("Hotel image route error:", error);
+
+        res.status(500).json({
+            success: false,
+            message: "Unable to get hotel images"
+        });
+    }
+});
 
 // =====================================================
 // EXPRESS ERROR HANDLER

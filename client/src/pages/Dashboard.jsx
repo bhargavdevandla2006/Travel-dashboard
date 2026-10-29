@@ -1,0 +1,742 @@
+import {
+  FaSuitcase,
+  FaCalendarAlt,
+  FaDollarSign,
+  FaLightbulb,
+  FaMapMarkerAlt,
+} from "react-icons/fa";
+
+import Sidebar from "../components/Sidebar";
+import Navbar from "../components/Navbar";
+import StatsCard from "../components/StatsCard";
+import TripCard from "../components/TripCard";
+import MapView from "../components/MapView";
+
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { useTheme } from "../context/useTheme";
+import { getDestinations, getTrips } from "../services/api";
+
+
+
+const quickStart = [
+  {
+    title: "Start your first trip",
+
+    description:
+      "Add your first destination, dates and budget to get going.",
+
+    icon: (
+      <FaLightbulb className="text-2xl text-white" />
+    ),
+
+    gradient:
+      "from-cyan-500 via-sky-600 to-indigo-600",
+
+    step: "Step 1",
+  },
+
+  {
+    title: "Discover popular spots",
+
+    description:
+      "Explore top beginner-friendly locations and save favorites.",
+
+    icon: (
+      <FaMapMarkerAlt className="text-2xl text-white" />
+    ),
+
+    gradient:
+      "from-purple-500 via-fuchsia-600 to-pink-500",
+
+    step: "Step 2",
+  },
+
+  {
+    title: "Customize your profile",
+
+    description:
+      "Set travel preferences so the app works for you.",
+
+    icon: (
+      <FaSuitcase className="text-2xl text-white" />
+    ),
+
+    gradient:
+      "from-emerald-500 via-lime-500 to-emerald-600",
+
+    step: "Step 3",
+  },
+];
+
+
+
+export default function Index() {
+  const { darkMode } = useTheme();
+  const navigate = useNavigate();
+
+  const [search, setSearch] = useState("");
+  const [trips, setTrips] = useState([]);
+  const [destinationCount, setDestinationCount] = useState(0);
+  const [activeTrip, setActiveTrip] = useState(0);
+  const [hiddenTripIds, setHiddenTripIds] = useState([]);
+
+  useEffect(() => {
+    async function loadDashboardData() {
+      const [tripData, destinationData] = await Promise.allSettled([
+        getTrips(),
+        getDestinations(),
+      ]);
+
+      setTrips(
+        tripData.status === "fulfilled" && Array.isArray(tripData.value)
+          ? tripData.value
+          : []
+      );
+      setDestinationCount(
+        destinationData.status === "fulfilled" && Array.isArray(destinationData.value)
+          ? destinationData.value.length
+          : 0
+      );
+    }
+
+    loadDashboardData();
+  }, []);
+
+  const stats = [
+    { title: "Total Trips", value: trips.length, color: "bg-blue-600", icon: <FaSuitcase /> },
+    { title: "Destinations", value: destinationCount, color: "bg-green-500", icon: <FaMapMarkerAlt /> },
+    { title: "Saved Places", value: JSON.parse(localStorage.getItem("favorites") || "[]").length, color: "bg-purple-500", icon: <FaCalendarAlt /> },
+    {
+      title: "Trip Budget",
+      value: `₹${trips.reduce((total, trip) => total + (Number.parseInt(String(trip.price || "0").replace(/[^0-9]/g, ""), 10) || 0), 0)}`,
+      color: "bg-yellow-400",
+      icon: <FaDollarSign />,
+    },
+  ];
+
+  
+
+  const filteredTrips = trips.filter((item) => {
+    if (hiddenTripIds.includes(item.id)) return false;
+    return (
+      item.title
+        .toLowerCase()
+        .includes(search.toLowerCase()) ||
+
+      item.location
+        .toLowerCase()
+        .includes(search.toLowerCase())
+    );
+  });
+
+  const visibleTrips = filteredTrips.slice(activeTrip, activeTrip + 3);
+
+  function changeSearch(value) {
+    setSearch(value);
+    setActiveTrip(0);
+  }
+
+  function removeTrip(tripId) {
+    setHiddenTripIds((current) => [...current, tripId]);
+    setActiveTrip(0);
+  }
+
+  
+
+  return (
+    <div
+      className={`min-h-screen p-6 transition-colors duration-300 ${
+        darkMode
+          ? "bg-[#020617]"
+          : "bg-[#020B2D]"
+      }`}
+    >
+
+      
+
+      <div
+        className={`rounded-[40px] overflow-x-clip flex flex-col lg:flex-row min-h-[calc(100vh-3rem)] shadow-xl transition-colors duration-300 ${
+          darkMode
+            ? "bg-[#0F172A]"
+            : "bg-[#F5F5F5]"
+        }`}
+      >
+
+        
+
+        <Sidebar />
+
+        
+
+        <div
+          className={`flex-1 p-5 lg:p-7 transition-colors duration-300 ${
+            darkMode
+              ? "bg-[#020617]"
+              : "bg-gray-50"
+          }`}
+        >
+
+          
+
+          <Navbar
+            search={search}
+            setSearch={changeSearch}
+            sticky
+          />
+
+          
+
+          <div
+            className="
+              mt-8
+              relative
+              overflow-hidden
+              rounded-3xl
+              bg-gradient-to-r
+              from-blue-700
+              via-indigo-600
+              to-purple-600
+              p-8
+              shadow-2xl
+            "
+          >
+
+            <div
+              className="
+                absolute
+                -top-20
+                -right-20
+                w-72
+                h-72
+                bg-white/10
+                rounded-full
+                blur-3xl
+              "
+            />
+
+            <div
+              className="
+                absolute
+                -bottom-20
+                -left-20
+                w-64
+                h-64
+                bg-cyan-400/10
+                rounded-full
+                blur-3xl
+              "
+            />
+
+            <div
+              className="
+                relative
+                z-10
+                flex
+                flex-col
+                lg:flex-row
+                items-center
+                justify-between
+              "
+            >
+
+              <div>
+
+                <p
+                  className="
+                    uppercase
+                    tracking-[4px]
+                    text-blue-200
+                    text-sm
+                    font-semibold
+                  "
+                >
+                  Welcome Back
+                </p>
+
+                <h1
+                  className="
+                    text-5xl
+                    font-black
+                    text-white
+                    mt-4
+                  "
+                >
+                  Good Morning,
+                  <br />
+                  Bhargav 👋
+                </h1>
+
+                <p
+                  className="
+                    mt-5
+                    max-w-xl
+                    text-blue-100
+                    leading-8
+                  "
+                >
+                  Explore new destinations, manage
+                  trips, book hotels, track expenses
+                  and enjoy your travel experience in
+                  one beautiful dashboard.
+                </p>
+
+                <button
+                  type="button"
+                  onClick={() => navigate("/add-trip")}
+                  className="
+                    mt-8
+                    bg-white
+                    text-blue-700
+                    px-8
+                    py-4
+                    rounded-2xl
+                    font-bold
+                    hover:scale-105
+                    hover:shadow-xl
+                    transition-all
+                    duration-300
+                  "
+                >
+                  Start New Trip
+                </button>
+
+              </div>
+
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/201/201623.png"
+                alt="Travel"
+                className="
+                  w-64
+                  mt-10
+                  lg:mt-0
+                "
+              />
+
+            </div>
+          </div>
+
+          
+
+          <div className="space-y-6 mt-6">
+
+            
+
+            <div
+              className="
+                grid
+                grid-cols-1
+                sm:grid-cols-2
+                xl:grid-cols-4
+                gap-4
+              "
+            >
+
+              {stats.map((item, index) => (
+                <StatsCard
+                  key={index}
+                  title={item.title}
+                  value={item.value}
+                  color={item.color}
+                  icon={item.icon}
+                />
+              ))}
+
+            </div>
+
+            
+
+            <div className="mt-8">
+
+              <div
+                className="
+                  flex
+                  flex-col
+                  gap-4
+                  mb-8
+                "
+              >
+
+                <h1
+                  className="
+                    text-2xl
+                    font-playfair
+                    font-bold
+
+                    bg-gradient-to-r
+                    from-slate-900
+                    via-purple-900
+                    to-slate-900
+
+                    dark:from-white
+                    dark:via-purple-300
+                    dark:to-white
+
+                    bg-clip-text
+                    text-transparent
+
+                    tracking-tight
+                  "
+                >
+                  Travel Launchpad
+                </h1>
+
+                <p
+                  className="
+                    text-sm
+                    text-gray-600
+                    dark:text-gray-300
+                    max-w-2xl
+                  "
+                >
+                  Fast actions to start your first
+                  trip and explore with confidence.
+                </p>
+
+              </div>
+
+              <div
+                className="
+                  grid
+                  grid-cols-1
+                  md:grid-cols-3
+                  gap-6
+                "
+              >
+
+                {quickStart.map((item, index) => (
+                  <div
+                    key={index}
+                    className={`
+                      group
+                      relative
+                      overflow-hidden
+                      rounded-2xl
+                      p-4
+                      text-white
+                      shadow-2xl
+                      transition-transform
+                      duration-300
+                      hover:-translate-y-1
+                      hover:shadow-2xl
+                      bg-gradient-to-br
+                      ${item.gradient}
+                    `}
+                  >
+
+                    <div
+                      className="
+                        absolute
+                        inset-x-0
+                        top-0
+                        h-32
+                        bg-white/10
+                        blur-3xl
+                      "
+                    />
+
+                    <div
+                      className="
+                        relative
+                        z-10
+                        flex
+                        items-center
+                        justify-between
+                        mb-5
+                      "
+                    >
+
+                      <span
+                        className="
+                          text-[11px]
+                          uppercase
+                          tracking-[0.3em]
+                          text-white/80
+                        "
+                      >
+                        {item.step}
+                      </span>
+
+                      <div
+                        className="
+                          w-14
+                          h-14
+                          rounded-3xl
+                          bg-white/15
+                          flex
+                          items-center
+                          justify-center
+                          text-white
+                          shadow-lg
+                        "
+                      >
+                        {item.icon}
+                      </div>
+
+                    </div>
+
+                    <h2
+                      className="
+                        relative
+                        z-10
+                        text-xl
+                        font-poppins
+                        font-bold
+                        mb-3
+                        text-white
+                        drop-shadow-md
+                        tracking-tight
+                      "
+                    >
+                      {item.title}
+                    </h2>
+
+                    <p
+                      className="
+                        relative
+                        z-10
+                        text-sm
+                        text-white/80
+                        leading-relaxed
+                        mb-6
+                        font-inter
+                        font-medium
+                      "
+                    >
+                      {item.description}
+                    </p>
+
+                    <button
+                      type="button"
+                      className="
+                        relative
+                        z-10
+                        inline-flex
+                        items-center
+                        gap-2
+                        rounded-full
+                        border
+                        border-white/20
+                        bg-white/10
+                        px-4
+                        py-2
+                        text-sm
+                        font-semibold
+                        text-white
+                        transition
+                        hover:bg-white/20
+                      "
+                    >
+                      Try it now
+                    </button>
+
+                  </div>
+                ))}
+
+              </div>
+
+            </div>
+
+            
+
+            <div>
+
+              <div
+                className="
+                  grid
+                  gap-6
+                  lg:grid-cols-[1.5fr_0.9fr]
+                  mb-8
+                "
+              >
+
+                
+
+                <div
+                  className="
+                    rounded-2xl
+
+                    border
+                    border-gray-200
+                    dark:border-gray-700
+
+                    bg-white
+                    dark:bg-gray-900
+
+                    p-5
+
+                    shadow-md
+                    hover:shadow-lg
+
+                    transition-all
+                    duration-300
+                  "
+                >
+
+                  <p
+                    className="
+                      text-accent
+                      text-emerald-600
+                    "
+                  >
+                    Destination
+                  </p>
+
+                  <h2
+                    className="
+                      mt-4
+                      text-2xl
+                      font-playfair
+                      font-bold
+                      text-slate-900
+                      dark:text-white
+                      tracking-tight
+                    "
+                  >
+                    Maldives
+                  </h2>
+
+                  <p
+                    className="
+                      mt-4
+                      text-sm
+                      text-gray-700
+                      dark:text-gray-300
+                      max-w-xl
+                    "
+                  >
+                    Perfect tropical paradise with
+                    crystal clear waters, vibrant coral
+                    reefs, and luxury resorts.
+                  </p>
+
+                </div>
+
+                
+
+                <div
+                  className="
+                    rounded-2xl
+                    bg-gradient-to-br
+                    from-blue-600
+                    via-cyan-500
+                    to-sky-500
+                    p-4
+                    text-white
+                    shadow-lg
+                    hover:shadow-xl
+                    transition-all
+                    duration-300
+                    flex
+                    flex-col
+                    justify-between
+                  "
+                >
+
+                  <div>
+
+                    <p
+                      className="
+                        text-accent
+                        text-cyan-100/80
+                      "
+                    >
+                      Navigation
+                    </p>
+
+                    <p
+                      className="
+                        mt-4
+                        text-sm
+                        font-poppins
+                        font-semibold
+                        tracking-tight
+                      "
+                    >
+                      Use{" "}
+                      <span className="font-bold">
+                        Ctrl + Scroll
+                      </span>{" "}
+                      to explore
+                    </p>
+
+                  </div>
+
+                  <div
+                    className="
+                      mt-6
+                      inline-flex
+                      items-center
+                      gap-2
+                      rounded-full
+                      bg-white/15
+                      px-4
+                      py-2
+                      text-xs
+                      uppercase
+                      tracking-[0.25em]
+                      font-bold
+                      text-white/95
+                      backdrop-blur-sm
+                    "
+                  >
+                    Pro tip
+                  </div>
+
+                </div>
+
+              </div>
+
+              
+
+              <MapView />
+
+            </div>
+
+            
+
+            <div>
+
+              <h1
+                className="
+                  text-2xl
+                  font-playfair
+                  font-bold
+                  text-slate-900
+                  dark:text-white
+                  mb-7
+                  tracking-tight
+                "
+              >
+                Your Trips
+              </h1>
+
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-semibold text-slate-500 dark:text-slate-300">
+                  {filteredTrips.length ? `${activeTrip + 1}-${Math.min(activeTrip + 3, filteredTrips.length)} of ${filteredTrips.length}` : "No matching trips"}
+                </p>
+                <div className="flex gap-2">
+                  <button type="button" onClick={() => setActiveTrip((current) => Math.max(0, current - 3))} disabled={activeTrip === 0} aria-label="Previous trips" className="carousel-arrow rounded-xl bg-slate-200 p-3 text-slate-700 transition hover:bg-blue-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-40 dark:bg-white/10 dark:text-white"><FaChevronLeft /></button>
+                  <button type="button" onClick={() => setActiveTrip((current) => Math.min(Math.max(0, filteredTrips.length - 3), current + 3))} disabled={!filteredTrips.length || activeTrip + 3 >= filteredTrips.length} aria-label="Next trips" className="carousel-arrow rounded-xl bg-slate-200 p-3 text-slate-700 transition hover:bg-blue-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-40 dark:bg-white/10 dark:text-white"><FaChevronRight /></button>
+                </div>
+              </div>
+              <div className="mt-5 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+                {visibleTrips.map((trip, index) => (
+                  <div key={trip.id} className="trip-page-item" style={{ "--delay": `${index * 90}ms` }}>
+                    <TripCard {...trip} onRemove={removeTrip} />
+                  </div>
+                ))}
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  );
+}

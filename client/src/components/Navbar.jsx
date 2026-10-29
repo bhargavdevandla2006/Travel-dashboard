@@ -1,0 +1,1443 @@
+import {
+  FaBell,
+  FaMoon,
+  FaSearch,
+  FaCog,
+  FaUserCircle,
+  FaHeart,
+  FaUserPlus,
+  FaCheck,
+  FaTimes,
+  FaSun,
+  FaHotel,
+  FaCreditCard,
+} from "react-icons/fa";
+
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { useLanguage } from "../context/useLanguage";
+import { useTheme } from "../context/useTheme";
+
+import {
+  apiUrl,
+  getProfile,
+  logoutUser,
+} from "../services/api";
+
+
+export default function Navbar({
+  search = "",
+  setSearch,
+  sticky = false,
+}) {
+
+  const [open, setOpen] =
+    useState(false);
+
+  const [
+    notificationOpen,
+    setNotificationOpen
+  ] = useState(false);
+
+  const [
+    notifications,
+    setNotifications
+  ] = useState([]);
+
+  const [user, setUser] =
+    useState(null);
+
+  const [query, setQuery] =
+    useState(search || "");
+
+  const navigate =
+    useNavigate();
+
+  const {
+    darkMode,
+    toggleTheme,
+  } = useTheme();
+
+  const { t } =
+    useLanguage();
+
+  function handleSearchSubmit() {
+    const trimmedQuery = (setSearch ? search : query).trim();
+
+    if (setSearch) {
+      setSearch(trimmedQuery);
+    }
+
+    if (trimmedQuery) {
+      navigate(
+        `/destinations?search=${encodeURIComponent(trimmedQuery)}`
+      );
+      return;
+    }
+
+    navigate("/destinations");
+  }
+
+
+  // =====================================================
+  // LOAD USER
+  // =====================================================
+
+  async function loadUser() {
+
+    try {
+
+      const data =
+        await getProfile();
+
+      setUser(data);
+
+    } catch (error) {
+
+      console.error(
+        "User loading error:",
+        error
+      );
+
+    }
+
+  }
+
+
+  // =====================================================
+  // LOAD NOTIFICATIONS
+  // =====================================================
+
+  async function loadNotifications() {
+
+    try {
+
+      const response =
+        await fetch(
+          `${apiUrl}/notifications`,
+          {
+            credentials:
+              "include",
+          }
+        );
+
+
+      const data =
+        await response.json();
+
+
+      if (!response.ok) {
+
+        throw new Error(
+          data.message ||
+          "Failed to load notifications"
+        );
+
+      }
+
+
+      const serverNotifications =
+        Array.isArray(data)
+          ? data
+          : data.notifications || [];
+
+
+      /*
+       * Keep old local notifications
+       * for your existing features.
+       */
+
+      let localNotifications = [];
+
+      try {
+
+        localNotifications =
+          JSON.parse(
+            localStorage.getItem(
+              "travelhub-local-notifications"
+            ) || "[]"
+          );
+
+      } catch {
+
+        localNotifications = [];
+
+      }
+
+
+      /*
+       * Server notifications come first.
+       */
+
+      setNotifications([
+        ...serverNotifications,
+        ...localNotifications,
+      ]);
+
+    } catch (error) {
+
+      console.error(
+        "Notification loading error:",
+        error
+      );
+
+    }
+
+  }
+
+
+  // =====================================================
+  // MARK ALL READ
+  // =====================================================
+
+  async function markAllNotificationsRead() {
+
+    try {
+
+      await fetch(
+        `${apiUrl}/notifications/read-all`,
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      );
+
+
+      let localNotifications = [];
+
+      try {
+
+        localNotifications =
+          JSON.parse(
+            localStorage.getItem(
+              "travelhub-local-notifications"
+            ) || "[]"
+          );
+
+      } catch {
+
+        localNotifications = [];
+
+      }
+
+
+      localStorage.setItem(
+        "travelhub-local-notifications",
+        JSON.stringify(
+          localNotifications.map(
+            (notification) => ({
+              ...notification,
+              is_read: 1,
+            })
+          )
+        )
+      );
+
+
+      setNotifications(
+        (current) =>
+          current.map(
+            (notification) => ({
+              ...notification,
+              is_read: 1,
+            })
+          )
+      );
+
+
+    } catch (error) {
+
+      console.error(
+        "Notification update error:",
+        error
+      );
+
+    }
+
+  }
+
+
+  // =====================================================
+  // DISMISS NOTIFICATION
+  // =====================================================
+
+  async function dismissNotification(
+    notification
+  ) {
+
+    setNotifications(
+      (current) =>
+        current.filter(
+          (item) =>
+            item.id !==
+            notification.id
+        )
+    );
+
+
+    /*
+     * Database notification
+     */
+
+    if (
+      typeof notification.id ===
+      "number"
+    ) {
+
+      try {
+
+        await fetch(
+          `${apiUrl}/notifications/${notification.id}`,
+          {
+            method: "DELETE",
+            credentials: "include",
+          }
+        );
+
+      } catch (error) {
+
+        console.error(
+          "Notification removal error:",
+          error
+        );
+
+      }
+
+      return;
+
+    }
+
+
+    /*
+     * Local notification
+     */
+
+    try {
+      const localNotifications = JSON.parse(
+        localStorage.getItem("travelhub-local-notifications") || "[]"
+      );
+      localStorage.setItem(
+        "travelhub-local-notifications",
+        JSON.stringify(
+          localNotifications.filter(
+            (item) => item.id !== notification.id
+          )
+        )
+      );
+    } catch (error) {
+      console.error("Local notification removal error:", error);
+    }
+
+  }
+
+
+  // =====================================================
+  // NOTIFICATION TIME
+  // =====================================================
+
+  function getTimeAgo(date) {
+
+    if (!date) {
+
+      return "Just now";
+
+    }
+
+
+    const now =
+      new Date();
+
+
+    const notificationDate =
+      new Date(
+        date.includes("T")
+          ? date
+          : date.replace(
+              " ",
+              "T"
+            ) + "Z"
+      );
+
+
+    const difference =
+      Math.max(
+        0,
+        Math.floor(
+          (
+            now -
+            notificationDate
+          ) / 1000
+        )
+      );
+
+
+    if (difference < 5) {
+
+      return "Just now";
+
+    }
+
+
+    if (difference < 60) {
+
+      return `${difference} sec${
+        difference === 1
+          ? ""
+          : "s"
+      } ago`;
+
+    }
+
+
+    const minutes =
+      Math.floor(
+        difference / 60
+      );
+
+
+    if (minutes < 60) {
+
+      return `${minutes} min${
+        minutes === 1
+          ? ""
+          : "s"
+      } ago`;
+
+    }
+
+
+    const hours =
+      Math.floor(
+        minutes / 60
+      );
+
+
+    if (hours < 24) {
+
+      return `${hours} hour${
+        hours === 1
+          ? ""
+          : "s"
+      } ago`;
+
+    }
+
+
+    const days =
+      Math.floor(
+        hours / 24
+      );
+
+
+    return `${days} day${
+      days === 1
+        ? ""
+        : "s"
+    } ago`;
+
+  }
+
+
+  // =====================================================
+  // LOAD USER ONCE
+  // =====================================================
+
+  useEffect(() => {
+    queueMicrotask(() => {
+      void loadUser();
+    });
+  }, []);
+
+
+  // =====================================================
+  // LOAD NOTIFICATIONS EVERY 5 SECONDS
+  // =====================================================
+
+  useEffect(() => {
+
+    queueMicrotask(() => {
+      void loadNotifications();
+    });
+
+
+    const interval =
+      setInterval(
+        () => {
+
+          void loadNotifications();
+
+        },
+        5000
+      );
+
+
+    const handleLocalNotification =
+      () => {
+
+        void loadNotifications();
+
+      };
+
+
+    window.addEventListener(
+      "travelhub-notification",
+      handleLocalNotification
+    );
+
+
+    return () => {
+
+      clearInterval(
+        interval
+      );
+
+      window.removeEventListener(
+        "travelhub-notification",
+        handleLocalNotification
+      );
+
+    };
+
+  }, []);
+
+
+  // =====================================================
+  // LOGOUT
+  // =====================================================
+
+  async function handleLogout() {
+
+    try {
+
+      await logoutUser();
+
+    } catch (error) {
+
+      console.error(
+        "Logout error:",
+        error
+      );
+
+    } finally {
+
+      navigate("/login");
+
+    }
+
+  }
+
+
+  // =====================================================
+  // NOTIFICATION CLICK
+  // =====================================================
+
+  function handleNotificationClick(
+    notification
+  ) {
+
+    /*
+     * If it is a booking notification
+     * and backend provided booking_id,
+     * open the booking page.
+     */
+
+    if (
+      notification.type ===
+        "hotel_booking" &&
+      notification.booking_id
+    ) {
+
+      setNotificationOpen(
+        false
+      );
+
+
+      navigate(
+        `/booking-confirmation/${notification.booking_id}`
+      );
+
+      return;
+
+    }
+
+  }
+
+
+  // =====================================================
+  // UNREAD COUNT
+  // =====================================================
+
+  const unreadCount =
+    notifications.filter(
+      (notification) =>
+        !notification.is_read
+    ).length;
+
+
+  // =====================================================
+  // UI
+  // =====================================================
+
+  return (
+
+    <div
+      className={`
+        flex items-center justify-between transition-all duration-300
+        ${
+          sticky
+            ? "sticky top-0 z-[1100] isolate rounded-2xl border border-slate-200 bg-white px-6 py-5 shadow-xl shadow-slate-900/15 dark:border-white/10 dark:bg-[#0b1220] dark:shadow-black/40 lg:px-8"
+            : "relative z-50 rounded-3xl border border-gray-100 bg-white/60 px-8 py-5 shadow-lg backdrop-blur-md dark:border-gray-800 dark:bg-[#0f172a]/80"
+        }
+      `}
+    >
+
+
+      {/* =================================================
+          TITLE
+      ================================================= */}
+
+      <div>
+
+        <h1
+          className={`font-bold text-slate-900 dark:text-white ${sticky ? "text-3xl" : "text-3xl"}`}
+        >
+
+          {t("Dashboard")}
+
+        </h1>
+
+
+        <p
+          className={`mt-1 text-sm ${sticky ? "text-slate-500 dark:text-slate-400" : "text-gray-500 dark:text-gray-300"}`}
+        >
+
+          {t("WelcomeBack")}
+
+        </p>
+
+      </div>
+
+
+      {/* =================================================
+          SEARCH
+      ================================================= */}
+
+      <div className="relative flex-1 max-w-[520px] mx-auto min-w-0 hidden md:block">
+
+        <FaSearch
+          className="
+            absolute
+            left-5
+            top-1/2
+            -translate-y-1/2
+            text-blue-400
+            text-lg
+          "
+        />
+
+
+        <input
+          value={setSearch ? search : query}
+          onChange={(e) => {
+            const nextValue =
+              e.target.value;
+
+            if (setSearch) {
+              setSearch(nextValue);
+            } else {
+              setQuery(nextValue);
+            }
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSearchSubmit();
+            }
+          }}
+          type="text"
+          placeholder={t("SearchPlaceholder") || "Search trips, hotels, destinations..."}
+          className={`
+            w-full rounded-2xl py-4 pl-14 pr-5 outline-none transition-all duration-300
+            text-slate-900 placeholder:text-slate-500 dark:text-white dark:placeholder:text-slate-400
+            ${
+              sticky
+                ? "border border-slate-200 bg-slate-50 shadow-sm dark:border-white/10 dark:bg-white/5"
+                : "border-2 border-blue-500/80 bg-transparent shadow-[0_0_0_1px_rgba(59,130,246,0.25),0_0_20px_rgba(59,130,246,0.18)] dark:bg-[#0f172a]/10"
+            }
+            focus:border-blue-400 focus:shadow-[0_0_0_1px_rgba(96,165,250,0.4),0_0_24px_rgba(59,130,246,0.25)]
+          `}
+        />
+
+      </div>
+
+
+      {/* =================================================
+          RIGHT SIDE
+      ================================================= */}
+
+      <div
+        className="
+          flex
+          items-center
+          gap-5
+        "
+      >
+
+
+        {/* =================================================
+            NOTIFICATIONS
+        ================================================= */}
+
+        <div className="relative">
+
+          <button
+            onClick={() => {
+
+              setNotificationOpen(
+                !notificationOpen
+              );
+
+              setOpen(false);
+
+            }}
+            className="
+              relative
+
+              w-12
+              h-12
+
+              rounded-2xl
+
+              bg-gray-100
+              dark:bg-white/10
+
+              hover:bg-blue-600
+              hover:text-white
+
+              hover:scale-110
+
+              transition-all
+              duration-300
+
+              flex
+              items-center
+              justify-center
+            "
+          >
+
+            <FaBell className="text-lg" />
+
+
+            {unreadCount > 0 && (
+
+              <span
+                className="
+                  absolute
+                  -top-1
+                  -right-1
+
+                  bg-red-500
+                  text-white
+
+                  min-w-5
+                  h-5
+                  px-1
+
+                  rounded-full
+
+                  text-[10px]
+
+                  flex
+                  items-center
+                  justify-center
+
+                  font-bold
+                "
+              >
+
+                {unreadCount}
+
+              </span>
+
+            )}
+
+          </button>
+
+
+          {/* =================================================
+              NOTIFICATION DROPDOWN
+          ================================================= */}
+
+          {notificationOpen && (
+
+            <div
+              className="
+                absolute
+                right-0
+                mt-4
+
+                w-[400px]
+                max-h-[560px]
+
+                overflow-y-auto
+
+                bg-white
+                dark:bg-[#111827]
+
+                border
+                border-gray-200
+                dark:border-gray-700
+
+                rounded-3xl
+
+                shadow-2xl
+
+                z-[100]
+
+                overflow-hidden
+
+                origin-top-right
+              "
+            >
+
+
+              {/* HEADER */}
+
+              <div
+                className="
+                  px-6
+                  py-5
+
+                  border-b
+                  border-gray-200
+                  dark:border-gray-700
+
+                  flex
+                  items-center
+                  justify-between
+                "
+              >
+
+                <div>
+
+                  <h2
+                    className="
+                      font-bold
+                      text-lg
+
+                      text-slate-900
+                      dark:text-white
+                    "
+                  >
+
+                    Notifications
+
+                  </h2>
+
+
+                  <p
+                    className="
+                      text-xs
+
+                      text-gray-500
+                      dark:text-gray-400
+
+                      mt-1
+                    "
+                  >
+
+                    {notifications.length} notification
+                    {notifications.length !== 1
+                      ? "s"
+                      : ""}
+
+                  </p>
+
+                </div>
+
+
+                <div className="flex items-center gap-1">
+
+                  <button
+                    type="button"
+                    onClick={
+                      markAllNotificationsRead
+                    }
+                    className="
+                      rounded-lg
+                      p-2
+                      text-blue-500
+
+                      transition
+
+                      hover:bg-blue-50
+                      dark:hover:bg-white/10
+                    "
+                    title="Mark all as read"
+                  >
+
+                    <FaCheck />
+
+                  </button>
+
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setNotificationOpen(
+                        false
+                      )
+                    }
+                    className="
+                      rounded-lg
+                      p-2
+                      text-gray-400
+
+                      transition
+
+                      hover:bg-red-50
+                      hover:text-red-500
+
+                      dark:hover:bg-red-500/10
+                    "
+                  >
+
+                    <FaTimes />
+
+                  </button>
+
+                </div>
+
+              </div>
+
+
+              {/* NOTIFICATION LIST */}
+
+              <div className="p-3 space-y-2">
+
+                {notifications.length === 0 ? (
+
+                  <div
+                    className="
+                      text-center
+                      py-12
+
+                      text-gray-500
+                      dark:text-gray-400
+                    "
+                  >
+
+                    <FaBell
+                      className="
+                        mx-auto
+                        text-4xl
+                        mb-4
+                        opacity-30
+                      "
+                    />
+
+                    <p className="font-medium">
+
+                      No notifications yet
+
+                    </p>
+
+                    <p className="text-xs mt-1">
+
+                      Your booking updates will appear here
+
+                    </p>
+
+                  </div>
+
+                ) : (
+
+                  notifications.map(
+                    (notification) => {
+
+                      const isBooking =
+                        notification.type ===
+                        "hotel_booking";
+
+
+                      return (
+
+                        <div
+                          key={`${notification.id}-${notification.type}`}
+
+                          onClick={() =>
+                            handleNotificationClick(
+                              notification
+                            )
+                          }
+
+                          className={`
+                            group
+
+                            flex
+                            gap-4
+
+                            p-4
+
+                            rounded-2xl
+
+                            transition-all
+                            duration-300
+
+                            ${
+                              isBooking
+                                ? "cursor-pointer bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-100 dark:hover:bg-emerald-500/20"
+                                : "hover:bg-blue-50 dark:hover:bg-white/5 hover:translate-x-1"
+                            }
+                          `}
+                        >
+
+
+                          {/* ICON */}
+
+                          <div
+                            className={`
+                              w-11
+                              h-11
+
+                              shrink-0
+
+                              rounded-xl
+
+                              flex
+                              items-center
+                              justify-center
+
+                              transition-all
+                              duration-300
+
+                              group-hover:scale-110
+
+                              ${
+                                isBooking
+                                  ? "bg-emerald-500/10 text-emerald-500"
+                                  : ["like", "favorite"].includes(
+                                      notification.type
+                                    )
+                                  ? "bg-pink-500/10 text-pink-500"
+                                  : "bg-blue-500/10 text-blue-500"
+                              }
+                            `}
+                          >
+
+                            {isBooking ? (
+
+                              <FaHotel />
+
+                            ) : ["like", "favorite"].includes(
+                                notification.type
+                              ) ? (
+
+                              <FaHeart />
+
+                            ) : (
+
+                              <FaUserPlus />
+
+                            )}
+
+                          </div>
+
+
+                          {/* CONTENT */}
+
+                          <div className="flex-1 min-w-0">
+
+                            <h3
+                              className="
+                                text-sm
+                                font-bold
+
+                                text-slate-900
+                                dark:text-white
+                              "
+                            >
+
+                              {notification.title}
+
+                            </h3>
+
+
+                            <p
+                              className="
+                                text-xs
+
+                                mt-1
+
+                                text-gray-500
+                                dark:text-gray-400
+
+                                leading-5
+
+                                whitespace-pre-line
+                              "
+                            >
+
+                              {notification.message}
+
+                            </p>
+
+
+                            {isBooking && (
+
+                              <div className="mt-3 flex items-center gap-2 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+
+                                <FaCreditCard />
+
+                                Booking confirmed
+
+                              </div>
+
+                            )}
+
+
+                            <p
+                              className={`
+                                text-xs
+                                mt-2
+                                font-medium
+
+                                ${
+                                  isBooking
+                                    ? "text-emerald-500"
+                                    : "text-blue-500"
+                                }
+                              `}
+                            >
+
+                              {getTimeAgo(
+                                notification.created_at
+                              )}
+
+                            </p>
+
+                          </div>
+
+
+                          {/* DELETE */}
+
+                          <button
+                            type="button"
+                            onClick={(event) => {
+
+                              event.stopPropagation();
+
+                              dismissNotification(
+                                notification
+                              );
+
+                            }}
+                            className="
+                              self-start
+
+                              rounded-lg
+                              p-2
+
+                              text-gray-400
+
+                              transition
+
+                              hover:bg-red-50
+                              hover:text-red-500
+
+                              dark:hover:bg-red-500/10
+                            "
+                          >
+
+                            <FaTimes />
+
+                          </button>
+
+                        </div>
+
+                      );
+
+                    }
+                  )
+
+                )}
+
+              </div>
+
+            </div>
+
+          )}
+
+        </div>
+
+
+        {/* =================================================
+            THEME
+        ================================================= */}
+
+        <button
+          onClick={toggleTheme}
+          className="
+            w-12
+            h-12
+
+            rounded-full
+
+            bg-blue-100
+            dark:bg-gray-700
+
+            text-blue-600
+            dark:text-yellow-300
+
+            hover:scale-110
+            hover:rotate-12
+
+            transition-all
+            duration-300
+
+            flex
+            items-center
+            justify-center
+          "
+        >
+
+          {darkMode
+
+            ? <FaSun className="text-lg" />
+
+            : <FaMoon className="text-lg" />
+
+          }
+
+        </button>
+
+
+        {/* =================================================
+            PROFILE
+        ================================================= */}
+
+        <div className="relative">
+
+          <button
+            onClick={() => {
+
+              setOpen(!open);
+
+              setNotificationOpen(
+                false
+              );
+
+            }}
+            className="
+              flex
+              items-center
+              gap-3
+
+              bg-gray-100
+              dark:bg-white/10
+
+              hover:bg-gray-200
+              dark:hover:bg-white/20
+
+              rounded-2xl
+
+              px-3
+              py-2
+
+              transition-all
+              duration-300
+            "
+          >
+
+            <img
+              src={
+                user?.photo ||
+                "https://i.pravatar.cc/150"
+              }
+              alt="Profile"
+              className="
+                w-12
+                h-12
+
+                rounded-full
+
+                object-cover
+
+                border-2
+                border-blue-500
+              "
+            />
+
+
+            <div className="hidden xl:block text-left">
+
+              <h2
+                className="
+                  font-bold
+
+                  text-slate-800
+                  dark:text-white
+                "
+              >
+
+                {user?.name ||
+                  "Traveler"}
+
+              </h2>
+
+
+              <p
+                className="
+                  text-xs
+                  text-gray-500
+                  dark:text-gray-400
+                "
+              >
+
+                Premium Traveler
+
+              </p>
+
+            </div>
+
+          </button>
+
+
+          {/* PROFILE MENU */}
+
+          {open && (
+
+            <div
+              className="
+                absolute
+                right-0
+                mt-3
+
+                w-56
+
+                bg-white
+                dark:bg-[#111827]
+
+                rounded-2xl
+
+                shadow-2xl
+
+                border
+                border-gray-100
+                dark:border-gray-700
+
+                overflow-hidden
+
+                z-[100]
+              "
+            >
+
+              <button
+                onClick={() => {
+
+                  navigate("/profile");
+
+                  setOpen(false);
+
+                }}
+                className="
+                  w-full
+
+                  flex
+                  items-center
+                  gap-3
+
+                  px-5
+                  py-4
+
+                  text-left
+
+                  hover:bg-gray-100
+                  dark:hover:bg-white/5
+
+                  transition
+                "
+              >
+
+                <FaUserCircle />
+
+                {t("Profile")}
+
+              </button>
+
+
+              <button
+                onClick={() => {
+
+                  navigate("/settings");
+
+                  setOpen(false);
+
+                }}
+                className="
+                  w-full
+
+                  flex
+                  items-center
+                  gap-3
+
+                  px-5
+                  py-4
+
+                  text-left
+
+                  hover:bg-gray-100
+                  dark:hover:bg-white/5
+
+                  transition
+                "
+              >
+
+                <FaCog />
+
+                {t("Settings")}
+
+              </button>
+
+
+              <hr className="dark:border-gray-700" />
+
+
+              <button
+                onClick={handleLogout}
+                className="
+                  w-full
+
+                  text-red-600
+
+                  font-semibold
+
+                  px-5
+                  py-4
+
+                  hover:bg-red-50
+                  dark:hover:bg-red-500/10
+
+                  text-left
+
+                  transition
+                "
+              >
+
+                Logout
+
+              </button>
+
+            </div>
+
+          )}
+
+        </div>
+
+      </div>
+
+    </div>
+
+  );
+
+}

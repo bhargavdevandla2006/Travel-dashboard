@@ -1,0 +1,225 @@
+export const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+
+export async function getRazorpayKey() {
+  return request("/razorpay-key");
+}
+
+export function createLocalNotification({ type, title, message }) {
+  try {
+    const notifications = JSON.parse(localStorage.getItem("travelhub-local-notifications") || "[]");
+    notifications.unshift({
+      id: `${type}-${Date.now()}`,
+      type,
+      title,
+      message,
+      is_read: 0,
+      created_at: new Date().toISOString(),
+    });
+    localStorage.setItem("travelhub-local-notifications", JSON.stringify(notifications.slice(0, 30)));
+    window.dispatchEvent(new Event("travelhub-notification"));
+  } catch (error) {
+    console.error("Local notification error:", error);
+  }
+}
+
+async function parseJsonResponse(response) {
+  const text = await response.text();
+  if (!text) return null;
+
+  try {
+    return JSON.parse(text);
+  } catch (error) {
+    throw new Error(`Invalid JSON response from ${response.url}: ${text}`, {
+      cause: error,
+    });
+  }
+}
+
+async function request(path, options = {}) {
+  const response = await fetch(`${apiUrl}${path}`, options);
+  const data = await parseJsonResponse(response);
+
+  if (!response.ok) {
+    if (data && data.message) {
+      throw new Error(data.message);
+    }
+    throw new Error(`Request failed: ${response.status} ${response.statusText}`);
+  }
+
+  return data;
+}
+
+export async function loginUser(data) {
+
+    const response = await fetch(
+        `${apiUrl}/login`,
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            credentials: "include",
+
+            body: JSON.stringify(data)
+        }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+        throw new Error(
+            result.message || "Login failed"
+        );
+    }
+
+    return result;
+}
+
+export const sendOtp = async (data) => {
+  return request("/send-otp", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+};
+
+export const verifyOtp = async (data) => {
+  return request("/verify-otp", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+};
+
+export const sendLoginOtp = async (data) => {
+  return request("/send-login-otp", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+};
+
+export const verifyOtpLogin = async (data) => {
+  return request("/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+};
+
+export const registerUser = async (userData) => {
+  return request("/register", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(userData),
+  });
+};
+
+export const faceLogin = async (data) => {
+  return request("/face-login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+};
+
+export const getProfile = async () => {
+  return request("/profile", {
+    credentials: "include",
+  });
+};
+
+export const updateProfile = async (profileData) => {
+  return request("/profile", {
+    method: "PUT",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(profileData),
+  });
+};
+
+export const logoutUser = async () => {
+  return request("/logout", {
+    method: "POST",
+    credentials: "include",
+  });
+};
+
+export const getTrips = async () => {
+  return request("/trips");
+};
+
+export const createTrip = async (tripData) => {
+  return request("/trips", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(tripData),
+  });
+};
+
+export const getDestinations = async () => {
+  return request("/destinations");
+};
+
+export const getDestinationById = async (id) => {
+  return request(`/destinations/${id}`);
+};
+
+export const createOrder = async (amount) => {
+
+  console.log("💰 Creating order with amount:", amount);
+
+  const result = await request("/create-order", {
+    method: "POST",
+
+    headers: {
+      "Content-Type": "application/json",
+    },
+
+    credentials: "include",
+
+    body: JSON.stringify({ amount }),
+  });
+
+  console.log("✅ Create order result:", result);
+
+  return result;
+};
+
+export async function verifyPayment(paymentData) {
+    return request("/verify-payment", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(paymentData),
+    });
+}
+
+export default apiUrl;
